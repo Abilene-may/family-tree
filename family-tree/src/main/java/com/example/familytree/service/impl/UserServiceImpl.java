@@ -48,11 +48,14 @@ public class UserServiceImpl implements UserService {
   @Override
   public void signUp(String userName, String password, String role) throws FamilyTreeException {
     Optional<User> userCheck = userRepository.findByUserName(userName);
-    if(userCheck.isPresent()){
+    if (userCheck.isPresent()) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
     }
-    userCheck.get().setRole(role);
-    userRepository.save(userCheck.get());
+    User user = User.builder()
+        .userName(userName)
+        .password(password)
+        .role(role).build();
+    userRepository.save(user);
   }
 }
