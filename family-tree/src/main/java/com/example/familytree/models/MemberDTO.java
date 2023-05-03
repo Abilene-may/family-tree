@@ -1,40 +1,18 @@
-package com.example.familytree.domain;
+package com.example.familytree.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-/**
- * Domain Bảng thành viên trong gia phả
- *
- * @author nga
- */
-@Slf4j
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
-@Builder
-@Entity
-@Table(name = "member")
-public class Member {
-  @Schema(description = "id thành viên")
-  @Id
-  @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
-  @Column(name = "id")
-  private Long id;
-
+@Getter
+public class MemberDTO {
   @Schema(description = "họ và tên thành viên")
   @Column(name = "full_name")
   private String fullName;
@@ -107,4 +85,12 @@ public class Member {
   @Column(name = "canView")
   private Boolean canView;
 
+  @Schema(description = "tên người dùng")
+  @Column(name = "user_name")
+  private String userName;
+
+  /** Mật khẩu đăng nhập/đăng ký */
+  @Schema(description = "Mật khẩu")
+  @Column(name = "password")
+  private String password;
 }
