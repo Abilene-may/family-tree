@@ -32,12 +32,12 @@ public class UserServiceImpl implements UserService {
       if (userCheck.isEmpty()) {
         throw new FamilyTreeException(
             ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
-        }
-        if (!password.equals(userCheck.get().getPassword())) {
-          throw new FamilyTreeException(
-              ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
-        }
       }
+      if (!password.equals(userCheck.get().getPassword())) {
+        throw new FamilyTreeException(
+            ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
+      }
+    }
   }
   /**
    * đăng ký tài khoản
@@ -46,16 +46,14 @@ public class UserServiceImpl implements UserService {
    * @author nga
    */
   @Override
-  public void signUp(String userName, String password, String role) throws FamilyTreeException {
+  public User signUp(String userName, String password, String role) throws FamilyTreeException {
     Optional<User> userCheck = userRepository.findByUserName(userName);
     if (userCheck.isPresent()) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
     }
-    User user = User.builder()
-        .userName(userName)
-        .password(password)
-        .role(role).build();
+    User user = User.builder().userName(userName).password(password).role(role).build();
     userRepository.save(user);
+    return user;
   }
 }

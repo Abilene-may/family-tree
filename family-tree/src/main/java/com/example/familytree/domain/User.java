@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
-@Table(name = "user_member")
+@Table(name = "users")
 public class User {
   @Schema(description = "Id người dùng")
   @Id

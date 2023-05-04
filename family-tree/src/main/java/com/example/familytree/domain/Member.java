@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Builder
 @Entity
-@Table(name = "member")
+@Table(name = "members")
 public class Member {
   @Schema(description = "id thành viên")
   @Id
@@ -34,6 +34,10 @@ public class Member {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
   @Column(name = "id")
   private Long id;
+
+  @Schema(description = "Thế hệ của thành viên")
+  @Column(name = "generation")
+  private Integer generation;
 
   @Schema(description = "họ và tên thành viên")
   @Column(name = "full_name")
@@ -91,9 +95,13 @@ public class Member {
   @Column(name = "burial_place")
   private String burialPlace;
 
-  @Schema(description = "id của user")
-  @Column(name = "user_id")
-  private Long userId;
+  @Schema(description = "username của người dùng")
+  @Column(name = "username")
+  private String userName;
+
+  @Schema(description = "password của người dùng")
+  @Column(name = "password")
+  private String password;
 
   @Schema(description = "quyền có thể sửa")
   @Column(name = "canEdit")

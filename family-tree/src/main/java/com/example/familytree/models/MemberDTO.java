@@ -13,6 +13,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MemberDTO {
+  @Schema(description = "Thế hệ của thành viên")
+  @Column(name = "generation")
+  private Integer generation;
+
   @Schema(description = "họ và tên thành viên")
   @Column(name = "full_name")
   private String fullName;
@@ -69,9 +73,13 @@ public class MemberDTO {
   @Column(name = "burial_place")
   private String burialPlace;
 
-  @Schema(description = "id của user")
-  @Column(name = "user_id")
-  private Long userId;
+  @Schema(description = "username của người dùng")
+  @Column(name = "username")
+  private String userName;
+
+  @Schema(description = "password của người dùng")
+  @Column(name = "password")
+  private String password;
 
   @Schema(description = "quyền có thể sửa")
   @Column(name = "canEdit")
@@ -85,12 +93,4 @@ public class MemberDTO {
   @Column(name = "canView")
   private Boolean canView;
 
-  @Schema(description = "tên người dùng")
-  @Column(name = "user_name")
-  private String userName;
-
-  /** Mật khẩu đăng nhập/đăng ký */
-  @Schema(description = "Mật khẩu")
-  @Column(name = "password")
-  private String password;
 }

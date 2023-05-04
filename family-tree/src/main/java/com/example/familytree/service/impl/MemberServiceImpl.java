@@ -2,10 +2,14 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Member;
-import com.example.familytree.exceptions.FamilyTreeException;import com.example.familytree.models.MemberDTO;import com.example.familytree.repository.MemberRepository;
-import com.example.familytree.service.MemberService;
+import com.example.familytree.domain.User;import com.example.familytree.exceptions.ExceptionUtils;
+import com.example.familytree.exceptions.FamilyTreeException;
+import com.example.familytree.models.MemberDTO;import com.example.familytree.repository.MemberRepository;
+import com.example.familytree.repository.UserRepository;import com.example.familytree.service.MemberService;
 import com.example.familytree.service.UserService;import java.util.List;
-import lombok.Builder;import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Builder
 public class MemberServiceImpl implements MemberService {
   private final MemberRepository memberRepository;
+  private final UserRepository userRepository;
   private final UserService userService;
 
   /**
@@ -34,34 +39,28 @@ public class MemberServiceImpl implements MemberService {
    * @author nga
    */
   @Override
-  public void createMember(MemberDTO memberDTO)throws FamilyTreeException {
-    Member member =
-        Member.builder()
-            .fullName(memberDTO.getFullName())
-            .gender(memberDTO.getGender())
-            .dateOfBirth(memberDTO.getDateOfBirth())
-            .mobilePhoneNumber(memberDTO.getMobilePhoneNumber())
-            .career(memberDTO.getCareer())
-            .education(memberDTO.getEducation())
-            .nameDad(memberDTO.getNameDad())
-            .nameMom(memberDTO.getNameMom())
-            .maritalStatus(memberDTO.getMaritalStatus())
-            .namePartner(memberDTO.getNamePartner())
-            .role(memberDTO.getRole())
-            .status(memberDTO.getStatus())
-            .dateOfDeath(memberDTO.getDateOfDeath())
-            .burialPlace(memberDTO.getBurialPlace())
-            .build();
-    if (memberDTO.getRole().equals(Constant.TRUONG_HO)) {
-      member.setCanEdit(true);
-      member.setCanAdd(true);
-      member.setCanView(true);
-    } else {
-      member.setCanEdit(false);
-      member.setCanAdd(false);
-      member.setCanView(true);
+  public void createMember(Member member)throws FamilyTreeException {
+    List<Member> members = getAllMember();
+    if (members.isEmpty()){
+      member.setGeneration(1);
     }
+    userService.signUp(member.getUserName(), member.getPassword(), member.getRole());
     memberRepository.save(member);
-    userService.signUp(memberDTO.getUserName(), memberDTO.getPassword(), memberDTO.getRole());
+  }
+
+  /**
+   * Lấy thông tin thành viên theo id
+   *
+   * @author nga
+   */
+  @Override
+  public Member getMemberById(Long id) throws FamilyTreeException {
+    Optional<Member> member = memberRepository.findById(id);
+    if (member.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+    }
+    return member.get();
   }
 }

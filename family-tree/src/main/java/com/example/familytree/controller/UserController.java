@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
   private final UserService userService;
 
@@ -57,6 +57,7 @@ public class UserController {
   public ResponseEntity<Object> signUp(@RequestBody UserDTO userDTO) {
     try {
       userService.signUp(userDTO.getUserName(), userDTO.getPassword(), userDTO.getRole());
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -66,6 +67,5 @@ public class UserController {
           ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }
