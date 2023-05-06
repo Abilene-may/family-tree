@@ -63,21 +63,21 @@ public class Member {
   @Column(name = "education")
   private String education;
 
-  @Schema(description = "Họ tên bố của thành viên")
-  @Column(name = "name_dad")
-  private String nameDad;
+  @Schema(description = "Id của bố")
+  @Column(name = "dad_id")
+  private Long dadId;
 
-  @Schema(description = "Họ tên mẹ của thành viên")
-  @Column(name = "name_mom")
-  private String nameMom;
+  @Schema(description = "Id của mẹ")
+  @Column(name = "mom_id")
+  private Long momId;
 
   @Schema(description = "Tình trạng hôn nhân")
   @Column(name = "marital_status")
   private String maritalStatus;
 
-  @Schema(description = "Tên vợ/chồng của thành viên nếu có")
-  @Column(name = "name_partner")
-  private String namePartner;
+  @Schema(description = "id của vợ/chồng nếu đã kết hôn")
+  @Column(name = "partner_id")
+  private Long partnerId;
 
   @Schema(description = "vai trò của thành viên trong gia phả")
   @Column(name = "role")

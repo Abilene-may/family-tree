@@ -9,6 +9,7 @@ public class ExceptionUtils {
   public static final String USER_LOGIN_2 = "USER_LOGIN_2";
   public static final String USER_LOGIN_3 = "USER_LOGIN_3";
   public static final String USER_SIGNUP_1 = "USER_SIGNUP_1";
+  public static final String MOM_OR_DAD_IS_NOT_NULL = "MOM_OR_DAD_IS_NOT_NULL";
 
   public static Map<String, String> messages;
 
@@ -21,6 +22,7 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.USER_LOGIN_2, "Username không đúng hoặc không tồn tại");
     messages.put(ExceptionUtils.USER_LOGIN_3, "Sai mật khẩu vui lòng nhập lại");
     messages.put(ExceptionUtils.USER_SIGNUP_1, "username đã tồn tại vui lòng nhập username khác");
+    messages.put(ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL,"Vui lòng nhập họ tên bố hoặc mẹ");
   }
   public static String buildMessage(String messKey, Object... arg) {
     return String.format(ExceptionUtils.messages.get(messKey), arg);

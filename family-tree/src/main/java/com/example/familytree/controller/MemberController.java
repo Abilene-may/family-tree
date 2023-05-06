@@ -4,7 +4,9 @@ import com.example.familytree.FamilyTreeApplication;
 import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.common.ErrorDTO;import com.example.familytree.service.MemberService;
+import com.example.familytree.models.MemberDTO;
+import com.example.familytree.models.common.ErrorDTO;
+import com.example.familytree.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;import org.springframework.web.bind.annotation.RequestBody;import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;import org.springframework.web.bind.annotation.PutMapping;import org.springframework.web.bind.annotation.RequestBody;import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -80,4 +82,18 @@ public class MemberController {
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * sửa thông tin thành viên
+   *
+   * @author nga
+   * @since 05/05/2023
+   */
+  @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "sửa thông tin thành viên")
+  public ResponseEntity<Object> update(@RequestBody Member memberDTO)throws FamilyTreeException{
+    memberService.update(memberDTO);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
 }
