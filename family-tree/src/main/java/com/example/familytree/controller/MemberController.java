@@ -33,7 +33,7 @@ public class MemberController {
   @GetMapping(value = "/get-all")
   @Operation(summary = "Lấy thông tin tất cả thành viên trong gia phả")
   public ResponseEntity<Object> getListMember(){
-    List<Member> members =memberService.getAllMember();
+    MemberDTO members =memberService.getAllMember();
     return new ResponseEntity<>(members,HttpStatus.OK);
   }
 
