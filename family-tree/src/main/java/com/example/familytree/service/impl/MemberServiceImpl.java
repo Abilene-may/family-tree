@@ -1,12 +1,15 @@
 package com.example.familytree.service.impl;
 
-import com.example.familytree.commons.Constant;import com.example.familytree.domain.Member;
+import com.example.familytree.commons.Constant;
+import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.MemberDTO;
 import com.example.familytree.repository.MemberRepository;
-import com.example.familytree.repository.UserRepository;import com.example.familytree.service.MemberService;
-import com.example.familytree.service.UserService;import io.micrometer.common.util.StringUtils;import java.util.List;
+import com.example.familytree.repository.UserRepository;
+import com.example.familytree.service.MemberService;
+import com.example.familytree.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +69,23 @@ public class MemberServiceImpl implements MemberService {
               ExceptionUtils.messages.get(ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL));
         }
       }
+      // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
+      if(member.getRole().equals(Constant.TRUONG_HO)){
+        var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
+        if (checkExistRole.isPresent()) {
+          throw new FamilyTreeException(
+              ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
+              ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
+        }
+      }
+      if(member.getRole().equals(Constant.ONG_TO)){
+        var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
+        if (checkExistRole.isPresent()) {
+          throw new FamilyTreeException(
+              ExceptionUtils.ONG_TO_ALREADY_EXISTS,
+              ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
+        }
+      }
     }
     userService.signUp(member.getUserName(), member.getPassword(), member.getRole());
     // cấp role cho từng vai trò
@@ -105,7 +125,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public void update(Member member) throws FamilyTreeException {
     //check xem thành viên có tồn tại trong gia phả ko
-    Member memberOptional = getMemberById(member.getId());
+    var memberOptional = this.getMemberById(member.getId());
     //lưu lại thông tin sau khi đã sửa
     memberRepository.save(member);
   }
