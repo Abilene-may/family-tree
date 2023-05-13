@@ -6,9 +6,7 @@ import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.MemberDTO;
 import com.example.familytree.repository.MemberRepository;
-import com.example.familytree.repository.UserRepository;
 import com.example.familytree.service.MemberService;
-import com.example.familytree.service.UserService;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
@@ -23,9 +21,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Builder
 public class MemberServiceImpl implements MemberService {
   private final MemberRepository memberRepository;
-  private final UserRepository userRepository;
-  private final UserService userService;
 
+  /**
+   * đăng nhập vào tài khoản
+   *
+   * @param userName, password
+   * @author nga
+   */
+  @Override
+  public Member logIn(String userName, String password) throws FamilyTreeException {
+    if (userName == null || password == null) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_LOGIN_1, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_1));
+    } else {
+      var memberOptional = memberRepository.findByUserName(userName);
+      var member = memberOptional.get();
+      if (memberOptional.isEmpty()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
+      }
+      if (!password.equals(member.getPassword())) {
+        throw new FamilyTreeException(
+            ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
+      }
+      return member;
+    }
+  }
   /**
    * Lấy ra danh sách các thành viên trong gia phả
    *
@@ -87,7 +108,11 @@ public class MemberServiceImpl implements MemberService {
         }
       }
     }
-    userService.signUp(member.getUserName(), member.getPassword(), member.getRole());
+    Optional<Member> userCheck = memberRepository.findByUserName(member.getUserName());
+    if (userCheck.isPresent()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
+    }
     // cấp role cho từng vai trò
     if(member.getRole().equals(Constant.TRUONG_HO)){
       member.setCanAdd(true);

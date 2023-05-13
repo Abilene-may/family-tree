@@ -6,6 +6,7 @@ import com.example.familytree.models.MemberDTO;
 import java.util.List;
 
 public interface MemberService {
+  Member logIn(String userName, String password) throws FamilyTreeException;
   MemberDTO getAllMember();
   void createMember(Member member)throws FamilyTreeException;
   Member getMemberById(Long id) throws FamilyTreeException;

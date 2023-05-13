@@ -1,24 +1,17 @@
 package com.example.familytree.models;
 
-import io.swagger.v3.oas.annotations.media.Schema;import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.example.familytree.domain.Member;import io.swagger.v3.oas.annotations.media.Schema;import java.util.List;import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-@Builder
-public class UserDTO implements Serializable {
-  @Schema(description = "user name của thành viên")
+@Setter
+public class UserDTO {
+  @Schema(description = "tên đăng nhập")
   private String userName;
-
-  @Schema(description = "password")
+  @Schema(description = "Mật khẩu")
   private String password;
-
-  @Schema(description = "vai trò của user")
-  private String role;
 }

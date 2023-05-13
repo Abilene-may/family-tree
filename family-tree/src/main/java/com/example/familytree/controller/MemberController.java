@@ -4,6 +4,7 @@ import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.MemberDTO;
+import com.example.familytree.models.UserDTO;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +30,28 @@ public class MemberController {
   private final MemberService memberService;
 
   /**
+   * Đăng nhập
+   *
+   * @author nga
+   * @since 02/05/2023
+   */
+  @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Đăng nhập")
+  public ResponseEntity<Object> logIn(@RequestBody UserDTO userDTO) {
+    try {
+      Member member = memberService.logIn(userDTO.getUserName(), userDTO.getPassword());
+      return new ResponseEntity<>(member, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
    * Lấy danh sách tất cả thành viên trong gia phả
    *
    * @author nga
@@ -47,7 +70,7 @@ public class MemberController {
    * @author nga
    * @since 03/05/2023
    */
-  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "create-member", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Tạo thành viên và user mới")
   public ResponseEntity<Object> createMember(@RequestBody Member member) {
     try {
