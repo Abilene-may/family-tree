@@ -55,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
   @Override
   public MemberDTO getAllMember() {
     MemberDTO memberDTO = new MemberDTO();
-    List<Member> members = memberRepository.findAll();
+    var members = memberRepository.findAll();
     memberDTO.setMembers(members);
     memberDTO.setCount(members.size());
     return memberDTO;
@@ -69,20 +69,22 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public void createMember(Member member) throws FamilyTreeException {
-    MemberDTO memberDTO = getAllMember();
+    var memberDTO = this.getAllMember();
     // set đời cho thành viên
     if (memberDTO.getCount() == 0) {
       member.setGeneration(1);
     } else {
       if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
-        Optional<Member> generationOfPartner = memberRepository.findById(member.getPartnerId());
+        var generationOfPartner = memberRepository.findById(member.getPartnerId());
         generationOfPartner.ifPresent(value->member.setGeneration(value.getGeneration()));
+        // update partner sang kết hôn
+        memberRepository.updateMaritalStatus(Constant.DA_KET_HON, generationOfPartner.get().getId());
       } else {
         if (member.getDadId() != null) {
-          Optional<Member> generationOfDad = memberRepository.findById(member.getDadId());
+          var generationOfDad = memberRepository.findById(member.getDadId());
           generationOfDad.ifPresent(value->member.setGeneration(value.getGeneration() + 1));
         } else if (member.getMomId() != null) {
-          Optional<Member> generationOfMom = memberRepository.findById(member.getMomId());
+          var generationOfMom = memberRepository.findById(member.getMomId());
           generationOfMom.ifPresent(value->member.setGeneration(value.getGeneration() + 1));
         } else {
           throw new FamilyTreeException(
@@ -108,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
         }
       }
     }
-    Optional<Member> userCheck = memberRepository.findByUserName(member.getUserName());
+    var userCheck = memberRepository.findByUserName(member.getUserName());
     if (userCheck.isPresent()) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
@@ -133,7 +135,7 @@ public class MemberServiceImpl implements MemberService {
    */
   @Override
   public Member getMemberById(Long id) throws FamilyTreeException {
-    Optional<Member> member = memberRepository.findById(id);
+    var member = memberRepository.findById(id);
     if (member.isEmpty()) {
       throw new FamilyTreeException(
           ExceptionUtils.ID_IS_NOT_EXIST,

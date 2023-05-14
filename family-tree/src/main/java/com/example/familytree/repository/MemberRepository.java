@@ -13,4 +13,9 @@ public interface MemberRepository
   Optional<Member> checkExistRole(String role);
   @Query(value = "select * from members where username = :userName", nativeQuery = true)
   Optional<Member> findByUserName(String userName);
+
+  @Query(
+      value = "update members set marital_status = :maritalStatus where id = :id",
+      nativeQuery = true)
+  void updateMaritalStatus(String maritalStatus, Long id);
 }
