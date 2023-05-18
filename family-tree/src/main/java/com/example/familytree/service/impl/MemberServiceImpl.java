@@ -9,10 +9,12 @@ import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
 import java.text.Normalizer;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,7 +85,6 @@ public class MemberServiceImpl implements MemberService {
     } else {
       if (maritalSearch.equals(Constant.DA_KET_HON)) {
         var generationOfPartner = memberRepository.findById(member.getPartnerId());
-
         if(generationOfPartner.isPresent()){
           var generation = generationOfPartner.get().getGeneration();
           member.setGeneration(generation);
@@ -193,9 +194,18 @@ public class MemberServiceImpl implements MemberService {
    * @author nga
    * @Since 18/05
   */
+
   public static String deAccent(String str) {
+    if (str.isBlank()) {
+      return "";
+    }
+    str = str.toLowerCase(Locale.ROOT);
+    str = str.replace("đ", "d");
     String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
     Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-    return pattern.matcher(nfdNormalizedString).replaceAll("");
+    str = pattern.matcher(nfdNormalizedString).replaceAll("");
+    str = str.replaceAll("[^\\w\\s]", " ");
+    str = str.replaceAll("\\s", " ");
+    return str;
   }
 }
