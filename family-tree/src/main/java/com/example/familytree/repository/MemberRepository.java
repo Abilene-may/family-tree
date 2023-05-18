@@ -26,7 +26,7 @@ public interface MemberRepository
       value =
           "SELECT mb.*\n"
               + "FROM members mb\n"
-              + "WHERE LOWER(mb.full_name) LIKE LOWER(CONCAT('%', :fullName, '%'))",
+              + "WHERE LOWER(mb.name_search) LIKE LOWER(CONCAT('%', :fullName, '%'))",
       nativeQuery = true)
   List<Member> findAllByFullName(String fullName);
 }
