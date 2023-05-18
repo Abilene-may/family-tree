@@ -1,7 +1,7 @@
 package com.example.familytree.repository;
 
 import com.example.familytree.domain.Member;
-import java.util.Optional;
+import java.util.List;import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,18 @@ public interface MemberRepository
   Optional<Member> findByUserName(String userName);
 
   @Query(
-      value = "update members set marital_status = :maritalStatus where id = :id",
+      value =
+          "update members "
+              + "set marital_status = :maritalStatus, marital_search = :maritalSearch "
+              + "where id = :id",
       nativeQuery = true)
-  void updateMaritalStatus(String maritalStatus, Long id);
+  void updateMaritalStatus(String maritalStatus, String maritalSearch, Long id);
+
+  @Query(
+      value =
+          "SELECT mb.*\n"
+              + "FROM members mb\n"
+              + "WHERE LOWER(mb.full_name) LIKE LOWER(CONCAT('%', :fullName, '%'))",
+      nativeQuery = true)
+  List<Member> findAllByFullName(String fullName);
 }

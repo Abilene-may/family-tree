@@ -10,6 +10,6 @@ public interface MemberService {
   MemberDTO getAllMember();
   void createMember(Member member)throws FamilyTreeException;
   Member getMemberById(Long id) throws FamilyTreeException;
-
   void update(Member member) throws FamilyTreeException;
+  List<Member> searchMemberByName(String name) throws FamilyTreeException;
 }

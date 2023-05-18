@@ -7,8 +7,9 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.MemberDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
+import java.text.Normalizer;
 import java.util.List;
-import java.util.Optional;
+import java.util.regex.Pattern;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,20 +66,26 @@ public class MemberServiceImpl implements MemberService {
    * thêm thành viên mới đồng thời cấp user
    *
    * @author nga
+   * @since 03/05/2023
    */
   @Override
   @Transactional
   public void createMember(Member member) throws FamilyTreeException {
+    // convert về dạng tiếng việt không dấu
+    var maritalSearch = this.deAccent(member.getMaritalStatus());
+    var roleSearch = this.deAccent(member.getRole());
     var memberDTO = this.getAllMember();
     // set đời cho thành viên
+    // TH tạo ông tổ
     if (memberDTO.getCount() == 0) {
       member.setGeneration(1);
     } else {
-      if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
+      if (maritalSearch.equals(Constant.DA_KET_HON)) {
         var generationOfPartner = memberRepository.findById(member.getPartnerId());
         generationOfPartner.ifPresent(value->member.setGeneration(value.getGeneration()));
         // update partner sang kết hôn
-        memberRepository.updateMaritalStatus(Constant.DA_KET_HON, generationOfPartner.get().getId());
+        memberRepository.updateMaritalStatus(
+            Constant.DA_KET_HON, Constant.DA_KET_HON_TV, generationOfPartner.get().getId());
       } else {
         if (member.getDadId() != null) {
           var generationOfDad = memberRepository.findById(member.getDadId());
@@ -93,7 +100,7 @@ public class MemberServiceImpl implements MemberService {
         }
       }
       // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-      if(member.getRole().equals(Constant.TRUONG_HO)){
+      if(roleSearch.equals(Constant.TRUONG_HO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
         if (checkExistRole.isPresent()) {
           throw new FamilyTreeException(
@@ -101,7 +108,7 @@ public class MemberServiceImpl implements MemberService {
               ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
         }
       }
-      if(member.getRole().equals(Constant.ONG_TO)){
+      if(roleSearch.equals(Constant.ONG_TO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
         if (checkExistRole.isPresent()) {
           throw new FamilyTreeException(
@@ -110,6 +117,10 @@ public class MemberServiceImpl implements MemberService {
         }
       }
     }
+    member.setNameSearch(this.deAccent(member.getFullName()));
+    member.setMaritalSearch(maritalSearch);
+    member.setRoleSearch(roleSearch);
+    // kiểm tra username đã tồn tại hay chưa (username không được trùng)
     var userCheck = memberRepository.findByUserName(member.getUserName());
     if (userCheck.isPresent()) {
       throw new FamilyTreeException(
@@ -156,5 +167,29 @@ public class MemberServiceImpl implements MemberService {
     //lưu lại thông tin sau khi đã sửa
     memberRepository.save(member);
   }
+  /**
+   * Tìm kiếm thành viên theo tên
+   *
+   * @author nga
+   * @since 17/05/2023
+   */
+  @Override
+  public List<Member> searchMemberByName(String fullName) throws FamilyTreeException {
+    var deAccent = this.deAccent(fullName);
+    List<Member> members = memberRepository.findAllByFullName(deAccent);
+    return members;
+  }
 
+  /**
+  * Convert dữ liệu về dạng tiếng việt không dấu
+   * @param str
+   * @return chuỗi thông tin đầu vào không dấu
+   * @author nga
+   * @Since 18/05
+  */
+  public static String deAccent(String str) {
+    String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+    return pattern.matcher(nfdNormalizedString).replaceAll("");
+  }
 }

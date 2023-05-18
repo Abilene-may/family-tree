@@ -119,8 +119,40 @@ public class MemberController {
   @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "sửa thông tin thành viên")
   public ResponseEntity<Object> update(@RequestBody Member memberDTO)throws FamilyTreeException{
-    memberService.update(memberDTO);
-    return new ResponseEntity<>(HttpStatus.OK);
+    try{
+      memberService.update(memberDTO);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (FamilyTreeException e){
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
+  /**
+   * tìm kiếm thông tin thành viên theo tên
+   *
+   * @author nga
+   * @since 17/05/2023
+   */
+  @GetMapping (value = "search", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Tìm kiếm thông tin thành viên theo tên")
+  public ResponseEntity<Object> search(@RequestParam String name) throws FamilyTreeException {
+    try {
+      var members = memberService.searchMemberByName(name);
+      return new ResponseEntity<>(members, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

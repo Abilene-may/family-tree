@@ -43,6 +43,10 @@ public class Member {
   @Column(name = "full_name")
   private String fullName;
 
+  @Schema(description = "Họ và tên thành viên dạng search")
+  @Column(name = "name_search")
+  private String nameSearch;
+
   @Schema(description = "Giới tính nam/nữ")
   @Column(name = "gender")
   private String gender;
@@ -75,6 +79,10 @@ public class Member {
   @Column(name = "marital_status")
   private String maritalStatus;
 
+  @Schema(description = "Tình trạng hôn nhân dạng search - tiếng việt ko dấu")
+  @Column(name = "marital_search")
+  private String maritalSearch;
+
   @Schema(description = "id của vợ/chồng nếu đã kết hôn")
   @Column(name = "partner_id")
   private Long partnerId;
@@ -82,6 +90,10 @@ public class Member {
   @Schema(description = "vai trò của thành viên trong gia phả")
   @Column(name = "role")
   private String role;
+
+  @Schema(description = "Vai trò của thành viên dạng search")     //không dấu
+  @Column(name = "role_search")
+  private String roleSearch;
 
   @Schema(description = "Trạng thái đã mất hay chưa")
   @Column(name = "status")
