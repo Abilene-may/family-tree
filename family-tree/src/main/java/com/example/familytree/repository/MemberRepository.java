@@ -19,7 +19,7 @@ public interface MemberRepository
   @Query(
       value =
           "update members "
-              + "set marital_status = :maritalStatus, marital_search = :maritalSearch "
+              + "set marital_status = :maritalStatus, marital_search = :maritalSearch, id = :id "
               + "where id = :id",
       nativeQuery = true)
   @Transactional
