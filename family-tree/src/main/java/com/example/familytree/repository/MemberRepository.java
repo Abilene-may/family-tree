@@ -4,7 +4,9 @@ import com.example.familytree.domain.Member;
 import java.util.List;import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface MemberRepository
     extends JpaRepository<Member, Long>,
@@ -20,6 +22,8 @@ public interface MemberRepository
               + "set marital_status = :maritalStatus, marital_search = :maritalSearch "
               + "where id = :id",
       nativeQuery = true)
+  @Transactional
+  @Modifying
   void updateMaritalStatus(String maritalStatus, String maritalSearch, Long id);
 
   @Query(

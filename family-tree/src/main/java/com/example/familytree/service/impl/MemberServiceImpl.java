@@ -32,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
    * @author nga
    */
   @Override
+  @Transactional
   public Member logIn(String userName, String password) throws FamilyTreeException {
     if (userName == null || password == null) {
       throw new FamilyTreeException(
