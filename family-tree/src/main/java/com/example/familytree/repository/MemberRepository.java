@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface MemberRepository
     extends JpaRepository<Member, Long>,
     JpaSpecificationExecutor<Member> {
-  @Query(value = "select * from members where role = :role", nativeQuery = true)
+  @Query(value = "select * from members where role_search = :role", nativeQuery = true)
   Optional<Member> checkExistRole(String role);
   @Query(value = "select * from members where username = :userName", nativeQuery = true)
   Optional<Member> findByUserName(String userName);
@@ -24,9 +24,9 @@ public interface MemberRepository
 
   @Query(
       value =
-          "SELECT mb.*\n"
-              + "FROM members mb\n"
-              + "WHERE LOWER(mb.name_search) LIKE LOWER(CONCAT('%', :fullName, '%'))",
+          "SELECT *\n"
+              + "FROM members \n"
+              + "WHERE LOWER(name_search) LIKE LOWER(CONCAT('%', :fullName, '%'))",
       nativeQuery = true)
   List<Member> findAllByFullName(String fullName);
 }
