@@ -91,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
           member.setGeneration(generation);
           // update partner sang kết hôn
           memberRepository.updateMaritalStatus(
-              Constant.DA_KET_HON, Constant.DA_KET_HON_TV, generationOfPartner.get().getId());
+              Constant.DA_KET_HON_TV, Constant.DA_KET_HON, generationOfPartner.get().getId());
         }
 
       } else {
