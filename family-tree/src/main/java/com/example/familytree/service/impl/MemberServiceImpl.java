@@ -36,17 +36,18 @@ public class MemberServiceImpl implements MemberService {
           ExceptionUtils.USER_LOGIN_1, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_1));
     } else {
       var memberOptional = memberRepository.findByUserName(userName);
-      var member = memberOptional.get();
       if (memberOptional.isEmpty()) {
         throw new FamilyTreeException(
             ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
       }
+      var member = memberOptional.get();
       if (!password.equals(member.getPassword())) {
         throw new FamilyTreeException(
             ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
       }
       return member;
     }
+
   }
   /**
    * Lấy ra danh sách các thành viên trong gia phả
@@ -82,10 +83,15 @@ public class MemberServiceImpl implements MemberService {
     } else {
       if (maritalSearch.equals(Constant.DA_KET_HON)) {
         var generationOfPartner = memberRepository.findById(member.getPartnerId());
-        generationOfPartner.ifPresent(value->member.setGeneration(value.getGeneration()));
-        // update partner sang kết hôn
-        memberRepository.updateMaritalStatus(
-            Constant.DA_KET_HON, Constant.DA_KET_HON_TV, generationOfPartner.get().getId());
+
+        if(generationOfPartner.isPresent()){
+          var generation = generationOfPartner.get().getGeneration();
+          member.setGeneration(generation);
+          // update partner sang kết hôn
+          memberRepository.updateMaritalStatus(
+              Constant.DA_KET_HON, Constant.DA_KET_HON_TV, generationOfPartner.get().getId());
+        }
+
       } else {
         if (member.getDadId() != null) {
           var generationOfDad = memberRepository.findById(member.getDadId());
