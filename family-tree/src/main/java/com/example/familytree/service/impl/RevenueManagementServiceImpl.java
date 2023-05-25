@@ -33,8 +33,8 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     var status = memberService.deAccent(revenueManagement.getStatus());
     // check today after due date and status is in progress
     LocalDate localDate = LocalDate.now();
-    if (localDate.isAfter(revenueManagement.getDueDate())
-        && status.equals(Constant.DANG_MO)) {
+    var dueDate = revenueManagement.getDueDate();
+    if (localDate.isAfter(dueDate) && status.equals(Constant.DANG_MO)) {
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
