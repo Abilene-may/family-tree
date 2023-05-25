@@ -13,7 +13,7 @@ public class ExceptionUtils {
   public static final String TRUONG_HO_ALREADY_EXISTS = "TRUONG_HO_ALREADY_EXISTS";
   public static final String ONG_TO_ALREADY_EXISTS = "ONG_TO_ALREADY_EXISTS";
   public static final String WRONG_STATUS_REVENUE = "WRONG_STATUS_REVENUE";
-
+  public static final String CLOSED_REVENUE = "CLOSED_REVENUE";
 
   public static Map<String, String> messages;
 
@@ -30,6 +30,7 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,"Trưởng họ đã tồn tại vui lòng chọn vai trò khác.");
     messages.put(ExceptionUtils.ONG_TO_ALREADY_EXISTS,"Ông tổ đã tồn tại vui lòng chọn vai trò khác.");
     messages.put(ExceptionUtils.WRONG_STATUS_REVENUE, "Đã quá hạn thu vui lòng chọn lại trạng thái.");
+    messages.put(ExceptionUtils.CLOSED_REVENUE, "Khoản thu đã đóng không thể sửa.");
   }
   public static String buildMessage(String messKey, Object... arg) {
     return String.format(ExceptionUtils.messages.get(messKey), arg);

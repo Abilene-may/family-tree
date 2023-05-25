@@ -86,6 +86,12 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     var management = this.getById(revenueManagement.getId());
     // set status search
     var status = memberService.deAccent(revenueManagement.getStatus());
+    // check status
+    if(status.equals(Constant.DA_DONG)){
+      throw new FamilyTreeException(
+          ExceptionUtils.CLOSED_REVENUE,
+          ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
+    }
     // check today after due date and status is in progress
     LocalDate localDate = LocalDate.now();
     if (localDate.isAfter(revenueManagement.getDueDate())
