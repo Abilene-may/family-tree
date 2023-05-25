@@ -15,4 +15,12 @@ public class Constant {
   public static final String DOC_THAN_TV = "Độc thân";
   public static final String DA_KET_HON_TV = "Đã kết hôn";
 
+  //Status of revenue management
+  public static final String DANG_MO = "dang tien hanh";      //Đang mở
+  public static final String DA_DONG = "da ket thuc";      //Đã đóng
+
+  // type ò revenue
+  public static final String LOAI_THU_HANG_NAM = "khoan thu hang nam";    //Khoản thu hằng năm
+  public static final String TIEN_TRO_CAP = "tien tro cap";       //Tiền trợ cấp
+
 }

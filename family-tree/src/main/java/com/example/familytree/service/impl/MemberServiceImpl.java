@@ -115,14 +115,24 @@ public class MemberServiceImpl implements MemberService {
               ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
               ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
         }
-      }
-      if(roleSearch.equals(Constant.ONG_TO)){
+        // cấp role cho trưởng họ
+        member.setCanAdd(true);
+        member.setCanEdit(true);
+        member.setCanView(true);
+      } else if(roleSearch.equals(Constant.ONG_TO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
         if (checkExistRole.isPresent()) {
           throw new FamilyTreeException(
               ExceptionUtils.ONG_TO_ALREADY_EXISTS,
               ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
         }
+        member.setCanAdd(false);
+        member.setCanEdit(false);
+        member.setCanView(true);
+      } else {
+        member.setCanAdd(false);
+        member.setCanEdit(false);
+        member.setCanView(true);
       }
     }
     member.setNameSearch(this.deAccent(member.getFullName()));
@@ -133,16 +143,6 @@ public class MemberServiceImpl implements MemberService {
     if (userCheck.isPresent()) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
-    }
-    // cấp role cho từng vai trò
-    if(member.getRole().equals(Constant.TRUONG_HO)){
-      member.setCanAdd(true);
-      member.setCanEdit(true);
-      member.setCanView(true);
-    }else {
-      member.setCanAdd(false);
-      member.setCanEdit(false);
-      member.setCanView(true);
     }
     memberRepository.save(member);
   }
@@ -164,14 +164,47 @@ public class MemberServiceImpl implements MemberService {
   }
 
   /**
-   * sửa thông tin thành viên
+   * update imformation member
    *
    * @author nga
    */
   @Override
   public void update(Member member) throws FamilyTreeException {
     //check xem thành viên có tồn tại trong gia phả ko
-    var memberOptional = this.getMemberById(member.getId());
+    var memberById = this.getMemberById(member.getId());
+    // convert về dạng tiếng việt không dấu
+    var maritalSearch = deAccent(member.getMaritalStatus());
+    var roleSearch = deAccent(member.getRole());
+    //check TH chuyển role
+    // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
+    if(roleSearch.equals(Constant.TRUONG_HO)){
+      var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
+      }
+      //cấp lại role cho trưởng họ
+      member.setCanAdd(true);
+      member.setCanEdit(true);
+    } else if(roleSearch.equals(Constant.ONG_TO)){
+      var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.ONG_TO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
+      }
+      member.setCanAdd(false);
+      member.setCanEdit(false);
+    }  else {
+      member.setCanAdd(false);
+      member.setCanEdit(false);
+    }
+    //check TH chuyển trạng thái tình trạng hôn nhân sang Độc thân
+    if(maritalSearch.equals(Constant.DOC_THAN)){
+      member.setMaritalSearch(maritalSearch);
+      member.setPartnerId(null);
+    }
     //lưu lại thông tin sau khi đã sửa
     memberRepository.save(member);
   }
@@ -195,8 +228,8 @@ public class MemberServiceImpl implements MemberService {
    * @author nga
    * @Since 18/05
   */
-
-  public static String deAccent(String str) {
+  @Override
+  public String deAccent(String str) {
     if (str.isBlank()) {
       return "";
     }
