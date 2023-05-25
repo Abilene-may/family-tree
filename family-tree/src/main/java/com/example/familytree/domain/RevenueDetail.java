@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /*
- * Danh sách danh mục theo năm
+ * Danh sách danh mục thu theo năm
  */
 @AllArgsConstructor
 @NoArgsConstructor
