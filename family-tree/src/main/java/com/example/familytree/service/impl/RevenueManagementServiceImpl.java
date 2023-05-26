@@ -86,7 +86,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     var management = this.getById(revenueManagement.getId());
     // set status search
     var status = memberService.deAccent(revenueManagement.getStatus());
-    // check status
+    // check status is "Da dong", don't allow update
     if(status.equals(Constant.DA_DONG)){
       throw new FamilyTreeException(
           ExceptionUtils.CLOSED_REVENUE,

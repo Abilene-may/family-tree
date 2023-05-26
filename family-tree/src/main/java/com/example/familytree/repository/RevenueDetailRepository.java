@@ -16,4 +16,8 @@ public interface RevenueDetailRepository extends JpaRepository<RevenueDetail, Lo
               + "(LOWER(type_of_revenue_search) LIKE LOWER(CONCAT('%', :typeOfRevenueSearch , '%')))",
       nativeQuery = true)
   List<RevenueDetail> getAllByTypeOfRevenue(Integer year, String typeOfRevenueSearch);
+  @Query(
+      value = "select * from revenue_detail where id_revenue_management = :idRevenueManagement",
+      nativeQuery = true)
+  List<RevenueDetail> findAllByIdManagement(Long idRevenueManagement);
 }

@@ -45,4 +45,8 @@ public class ExpenseManagement {
   @Schema(description = "Trạng thái")
   @Column(name = "status")
   private String status;
+
+    @Schema(description = "Trạng thái để tìm kiếm")
+    @Column(name = "status-search")
+    private String statusSearch;
 }
