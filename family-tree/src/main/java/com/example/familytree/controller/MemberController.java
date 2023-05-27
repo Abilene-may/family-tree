@@ -3,7 +3,6 @@ package com.example.familytree.controller;
 import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.MemberDTO;
 import com.example.familytree.models.UserDTO;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.MemberService;
@@ -60,7 +59,7 @@ public class MemberController {
   @GetMapping(value = "/get-all")
   @Operation(summary = "Lấy thông tin tất cả thành viên trong gia phả")
   public ResponseEntity<Object> getListMember(){
-    MemberDTO members =memberService.getAllMember();
+    var members =memberService.getAllMember();
     return new ResponseEntity<>(members,HttpStatus.OK);
   }
 
@@ -134,17 +133,39 @@ public class MemberController {
   }
 
   /**
-   * tìm kiếm thông tin thành viên theo tên
+   * API tìm kiếm thông tin thành viên theo tên
    *
    * @author nga
    * @since 17/05/2023
    */
-  @GetMapping (value = "search", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping (value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Tìm kiếm thông tin thành viên theo tên")
   public ResponseEntity<Object> search(@RequestParam String name) throws FamilyTreeException {
     try {
       var members = memberService.searchMemberByName(name);
       return new ResponseEntity<>(members, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API thống kê
+   *
+   * @author nga
+   * @since 27/05/2023
+   */
+  @GetMapping (value = "/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Thống kê trong gia phả")
+  public ResponseEntity<Object> statistics() throws FamilyTreeException {
+    try {
+      var statisticsDTO = memberService.genealogicalStatisticsDTO();
+      return new ResponseEntity<>(statisticsDTO, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);

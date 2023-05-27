@@ -19,8 +19,8 @@ public class Constant {
   public static final String DANG_MO = "dang mo";      //Đang mở
   public static final String DA_DONG = "da dong";      //Đã đóng
 
-  // type ò revenue
-  public static final String LOAI_THU_HANG_NAM = "khoan thu hang nam";    //Khoản thu hằng năm
-  public static final String TIEN_TRO_CAP = "tien tro cap";       //Tiền trợ cấp
+  // Giới tính
+  public static final String MALE = "nam";         //nam
+  public static final String FEMALE = "nu";       //nữ
 
 }

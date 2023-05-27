@@ -4,17 +4,17 @@ import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.MemberDTO;
+import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
 import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,16 +58,13 @@ public class MemberServiceImpl implements MemberService {
    * @author nga
    */
   @Override
-  public MemberDTO getAllMember() {
-    MemberDTO memberDTO = new MemberDTO();
+  public List<Member> getAllMember() {
     var members = memberRepository.findAll();
-    memberDTO.setMembers(members);
-    memberDTO.setCount(members.size());
-    return memberDTO;
+    return members;
   }
 
   /**
-   * thêm thành viên mới đồng thời cấp user
+   * thêm thành viên mới vào gia phả
    *
    * @author nga
    * @since 03/05/2023
@@ -76,12 +73,17 @@ public class MemberServiceImpl implements MemberService {
   @Transactional
   public void createMember(Member member) throws FamilyTreeException {
     // convert về dạng tiếng việt không dấu
+    var genderSearch = this.deAccent(member.getGender());
     var maritalSearch = this.deAccent(member.getMaritalStatus());
     var roleSearch = this.deAccent(member.getRole());
-    var memberDTO = this.getAllMember();
+    member.setGenderSearch(genderSearch);
+    member.setNameSearch(this.deAccent(member.getFullName()));
+    member.setMaritalSearch(maritalSearch);
+    member.setRoleSearch(roleSearch);
+    var memberList = this.getAllMember();
     // set đời cho thành viên
     // TH tạo ông tổ
-    if (memberDTO.getCount() == 0) {
+    if (memberList.size() == 0) {
       member.setGeneration(1);
     } else {
       if (maritalSearch.equals(Constant.DA_KET_HON)) {
@@ -93,7 +95,6 @@ public class MemberServiceImpl implements MemberService {
           memberRepository.updateMaritalStatus(
               Constant.DA_KET_HON_TV, Constant.DA_KET_HON, generationOfPartner.get().getId());
         }
-
       } else {
         if (member.getDadId() != null) {
           var generationOfDad = memberRepository.findById(member.getDadId());
@@ -115,10 +116,6 @@ public class MemberServiceImpl implements MemberService {
               ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
               ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
         }
-        // cấp role cho trưởng họ
-        member.setCanAdd(true);
-        member.setCanEdit(true);
-        member.setCanView(true);
       } else if(roleSearch.equals(Constant.ONG_TO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
         if (checkExistRole.isPresent()) {
@@ -126,18 +123,8 @@ public class MemberServiceImpl implements MemberService {
               ExceptionUtils.ONG_TO_ALREADY_EXISTS,
               ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
         }
-        member.setCanAdd(false);
-        member.setCanEdit(false);
-        member.setCanView(true);
-      } else {
-        member.setCanAdd(false);
-        member.setCanEdit(false);
-        member.setCanView(true);
       }
     }
-    member.setNameSearch(this.deAccent(member.getFullName()));
-    member.setMaritalSearch(maritalSearch);
-    member.setRoleSearch(roleSearch);
     // kiểm tra username đã tồn tại hay chưa (username không được trùng)
     var userCheck = memberRepository.findByUserName(member.getUserName());
     if (userCheck.isPresent()) {
@@ -164,7 +151,7 @@ public class MemberServiceImpl implements MemberService {
   }
 
   /**
-   * update imformation member
+   * sửa thông tin thành viên
    *
    * @author nga
    */
@@ -184,9 +171,6 @@ public class MemberServiceImpl implements MemberService {
             ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
             ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
       }
-      //cấp lại role cho trưởng họ
-      member.setCanAdd(true);
-      member.setCanEdit(true);
     } else if(roleSearch.equals(Constant.ONG_TO)){
       var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
       if (checkExistRole.isPresent()) {
@@ -194,11 +178,6 @@ public class MemberServiceImpl implements MemberService {
             ExceptionUtils.ONG_TO_ALREADY_EXISTS,
             ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
       }
-      member.setCanAdd(false);
-      member.setCanEdit(false);
-    }  else {
-      member.setCanAdd(false);
-      member.setCanEdit(false);
     }
     //check TH chuyển trạng thái tình trạng hôn nhân sang Độc thân
     if(maritalSearch.equals(Constant.DOC_THAN)){
@@ -241,5 +220,40 @@ public class MemberServiceImpl implements MemberService {
     str = str.replaceAll("[^\\w\\s]", " ");
     str = str.replaceAll("\\s", " ");
     return str;
+  }
+
+  /**
+   * tab màn thống kê
+   *
+   * @author nga
+   * @since 27/05/2023
+   */
+  @Override
+  public GenealogicalStatisticsDTO genealogicalStatisticsDTO() throws FamilyTreeException {
+    GenealogicalStatisticsDTO genealogicalStatisticsDTO = new GenealogicalStatisticsDTO();
+    // Tính tổng số nam, nữ trong gia phả
+    var totalOfMale = this.getSumByGender(Constant.MALE);
+    var totalOfFemale = this.getSumByGender(Constant.FEMALE);
+    genealogicalStatisticsDTO.setNumberOfMale(totalOfMale);
+    genealogicalStatisticsDTO.setNumberOfFemale(totalOfFemale);
+
+    // tìm số thành viên có tuổi từ 18 đến 60
+    LocalDate today = LocalDate.now();
+    var endDate  = today.minusYears(18);
+    var startDate = today.minusYears(60);
+    List<Member> membersByAge = memberRepository.findAllAgeInTheRange(endDate, startDate);
+    genealogicalStatisticsDTO.setAgeInTheRange(membersByAge.size());
+
+    // tổng số thành viên trong gia phả
+    var total = totalOfFemale + totalOfMale;
+    genealogicalStatisticsDTO.setTotalMember(total);
+    return genealogicalStatisticsDTO;
+  }
+
+  /* Tính tổng số nam hoặc nữ */
+  public int getSumByGender(String gender){
+    // tìm tổng số thành viên theo giới tính
+    var members = memberRepository.findAllByGender(gender);
+    return members.size();
   }
 }

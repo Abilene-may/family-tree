@@ -51,6 +51,10 @@ public class Member {
   @Column(name = "gender")
   private String gender;
 
+  @Schema(description = "Giới tính nam/nữ dạng tìm kiếm")
+  @Column(name = "gender_search")
+  private String genderSearch;
+
   @Schema(description = "Ngày sinh")
   @Column(name = "date_of_birth")
   private LocalDate dateOfBirth;
@@ -114,17 +118,5 @@ public class Member {
   @Schema(description = "password của người dùng")
   @Column(name = "password")
   private String password;
-
-  @Schema(description = "quyền có thể sửa")
-  @Column(name = "canEdit")
-  private Boolean canEdit;
-
-  @Schema(description = "Quyền có thể thêm")
-  @Column(name = "canAdd")
-  private Boolean canAdd;
-
-  @Schema(description = "Quyền có thể xem")
-  @Column(name = "canView")
-  private Boolean canView;
 
 }
