@@ -23,8 +23,5 @@ public class Constant {
   public static final String MALE = "nam";         //nam
   public static final String FEMALE = "nu";       //nữ
 
-  // Trạng thái của quản lý thu
-  public static final String DA_THU = "da thu";      //Đã thu
-  public static final String CHUA_THU = "chua thu";      //Chưa thu
 
 }
