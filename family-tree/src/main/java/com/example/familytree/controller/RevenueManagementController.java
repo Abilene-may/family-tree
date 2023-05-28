@@ -27,9 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/revenue-management")
 public class RevenueManagementController {
   private final RevenueManagementService revenueManagementService;
-
   /**
-   * generate annual revenue
+   * Thêm mới một khoản thu hằng năm
    *
    * @author nga
    * @since 25/05/2023
@@ -52,7 +51,7 @@ public class RevenueManagementController {
   }
 
   /**
-   * API get all annual revenues
+   * API lấy tất cả các khỏan thu hàng năm
    *
    * @author nga
    * @since 25/05/2023
@@ -61,7 +60,7 @@ public class RevenueManagementController {
   @GetMapping("/get-all")
   public ResponseEntity<Object> getAll() {
     try {
-      var revenueManagements = revenueManagementService.getAll();
+      var revenueManagements = revenueManagementService.getAllRevenue();
       return new ResponseEntity<>(revenueManagements, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
@@ -75,7 +74,7 @@ public class RevenueManagementController {
   }
 
   /**
-   * API get imformation revenue by id
+   * API tìm thông tin theo id
    *
    * @author nga
    * @since 25/05/2023
@@ -97,7 +96,7 @@ public class RevenueManagementController {
     }
   }
   /**
-   * API update imformation revenue
+   * API cập nhật thông tin khoản thu
    *
    * @author nga
    * @since 25/05/2023

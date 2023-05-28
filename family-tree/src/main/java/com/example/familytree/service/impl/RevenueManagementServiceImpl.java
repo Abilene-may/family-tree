@@ -22,85 +22,75 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
   private final MemberService memberService;
 
   /**
-   * generate annual revenue
+   * Tạo một khoản thu hằng năm
    *
+   * @param revenueManagement
    * @author nga
-   * @since 25/05/2023
    */
   @Override
   public RevenueManagement create(RevenueManagement revenueManagement) throws FamilyTreeException {
-    // set status search
+    // convert trạng thái về tiếng việt không dấu
     var status = memberService.deAccent(revenueManagement.getStatus());
-    // check today after due date and status is in progress
+    // kiểm tra xem hạn thu đã qua mà status vẫn là đang mở thì bảo lỗi
     LocalDate localDate = LocalDate.now();
-    var dueDate = revenueManagement.getDueDate();
-    if (localDate.isAfter(dueDate) && status.equals(Constant.DANG_MO)) {
+    if (localDate.isAfter(revenueManagement.getDueDate()) && status.equals(Constant.DANG_MO)) {
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
     }
-    revenueManagement.setRealRevenue(0L);
     revenueManagement.setStatusSearch(status);
     return revenueManagementRepository.save(revenueManagement);
   }
 
   /**
-   * get all annual revenues
+   * Cập nhật lại khoản thu hằng năm
    *
+   * @param revenueManagement
    * @author nga
-   * @since 25/05/2023
-   */
-  @Override
-  public List<RevenueManagement> getAll() throws FamilyTreeException {
-    var revenueManagements = revenueManagementRepository.findAll();
-    return revenueManagements;
-  }
-
-  /**
-   * get imformation revenue by id
-   *
-   * @author nga
-   * @since 25/05/2023
-   */
-  @Override
-  public RevenueManagement getById(Long id) throws FamilyTreeException {
-    var revenueManagement = revenueManagementRepository.findById(id);
-    if (revenueManagement.isPresent()) {
-      return revenueManagement.get();
-    } else {
-      throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
-    }
-  }
-
-  /**
-   * update the imformation of the revenue
-   *
-   * @author nga
-   * @since 25/05/2023
    */
   @Override
   public void update(RevenueManagement revenueManagement) throws FamilyTreeException {
-    // check input
+    // kiểm tra đầu vào có tồn tại id không
     var management = this.getById(revenueManagement.getId());
-    // set status search
+    // set trạng thái
     var status = memberService.deAccent(revenueManagement.getStatus());
-    // check status is "Da dong", don't allow update
-    if(status.equals(Constant.DA_DONG)){
+    // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
+    if (status.equals(Constant.DA_DONG)) {
       throw new FamilyTreeException(
           ExceptionUtils.CLOSED_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
     }
-    // check today after due date and status is in progress
+    // Kiêểm tra hạn thu đã qua thì status = đã đóng
     LocalDate localDate = LocalDate.now();
-    if (localDate.isAfter(revenueManagement.getDueDate())
-        && status.equals(Constant.DANG_MO)) {
+    if (localDate.isAfter(revenueManagement.getDueDate()) && status.equals(Constant.DANG_MO)) {
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
     }
     revenueManagement.setStatusSearch(status);
     revenueManagementRepository.save(revenueManagement);
+  }
+
+  @Override
+  public List<RevenueManagement> getAllRevenue() throws FamilyTreeException {
+    var revenueManagements = revenueManagementRepository.findAll();
+    return revenueManagements;
+  }
+
+  /**
+   * Tìm kiếm theo id
+   *
+   * @param id
+   * @author nga
+   */
+  @Override
+  public RevenueManagement getById(Long id) throws FamilyTreeException {
+    var revenueManagement = revenueManagementRepository.findById(id);
+    if (revenueManagement.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+    }
+    return revenueManagement.get();
   }
 }

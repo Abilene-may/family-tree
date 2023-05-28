@@ -37,13 +37,13 @@ public class RevenueManagement {
   @Column(name = "year")
   private Integer year;
 
-  @Schema(description = "Số tiền thu dự tính")
-  @Column(name = "estimated_revenue")
-  private Long estimatedRevenue;
+  @Schema(description = "Tên khoản thu")
+  @Column(name = "revenue_name")
+  private String revenueName;
 
-  @Schema(description = "Thực thu")
-  @Column(name = "real_revenue")
-  private Long realRevenue;
+  @Schema(description = "Mức thu / 1 người")
+  @Column(name = "revenue_per_person")
+  private Long revenuePerPerson;
 
   @Schema(description = "Trạng thái thu")
   @Column(name = "status")
@@ -53,7 +53,7 @@ public class RevenueManagement {
   @Column(name = "status_search")
   private String statusSearch;
 
-  @Schema(description = "Hạn thu")
+  @Schema(description = "Ngày hết hạn thu")
   @Column(name = "due_date")
   private LocalDate dueDate;
 }
