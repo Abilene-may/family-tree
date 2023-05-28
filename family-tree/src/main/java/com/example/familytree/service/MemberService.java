@@ -14,5 +14,6 @@ public interface MemberService {
   List<Member> searchMemberByName(String name) throws FamilyTreeException;
    String deAccent(String str);
    GenealogicalStatisticsDTO genealogicalStatisticsDTO() throws FamilyTreeException;
+   List<Member> findAllAgeInTheRange() throws FamilyTreeException;
 
 }

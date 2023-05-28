@@ -46,8 +46,8 @@ public interface MemberRepository
       value =
           "SELECT *\n"
               + "FROM members\n"
-              + "WHERE date_of_birth <= :endDate \n"
-              + "  AND date_of_birth >= :startDate",
+              + "WHERE (date_of_birth <= :endDate AND date_of_birth >= :startDate)"
+              + "order by id ASC",
       nativeQuery = true)
   List<Member> findAllAgeInTheRange(LocalDate endDate, LocalDate startDate);
 

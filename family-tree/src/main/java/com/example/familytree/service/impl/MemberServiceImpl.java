@@ -239,13 +239,9 @@ public class MemberServiceImpl implements MemberService {
     var totalOfFemale = this.getSumByGender(Constant.FEMALE);
     genealogicalStatisticsDTO.setNumberOfMale(totalOfMale);
     genealogicalStatisticsDTO.setNumberOfFemale(totalOfFemale);
-
     // tìm số thành viên có tuổi từ 18 đến 60
-    LocalDate today = LocalDate.now();
-    var endDate = today.minusYears(18);
-    var startDate = today.minusYears(60);
-    List<Member> membersByAge = memberRepository.findAllAgeInTheRange(endDate, startDate);
-    genealogicalStatisticsDTO.setAgeInTheRange(membersByAge.size());
+    var memberList = this.findAllAgeInTheRange();
+    genealogicalStatisticsDTO.setAgeInTheRange(memberList.size());
 
     // tổng số thành viên trong gia phả
     var total = totalOfFemale + totalOfMale;
@@ -268,6 +264,19 @@ public class MemberServiceImpl implements MemberService {
     }
     genealogicalStatisticsDTO.setGenerationDTOS(generationDTOS);
     return genealogicalStatisticsDTO;
+  }
+
+  /*
+   * tìm list thành viên có tuổi từ 18 đến 60
+   */
+  @Override
+  public List<Member> findAllAgeInTheRange() throws FamilyTreeException {
+    // tìm số thành viên có tuổi từ 18 đến 60
+    LocalDate today = LocalDate.now();
+    var endDate = today.minusYears(18);
+    var startDate = today.minusYears(60);
+    List<Member> membersByAge = memberRepository.findAllAgeInTheRange(endDate, startDate);
+    return membersByAge;
   }
 
   /* Tính tổng số nam hoặc nữ */
