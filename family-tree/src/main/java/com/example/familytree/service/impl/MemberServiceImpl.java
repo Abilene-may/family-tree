@@ -5,10 +5,13 @@ import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.GenealogicalStatisticsDTO;
+import com.example.familytree.models.GenerationDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -239,7 +242,7 @@ public class MemberServiceImpl implements MemberService {
 
     // tìm số thành viên có tuổi từ 18 đến 60
     LocalDate today = LocalDate.now();
-    var endDate  = today.minusYears(18);
+    var endDate = today.minusYears(18);
     var startDate = today.minusYears(60);
     List<Member> membersByAge = memberRepository.findAllAgeInTheRange(endDate, startDate);
     genealogicalStatisticsDTO.setAgeInTheRange(membersByAge.size());
@@ -247,6 +250,23 @@ public class MemberServiceImpl implements MemberService {
     // tổng số thành viên trong gia phả
     var total = totalOfFemale + totalOfMale;
     genealogicalStatisticsDTO.setTotalMember(total);
+    // Tính tuổi thọ TB của nữ
+    var averageAgeOfFemale = averageLifespan(Constant.FEMALE);
+    // Tính tuổi thọ TB của nam
+    var averageAgeOfMale = averageLifespan(Constant.MALE);
+    genealogicalStatisticsDTO.setAverageAgeOfFemale(averageAgeOfFemale);
+    genealogicalStatisticsDTO.setAverageAgeOfMale(averageAgeOfMale);
+
+    // tìm tất cả các đời có trong gia phả
+    List<Integer> genderation = memberRepository.findAllByGenderation();
+    var members = this.getAllMember();
+    // Thống kê đời trong gia phả
+    List<GenerationDTO> generationDTOS = new ArrayList<>();
+    for (int i = 0; i < genderation.size(); i++) {
+      var count = this.numberOfGeneration(members, genderation.get(i));
+      generationDTOS.add(new GenerationDTO(genderation.get(i), count));
+    }
+    genealogicalStatisticsDTO.setGenerationDTOS(generationDTOS);
     return genealogicalStatisticsDTO;
   }
 
@@ -255,5 +275,37 @@ public class MemberServiceImpl implements MemberService {
     // tìm tổng số thành viên theo giới tính
     var members = memberRepository.findAllByGender(gender);
     return members.size();
+  }
+
+  /*
+   * Tính tuổi thọ trung bình trong gia phả
+   */
+  public int averageLifespan(String gender) {
+    // Tìm số thành viên đã mất với giới tính gender
+    List<Member> numberOfFemale = memberRepository.findAllByDateOfDeathAndGender(gender);
+    int totalAge = 0;
+    int memberCount = numberOfFemale.size();
+    // Tính tuổi thọ TB
+    for (int i = 0; i < memberCount; i++) {
+      LocalDate deathDate = numberOfFemale.get(i).getDateOfDeath();
+      LocalDate birthDate = numberOfFemale.get(i).getDateOfBirth();
+      int age = Period.between(birthDate, deathDate).getYears();
+      totalAge += age;
+    }
+    var averageLifespan = totalAge / memberCount;
+    return averageLifespan;
+  }
+
+  /*
+   * Hàm tính số thành viên của thế hệ
+   */
+  public int numberOfGeneration(List<Member> members, int genderation) {
+    int count = 0;
+    for (Member member : members) {
+      if (member.getGeneration() == genderation) {
+        count++;
+      }
+    }
+    return count;
   }
 }

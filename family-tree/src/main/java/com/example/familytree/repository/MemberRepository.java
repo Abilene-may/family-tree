@@ -50,4 +50,16 @@ public interface MemberRepository
               + "  AND date_of_birth >= :startDate",
       nativeQuery = true)
   List<Member> findAllAgeInTheRange(LocalDate endDate, LocalDate startDate);
+
+  @Query(
+      value =
+          "select * from members\n"
+              + "where date_of_death is distinct from null and gender_search = :female",
+      nativeQuery = true)
+  List<Member> findAllByDateOfDeathAndGender(String female);
+
+  @Query(
+      value = "select distinct generation from members order by generation ASC",
+      nativeQuery = true)
+  List<Integer> findAllByGenderation();
 }

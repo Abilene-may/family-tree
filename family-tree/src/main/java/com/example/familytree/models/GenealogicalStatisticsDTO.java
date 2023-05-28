@@ -1,6 +1,7 @@
 package com.example.familytree.models;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +31,12 @@ public class GenealogicalStatisticsDTO {
   @Schema(description = "Tổng số thành viên trong gia phả")
   private int totalMember;
 
+  @Schema(description = "Tuổi thọ TB của nữ trong gia phả")
+  private int averageAgeOfFemale;
+
+  @Schema(description = "Tuổi thọ TB của nam trong gia phả")
+  private int averageAgeOfMale;
+
+  @Schema(description = "Thống kê theo thế hệ")
+  private List<GenerationDTO> generationDTOS;
 }
