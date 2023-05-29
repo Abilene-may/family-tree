@@ -75,28 +75,20 @@ public class MemberServiceImpl implements MemberService {
   @Override
   @Transactional
   public void createMember(Member member) throws FamilyTreeException {
-    // convert về dạng tiếng việt không dấu
-    var genderSearch = this.deAccent(member.getGender());
-    var maritalSearch = this.deAccent(member.getMaritalStatus());
-    var roleSearch = this.deAccent(member.getRole());
-    member.setGenderSearch(genderSearch);
-    member.setNameSearch(this.deAccent(member.getFullName()));
-    member.setMaritalSearch(maritalSearch);
-    member.setRoleSearch(roleSearch);
     var memberList = this.getAllMember();
     // set đời cho thành viên
     // TH tạo ông tổ
     if (memberList.size() == 0) {
       member.setGeneration(1);
     } else {
-      if (maritalSearch.equals(Constant.DA_KET_HON)) {
+      if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
         var generationOfPartner = memberRepository.findById(member.getPartnerId());
         if(generationOfPartner.isPresent()){
           var generation = generationOfPartner.get().getGeneration();
           member.setGeneration(generation);
           // update partner sang kết hôn
           memberRepository.updateMaritalStatus(
-              Constant.DA_KET_HON_TV, Constant.DA_KET_HON, generationOfPartner.get().getId());
+              Constant.DA_KET_HON, generationOfPartner.get().getId());
         }
       } else {
         if (member.getDadId() != null) {
@@ -112,14 +104,14 @@ public class MemberServiceImpl implements MemberService {
         }
       }
       // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-      if(roleSearch.equals(Constant.TRUONG_HO)){
+      if(member.getRole().equals(Constant.TRUONG_HO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
         if (checkExistRole.isPresent()) {
           throw new FamilyTreeException(
               ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
               ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
         }
-      } else if(roleSearch.equals(Constant.ONG_TO)){
+      } else if(member.getRole().equals(Constant.ONG_TO)){
         var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
         if (checkExistRole.isPresent()) {
           throw new FamilyTreeException(
@@ -162,19 +154,16 @@ public class MemberServiceImpl implements MemberService {
   public void update(Member member) throws FamilyTreeException {
     //check xem thành viên có tồn tại trong gia phả ko
     var memberById = this.getMemberById(member.getId());
-    // convert về dạng tiếng việt không dấu
-    var maritalSearch = deAccent(member.getMaritalStatus());
-    var roleSearch = deAccent(member.getRole());
     //check TH chuyển role
     // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-    if(roleSearch.equals(Constant.TRUONG_HO)){
+    if(member.getRole().equals(Constant.TRUONG_HO)){
       var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
       if (checkExistRole.isPresent()) {
         throw new FamilyTreeException(
             ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
             ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
       }
-    } else if(roleSearch.equals(Constant.ONG_TO)){
+    } else if(member.getRole().equals(Constant.ONG_TO)){
       var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
       if (checkExistRole.isPresent()) {
         throw new FamilyTreeException(
@@ -183,8 +172,8 @@ public class MemberServiceImpl implements MemberService {
       }
     }
     //check TH chuyển trạng thái tình trạng hôn nhân sang Độc thân
-    if(maritalSearch.equals(Constant.DOC_THAN)){
-      member.setMaritalSearch(maritalSearch);
+    if(member.getMaritalStatus().equals(Constant.DOC_THAN)){
+      member.setMaritalStatus(Constant.DOC_THAN);
       member.setPartnerId(null);
     }
     //lưu lại thông tin sau khi đã sửa
@@ -198,32 +187,10 @@ public class MemberServiceImpl implements MemberService {
    */
   @Override
   public List<Member> searchMemberByName(String fullName) throws FamilyTreeException {
-    var deAccent = this.deAccent(fullName);
-    List<Member> members = memberRepository.findAllByFullName(deAccent);
+    List<Member> members = memberRepository.findAllByFullName(fullName);
     return members;
   }
 
-  /**
-  * Convert dữ liệu về dạng tiếng việt không dấu
-   * @param str
-   * @return chuỗi thông tin đầu vào không dấu
-   * @author nga
-   * @Since 18/05
-  */
-  @Override
-  public String deAccent(String str) {
-    if (str.isBlank()) {
-      return "";
-    }
-    str = str.toLowerCase(Locale.ROOT);
-    str = str.replace("đ", "d");
-    String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
-    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-    str = pattern.matcher(nfdNormalizedString).replaceAll("");
-    str = str.replaceAll("[^\\w\\s]", " ");
-    str = str.replaceAll("\\s", " ");
-    return str;
-  }
 
   /**
    * tab màn thống kê
@@ -235,8 +202,8 @@ public class MemberServiceImpl implements MemberService {
   public GenealogicalStatisticsDTO genealogicalStatisticsDTO() throws FamilyTreeException {
     GenealogicalStatisticsDTO genealogicalStatisticsDTO = new GenealogicalStatisticsDTO();
     // Tính tổng số nam, nữ trong gia phả
-    var totalOfMale = this.getSumByGender(Constant.MALE);
-    var totalOfFemale = this.getSumByGender(Constant.FEMALE);
+    var totalOfMale = this.getSumByGender(Constant.NAM);
+    var totalOfFemale = this.getSumByGender(Constant.NU);
     genealogicalStatisticsDTO.setNumberOfMale(totalOfMale);
     genealogicalStatisticsDTO.setNumberOfFemale(totalOfFemale);
     // tìm số thành viên có tuổi từ 18 đến 60
@@ -247,9 +214,9 @@ public class MemberServiceImpl implements MemberService {
     var total = totalOfFemale + totalOfMale;
     genealogicalStatisticsDTO.setTotalMember(total);
     // Tính tuổi thọ TB của nữ
-    var averageAgeOfFemale = averageLifespan(Constant.FEMALE);
+    var averageAgeOfFemale = averageLifespan(Constant.NU);
     // Tính tuổi thọ TB của nam
-    var averageAgeOfMale = averageLifespan(Constant.MALE);
+    var averageAgeOfMale = averageLifespan(Constant.NAM);
     genealogicalStatisticsDTO.setAverageAgeOfFemale(averageAgeOfFemale);
     genealogicalStatisticsDTO.setAverageAgeOfMale(averageAgeOfMale);
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface MemberRepository
     extends JpaRepository<Member, Long>,
     JpaSpecificationExecutor<Member> {
-  @Query(value = "select * from members where role_search = :role", nativeQuery = true)
+  @Query(value = "select * from members where role = :role", nativeQuery = true)
   Optional<Member> checkExistRole(String role);
   @Query(value = "select * from members where username = :userName", nativeQuery = true)
   Optional<Member> findByUserName(String userName);
@@ -20,25 +20,25 @@ public interface MemberRepository
   @Query(
       value =
           "update members "
-              + "set marital_status = :maritalStatus, marital_search = :maritalSearch, id = :id "
+              + "set marital_status = :maritalStatus, id = :id "
               + "where id = :id",
       nativeQuery = true)
   @Transactional
   @Modifying
-  void updateMaritalStatus(String maritalStatus, String maritalSearch, Long id);
+  void updateMaritalStatus(String maritalStatus, Long id);
 
   @Query(
       value =
           "SELECT *\n"
               + "FROM members \n"
-              + "WHERE LOWER(name_search) LIKE LOWER(CONCAT('%', :fullName, '%'))",
+              + "WHERE LOWER(full_name) LIKE LOWER(CONCAT('%', :fullName, '%'))",
       nativeQuery = true)
   List<Member> findAllByFullName(String fullName);
   @Query(
       value =
           "SELECT *\n"
               + "FROM members \n"
-              + "WHERE LOWER(gender_search) LIKE LOWER(CONCAT('%', :gender, '%'))",
+              + "WHERE LOWER(gender) LIKE LOWER(CONCAT('%', :gender, '%'))",
       nativeQuery = true)
   List<Member> findAllByGender(String gender);
 
@@ -54,7 +54,7 @@ public interface MemberRepository
   @Query(
       value =
           "select * from members\n"
-              + "where date_of_death is distinct from null and gender_search = :female",
+              + "where date_of_death is distinct from null and gender = :female",
       nativeQuery = true)
   List<Member> findAllByDateOfDeathAndGender(String female);
 

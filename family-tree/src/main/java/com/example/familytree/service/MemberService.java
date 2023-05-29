@@ -12,7 +12,6 @@ public interface MemberService {
   Member getMemberById(Long id) throws FamilyTreeException;
   void update(Member member) throws FamilyTreeException;
   List<Member> searchMemberByName(String name) throws FamilyTreeException;
-   String deAccent(String str);
    GenealogicalStatisticsDTO genealogicalStatisticsDTO() throws FamilyTreeException;
    List<Member> findAllAgeInTheRange() throws FamilyTreeException;
 
