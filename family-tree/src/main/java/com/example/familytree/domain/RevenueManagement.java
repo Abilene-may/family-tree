@@ -49,10 +49,6 @@ public class RevenueManagement {
   @Column(name = "status")
   private String status;
 
-  @Schema(description = "Trạng thái thu search")
-  @Column(name = "status_search")
-  private String statusSearch;
-
   @Schema(description = "Ngày hết hạn thu")
   @Column(name = "due_date")
   private LocalDate dueDate;
