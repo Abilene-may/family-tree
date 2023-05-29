@@ -33,20 +33,4 @@ public class ExpenseManagement {
       allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "expense_management_seq")
   private Long id;
-
-  @Schema(description = "Năm quản lý chi")
-  @Column(name = "year")
-  private Integer year;
-
-  @Schema(description = "Tổng chi")
-  @Column(name = "total_expense")
-  private Long totalExpense;
-
-  @Schema(description = "Trạng thái")
-  @Column(name = "status")
-  private String status;
-
-    @Schema(description = "Trạng thái để tìm kiếm")
-    @Column(name = "status-search")
-    private String statusSearch;
 }

@@ -15,7 +15,8 @@ public class ExceptionUtils {
   public static final String WRONG_STATUS_REVENUE = "WRONG_STATUS_REVENUE";
   public static final String CLOSED_REVENUE = "CLOSED_REVENUE";
   public static final String CLOSED_EXPENSE = "CLOSED_EXPENSE";
-
+  public static final String E_FINANCIAL_SPONSORSHIP_1 = "E_FINANCIAL_SPONSORSHIP_1";
+  public static final String E_FINANCIAL_SPONSORSHIP_2 = "E_FINANCIAL_SPONSORSHIP_2";
 
   public static Map<String, String> messages;
 
@@ -34,6 +35,8 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.WRONG_STATUS_REVENUE, "Đã quá hạn thu vui lòng chọn lại trạng thái.");
     messages.put(ExceptionUtils.CLOSED_REVENUE, "Khoản thu đã đóng không thể sửa.");
     messages.put(ExceptionUtils.CLOSED_EXPENSE, "Năm không phải năm hiện tại vui lòng chọn lại trạng thái.");
+    messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_1, "Ngày mở không được sau ngày đóng.");
+    messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2, "Đã quá hạn mở vui lòng chọn lại trạng thái.");
 
   }
   public static String buildMessage(String messKey, Object... arg) {
