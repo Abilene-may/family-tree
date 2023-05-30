@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -106,6 +107,28 @@ public class FinancialSponorshipController {
     try {
       financialSponsorshipService.update(financialSponsorship);
       return new ResponseEntity<>(HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Báo cáo khoản tài trợ theo năm
+   *
+   * @author nga
+   * @since 30/05/2023
+   */
+  @Schema(name = "Báo cáo khoản tài trợ theo năm")
+  @GetMapping("/report")
+  public ResponseEntity<Object> report(@RequestParam Integer year) {
+    try {
+      var financialSponsorshipReport = financialSponsorshipService.report(year);
+      return new ResponseEntity<>(financialSponsorshipReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);

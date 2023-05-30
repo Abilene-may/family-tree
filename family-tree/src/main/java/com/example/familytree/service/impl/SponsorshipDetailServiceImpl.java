@@ -109,4 +109,5 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
     }
     return sponsorsipDetail.get();
   }
+
 }

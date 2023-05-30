@@ -4,8 +4,10 @@ import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.FinancialSponsorship;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
+import com.example.familytree.models.FinancialSponsorshipReport;
 import com.example.familytree.repository.FinancialSponsorshipRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
+import com.example.familytree.service.SponsorshipDetailService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 @Builder
 public class FinancialSponorshipServiceImpl implements FinancialSponsorshipService {
   private final FinancialSponsorshipRepository financialSponsorshipRepository;
+  private final SponsorshipDetailService sponsorshipDetailService;
 
   /**
    * Tạo mới đợt tài trợ trong năm
@@ -99,5 +102,26 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
           ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
     }
     return financialSponsorship.get();
+  }
+
+  /**
+   * Báo cáo tiền tài trợ theo năm
+   *
+   * @author nga
+   * @since 30/05/2023
+   */
+  @Override
+  public FinancialSponsorshipReport report(Integer year) throws FamilyTreeException {
+    FinancialSponsorshipReport financialSponsorshipReport = new FinancialSponsorshipReport();
+    var financialSponsorships = financialSponsorshipRepository.findAllByYear(year);
+    financialSponsorshipReport.setFinancialSponsorships(financialSponsorships);
+    Long totalMoney = 0L;
+    for (FinancialSponsorship financialSponsorship: financialSponsorships) {
+      // Lấy tổng tiền từ danh sách giao dịch
+        var sponsorshipDetailDTO = sponsorshipDetailService.getAll(financialSponsorship.getId());
+        totalMoney += sponsorshipDetailDTO.getTotalMoney();
+    }
+    financialSponsorshipReport.setTotalMoney(totalMoney);
+    return null;
   }
 }

@@ -47,6 +47,10 @@ public class SponsorsipDetail {
   @Column(name = "sponsors_name")
   private String sponsorsName;
 
+  @Schema(description = "Loại tài trợ cá nhân/tổ chức")
+  @Column(name = "type_of_sponsorship")
+  private String typeOfSponsorship;
+
   @Schema(description = "Tổ chức nếu có")
   @Column(name = "organization")
   private String organization;
