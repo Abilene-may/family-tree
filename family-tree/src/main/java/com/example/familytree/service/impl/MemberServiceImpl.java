@@ -237,11 +237,12 @@ public class MemberServiceImpl implements MemberService {
    */
   @Override
   public List<Member> findAllAgeInTheRange() throws FamilyTreeException {
-    // tìm số thành viên có tuổi từ 18 đến 60
+    // tìm số thành viên có tuổi từ 18 đến 60 và status <> đã mất
     LocalDate today = LocalDate.now();
     var endDate = today.minusYears(18);
     var startDate = today.minusYears(60);
-    List<Member> membersByAge = memberRepository.findAllAgeInTheRange(endDate, startDate);
+    List<Member> membersByAge =
+        memberRepository.findAllAgeInTheRange(endDate, startDate, Constant.DA_MAT);
     return membersByAge;
   }
 

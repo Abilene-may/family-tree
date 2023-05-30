@@ -24,4 +24,6 @@ public class Constant {
   public static final String SAP_MO = "Sắp mở";      //Sắp mở
   public static final String DANG_DIEN_RA = "Đang diễn ra";      //Đang diễn ra
 
+  public static final String DA_MAT = "Đã mất";
+
 }

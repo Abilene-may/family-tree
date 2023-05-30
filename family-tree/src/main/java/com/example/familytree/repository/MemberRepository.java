@@ -47,9 +47,10 @@ public interface MemberRepository
           "SELECT *\n"
               + "FROM members\n"
               + "WHERE (date_of_birth <= :endDate AND date_of_birth >= :startDate)"
+              + "AND LOWER(status) NOT LIKE LOWER(CONCAT('%', :status, '%'))"
               + "order by id ASC",
       nativeQuery = true)
-  List<Member> findAllAgeInTheRange(LocalDate endDate, LocalDate startDate);
+  List<Member> findAllAgeInTheRange(LocalDate endDate, LocalDate startDate, String status);
 
   @Query(
       value =
