@@ -40,6 +40,9 @@ public class SponsorsipDetail {
   @Column(name = "id")
   private Long id;
 
+  @Schema(description = "Năm quản lý tiền tài trợ")
+  @Column(name = "year")
+  private Integer year;
   @Schema(description = "Tên nhà/người tài trợ")
   @Column(name = "sponsors_name")
   private String sponsorsName;
@@ -58,5 +61,9 @@ public class SponsorsipDetail {
 
   @Schema(description = "Số tiền tài trợ")
   @Column(name = "sponsorship_money")
-  private String sponsorshipMoney;
+  private Long sponsorshipMoney;
+
+  @Schema(description = "id của danh mục tài trợ ")
+  @Column(name = "financial_sponsorship_id")
+  private Long financialSponsorshipId;
 }
