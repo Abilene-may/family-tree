@@ -53,7 +53,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra đầu vào có tồn tại id không
     var management = this.getById(revenueManagement.getId());
     // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
-    if (revenueManagement.getStatus().equals(Constant.DA_DONG)) {
+    if (management.getStatus().equals(Constant.DA_DONG)) {
       throw new FamilyTreeException(
           ExceptionUtils.CLOSED_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
