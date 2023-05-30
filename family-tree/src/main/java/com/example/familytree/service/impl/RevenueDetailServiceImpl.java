@@ -21,6 +21,16 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
   public final MemberService memberService;
   public final RevenueManagementService revenueManagementService;
 
+  public RevenueDetailServiceImpl(
+      @Lazy RevenueManagementService revenueManagementService,
+      @Lazy RevenueDetailRepository revenueDetailRepository,
+      @Lazy MemberService memberService) {
+    super();
+    this.revenueDetailRepository = revenueDetailRepository;
+    this.memberService = memberService;
+    this.revenueManagementService = revenueManagementService;
+  }
+
   /**
    * Lấy tất cả revenue detail qua id của revenueMangement
    * @author nga
@@ -76,15 +86,5 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     revenueDetail.setDate(revenueDetailDTO.getDate());
     revenueDetail.setStatus(revenueDetailDTO.getStatus());
     revenueDetailRepository.save(revenueDetail);
-  }
-
-  public RevenueDetailServiceImpl(
-      @Lazy RevenueManagementService revenueManagementService,
-      @Lazy RevenueDetailRepository revenueDetailRepository,
-      @Lazy MemberService memberService) {
-    super();
-    this.revenueDetailRepository = revenueDetailRepository;
-    this.memberService = memberService;
-    this.revenueManagementService = revenueManagementService;
   }
 }
