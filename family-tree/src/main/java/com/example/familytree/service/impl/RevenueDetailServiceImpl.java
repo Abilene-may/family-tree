@@ -10,13 +10,12 @@ import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
-@Builder
+@Slf4j
 public class RevenueDetailServiceImpl implements RevenueDetailService {
   public final RevenueDetailRepository revenueDetailRepository;
   public final MemberService memberService;
@@ -44,6 +43,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
                 try {
                   var revenueManagement = revenueManagementService.getById(idRevenueManagemnet);
                   revenueDetail.setMoney(revenueManagement.getRevenuePerPerson());
+                  revenueDetail.setYear(revenueManagement.getYear());
                 } catch (FamilyTreeException e) {
                   throw new RuntimeException(e);
                 }
@@ -76,5 +76,15 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     revenueDetail.setDate(revenueDetailDTO.getDate());
     revenueDetail.setStatus(revenueDetailDTO.getStatus());
     revenueDetailRepository.save(revenueDetail);
+  }
+
+  public RevenueDetailServiceImpl(
+      @Lazy RevenueManagementService revenueManagementService,
+      @Lazy RevenueDetailRepository revenueDetailRepository,
+      @Lazy MemberService memberService) {
+    super();
+    this.revenueDetailRepository = revenueDetailRepository;
+    this.memberService = memberService;
+    this.revenueManagementService = revenueManagementService;
   }
 }

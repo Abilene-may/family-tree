@@ -5,22 +5,22 @@ import com.example.familytree.domain.SponsorsipDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.SponsorshipDetailDTO;
+import com.example.familytree.repository.FinancialSponsorshipRepository;
 import com.example.familytree.repository.SponsorsipDetailRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.SponsorshipDetailService;
 import java.util.List;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
-@Builder
 public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
   private final SponsorsipDetailRepository sponsorsipDetailRepository;
   private final FinancialSponsorshipService financialSponsorshipService;
+  private final FinancialSponsorshipRepository financialSponsorshipRepository;
 
   /**
    * Thêm một khoản tài trợ trong chi tiết các giao dịch
@@ -29,6 +29,7 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
    * @author nga
    * @since 30/05/2023
    */
+  @Transactional
   @Override
   public SponsorsipDetail create(SponsorsipDetail sponsorsipDetail) throws FamilyTreeException {
     var financialSponsorship =
@@ -51,6 +52,7 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
    * @author nga
    * @since 30/05/2023
    */
+  @Transactional
   @Override
   public void update(SponsorsipDetail sponsorsipDetail) throws FamilyTreeException {
     var financialSponsorship =
@@ -110,4 +112,13 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
     return sponsorsipDetail.get();
   }
 
+  public SponsorshipDetailServiceImpl(
+      @Lazy FinancialSponsorshipService financialSponsorshipService,
+      @Lazy SponsorsipDetailRepository sponsorsipDetailRepository,
+      @Lazy FinancialSponsorshipRepository financialSponsorshipRepository) {
+    super();
+    this.financialSponsorshipService = financialSponsorshipService;
+    this.sponsorsipDetailRepository = sponsorsipDetailRepository;
+    this.financialSponsorshipRepository = financialSponsorshipRepository;
+  }
 }

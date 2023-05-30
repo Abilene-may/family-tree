@@ -2,25 +2,27 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.FinancialSponsorship;
+import com.example.familytree.domain.SponsorsipDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.FinancialSponsorshipReport;
 import com.example.familytree.repository.FinancialSponsorshipRepository;
+import com.example.familytree.repository.SponsorsipDetailRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.SponsorshipDetailService;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 /** Service xử lý logic quản lý tài chính */
 @Service
-@RequiredArgsConstructor
-@Builder
+@Slf4j
 public class FinancialSponorshipServiceImpl implements FinancialSponsorshipService {
   private final FinancialSponsorshipRepository financialSponsorshipRepository;
   private final SponsorshipDetailService sponsorshipDetailService;
+  private final SponsorsipDetailRepository sponsorsipDetailRepository;
 
   /**
    * Tạo mới đợt tài trợ trong năm
@@ -118,10 +120,20 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     Long totalMoney = 0L;
     for (FinancialSponsorship financialSponsorship: financialSponsorships) {
       // Lấy tổng tiền từ danh sách giao dịch
-        var sponsorshipDetailDTO = sponsorshipDetailService.getAll(financialSponsorship.getId());
-        totalMoney += sponsorshipDetailDTO.getTotalMoney();
+      var sponsorshipDetailDTO = sponsorshipDetailService.getAll(financialSponsorship.getId());
+      totalMoney += sponsorshipDetailDTO.getTotalMoney();
     }
     financialSponsorshipReport.setTotalMoney(totalMoney);
-    return null;
+    return financialSponsorshipReport;
+  }
+
+  public FinancialSponorshipServiceImpl(
+      @Lazy SponsorshipDetailService sponsorshipDetailService,
+      @Lazy FinancialSponsorshipRepository financialSponsorshipRepository,
+      @Lazy SponsorsipDetailRepository sponsorsipDetailRepository) {
+    super();
+    this.sponsorshipDetailService = sponsorshipDetailService;
+    this.financialSponsorshipRepository = financialSponsorshipRepository;
+    this.sponsorsipDetailRepository = sponsorsipDetailRepository;
   }
 }

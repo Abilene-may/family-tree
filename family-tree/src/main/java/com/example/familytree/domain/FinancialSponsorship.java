@@ -11,9 +11,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,12 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
 @Table(name = "financial_sponsorship")
-public class FinancialSponsorship {
+public class FinancialSponsorship{
   @Schema(description = "id của quản lý tiền tài trợ")
   @Id
   @SequenceGenerator(

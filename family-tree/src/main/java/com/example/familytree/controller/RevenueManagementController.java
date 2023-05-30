@@ -7,6 +7,7 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.RevenueManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -107,6 +109,28 @@ public class RevenueManagementController {
     try {
       revenueManagementService.update(revenueManagement);
       return new ResponseEntity<>(HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Báo cáo khoản thu
+   *
+   * @author nga
+   * @since 30/05/2023
+   */
+  @Schema(name = "Báo cáo khoản thu")
+  @GetMapping("/report")
+  public ResponseEntity<Object> report(@RequestParam Integer year) {
+    try {
+      var revenueReport = revenueManagementService.report(year);
+      return new ResponseEntity<>(revenueReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);

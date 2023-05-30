@@ -12,8 +12,5 @@ public interface RevenueDetailRepository extends JpaRepository<RevenueDetail, Lo
   @Query(value = "select max(id) from revenue_detail", nativeQuery = true)
   Long getId();
 
-  @Query(
-      value = "select * from revenue_detail where id_revenue_management = :idRevenueManagemnet",
-      nativeQuery = true)
   List<RevenueDetail> findAllByIdRevenueManagement(Long idRevenueManagemnet);
 }

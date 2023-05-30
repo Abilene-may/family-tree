@@ -27,6 +27,10 @@ public class RevenueDetail {
   @Schema(name = "id của giao dịch thu = id của thành viên")
   private Long id;
 
+  @Schema(description = "Năm quản lý thu")
+  @Column(name = "year")
+  private Integer year;
+
   @Schema(description = "Người đóng tiền")
   @Column(name = "payer")
   private String payer;

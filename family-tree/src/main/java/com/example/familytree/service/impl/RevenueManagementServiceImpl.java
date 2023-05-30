@@ -4,22 +4,24 @@ import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.RevenueManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
+import com.example.familytree.models.RevenueReport;
 import com.example.familytree.repository.RevenueManagementRepository;
 import com.example.familytree.service.MemberService;
+import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-@Builder
+@Slf4j
 public class RevenueManagementServiceImpl implements RevenueManagementService {
 
   private final RevenueManagementRepository revenueManagementRepository;
   private final MemberService memberService;
+  private final RevenueDetailService revenueDetailService;
 
   /**
    * Tạo một khoản thu hằng năm
@@ -88,5 +90,36 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
           ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
     }
     return revenueManagement.get();
+  }
+
+  /**
+   * Báo cáo thu theo năm
+   * @param year
+   * @author nga
+   * @since 30/05/2023
+   */
+  @Override
+  public RevenueReport report(Integer year) throws FamilyTreeException {
+    RevenueReport revenueReport = new RevenueReport();
+    var revenueManagements = revenueManagementRepository.findAllByYear(year);
+    revenueReport.setRevenueManagements(revenueManagements);
+    Long totalMoney = 0L;
+    for (RevenueManagement revenueManagement: revenueManagements) {
+      // Lấy tổng tiền từ danh sách giao dịch
+      var revenueDetailList  = revenueDetailService.getAllByIdRevenueManagement(revenueManagement.getId());
+      totalMoney += (revenueDetailList.size() * revenueManagement.getRevenuePerPerson());
+    }
+    revenueReport.setTotalRevenue(totalMoney);
+    return revenueReport;
+  }
+
+  public RevenueManagementServiceImpl(
+      @Lazy RevenueManagementRepository revenueManagementRepository,
+      @Lazy RevenueDetailService revenueDetailService,
+      @Lazy MemberService memberService) {
+    super();
+    this.memberService = memberService;
+    this.revenueManagementRepository = revenueManagementRepository;
+    this.revenueDetailService = revenueDetailService;
   }
 }
