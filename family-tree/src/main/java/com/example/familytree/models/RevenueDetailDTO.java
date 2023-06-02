@@ -17,6 +17,9 @@ import lombok.Setter;
 public class RevenueDetailDTO {
   @Schema(description = "id của giao dịch thu")
   private Long id;
+
+  @Schema(description = "id của giao dịch thu")
+  private Long idRevenueManagemnet;
   @Schema(description = "Ngày đóng")
   private LocalDate date;
 

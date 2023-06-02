@@ -76,8 +76,11 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
    */
   @Override
   public void update(RevenueDetailDTO revenueDetailDTO) throws FamilyTreeException {
+    // Tìm bản ghi cần sửa
     var optionalRevenueDetail = revenueDetailRepository.findById(revenueDetailDTO.getId());
-    if (optionalRevenueDetail.isEmpty()) {
+    if (optionalRevenueDetail.isEmpty()
+        && optionalRevenueDetail.get().getIdRevenueManagement()
+            == revenueDetailDTO.getIdRevenueManagemnet()) {
       throw new FamilyTreeException(
           ExceptionUtils.ID_IS_NOT_EXIST,
           ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
