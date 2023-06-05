@@ -35,7 +35,7 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
     var financialSponsorship =
         financialSponsorshipService.getById(sponsorsipDetail.getFinancialSponsorshipId());
     // check trạng thái màn ngoài danh sách đã đóng thì không cho thêm mới
-    if (financialSponsorship.getStatus().equals(Constant.DA_DONG)) {
+    if (financialSponsorship.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_SPONSORSHIP_DETAIL_1,
           ExceptionUtils.messages.get(ExceptionUtils.E_SPONSORSHIP_DETAIL_1));
@@ -58,7 +58,7 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
     var financialSponsorship =
         financialSponsorshipService.getById(sponsorsipDetail.getFinancialSponsorshipId());
     // check trạng thái màn ngoài danh sách đã đóng thì không cho sửa
-    if (financialSponsorship.getStatus().equals(Constant.DA_DONG)) {
+    if (financialSponsorship.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_SPONSORSHIP_DETAIL_1,
           ExceptionUtils.messages.get(ExceptionUtils.E_SPONSORSHIP_DETAIL_1));

@@ -1,12 +1,13 @@
 package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
+import com.example.familytree.domain.RevenueDetail;
 import com.example.familytree.domain.RevenueManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.RevenueReport;
+import com.example.familytree.repository.RevenueDetailRepository;
 import com.example.familytree.repository.RevenueManagementRepository;
-import com.example.familytree.service.MemberService;
 import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class RevenueManagementServiceImpl implements RevenueManagementService {
 
   private final RevenueManagementRepository revenueManagementRepository;
-  private final MemberService memberService;
+  private final RevenueDetailRepository revenueDetailRepository;
   private final RevenueDetailService revenueDetailService;
 
   /**
@@ -34,7 +35,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra xem hạn thu đã qua mà status vẫn là đang mở thì bảo lỗi
     LocalDate localDate = LocalDate.now();
     if (localDate.isAfter(revenueManagement.getDueDate())
-        && revenueManagement.getStatus().equals(Constant.DANG_MO)) {
+        && revenueManagement.getStatus().equals(true)){
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
@@ -53,7 +54,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra đầu vào có tồn tại id không
     var management = this.getById(revenueManagement.getId());
     // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
-    if (management.getStatus().equals(Constant.DA_DONG)) {
+    if (management.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.CLOSED_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
@@ -61,7 +62,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // Kiểm tra hạn thu đã qua thì status = đã đóng
     LocalDate localDate = LocalDate.now();
     if (localDate.isAfter(revenueManagement.getDueDate())
-        && revenueManagement.getStatus().equals(Constant.DANG_MO)) {
+        && revenueManagement.getStatus().equals(false)) {
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
@@ -93,21 +94,23 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
   }
 
   /**
-   * Báo cáo thu theo năm
-   * @param year
+   * Báo cáo thu từ ngày đến ngày
+   *
    * @author nga
    * @since 30/05/2023
    */
   @Override
-  public RevenueReport report(Integer year) throws FamilyTreeException {
+  public RevenueReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
+      throws FamilyTreeException {
     RevenueReport revenueReport = new RevenueReport();
-    var revenueManagements = revenueManagementRepository.findAllByYear(year);
-    revenueReport.setRevenueManagements(revenueManagements);
+    // tìm những khoản thu từ ngày đến ngày
+    var revenueDatels =
+        revenueDetailRepository.findAllByStartDateAndEndDate(
+            effectiveStartDate, effectiveEndDate);
+    revenueReport.setRevenueDetails(revenueDatels);
     Long totalMoney = 0L;
-    for (RevenueManagement revenueManagement: revenueManagements) {
-      // Lấy tổng tiền từ danh sách giao dịch
-      var revenueDetailList  = revenueDetailService.getAllByIdRevenueManagement(revenueManagement.getId());
-      totalMoney += (revenueDetailList.size() * revenueManagement.getRevenuePerPerson());
+    for (RevenueDetail revenueDetail: revenueDatels) {
+      totalMoney +=  revenueDetail.getMoney();
     }
     revenueReport.setTotalRevenue(totalMoney);
     return revenueReport;
@@ -116,9 +119,9 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
   public RevenueManagementServiceImpl(
       @Lazy RevenueManagementRepository revenueManagementRepository,
       @Lazy RevenueDetailService revenueDetailService,
-      @Lazy MemberService memberService) {
+      @Lazy RevenueDetailRepository revenueDetailRepository) {
     super();
-    this.memberService = memberService;
+    this.revenueDetailRepository = revenueDetailRepository;
     this.revenueManagementRepository = revenueManagementRepository;
     this.revenueDetailService = revenueDetailService;
   }

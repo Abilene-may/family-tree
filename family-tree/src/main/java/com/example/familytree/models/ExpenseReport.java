@@ -1,5 +1,6 @@
 package com.example.familytree.models;
 
+import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.domain.ExpenseManagement;
 import com.example.familytree.domain.RevenueManagement;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,5 +24,5 @@ public class ExpenseReport {
   @Schema(description = "Tổng chi của năm")
   private Long totalExpense;
   @Schema(description = "danh sách các khoản chi theo năm")
-  private List<ExpenseManagement> expenseManagements;
+  private List<ExpenseDetail> expenseDetails;
 }

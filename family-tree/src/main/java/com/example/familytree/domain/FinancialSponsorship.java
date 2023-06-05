@@ -56,6 +56,6 @@ public class FinancialSponsorship{
 
   @Schema(description = "Trạng thái quản lý tiền tài trợ")
   @Column(name = "status")
-  private String status;
+  private Boolean status;
 
 }

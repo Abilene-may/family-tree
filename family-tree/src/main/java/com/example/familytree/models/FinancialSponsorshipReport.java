@@ -1,6 +1,7 @@
 package com.example.familytree.models;
 
 import com.example.familytree.domain.FinancialSponsorship;
+import com.example.familytree.domain.SponsorsipDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -23,5 +24,5 @@ public class FinancialSponsorshipReport {
   private Long totalMoney;
 
   @Schema(description = "danh sách các khoản tài trợ của năm")
-  private List<FinancialSponsorship> financialSponsorships;
+  private List<SponsorsipDetail> sponsorsipDetails;
 }

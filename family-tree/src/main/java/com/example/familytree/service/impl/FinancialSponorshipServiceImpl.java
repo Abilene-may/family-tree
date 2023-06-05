@@ -40,10 +40,10 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
           ExceptionUtils.E_FINANCIAL_SPONSORSHIP_1,
           ExceptionUtils.messages.get(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_1));
     }
-    // check TH ngày hiện tại sau ngày đóng nhưng trạng thái <> "Đã đóng"
+    // check TH ngày hiện tại sau ngày đóng nhưng trạng thái <> "Đã đóng" true
     LocalDate today = LocalDate.now();
     if (today.isAfter(financialSponsorship.getEndDate())
-        && !financialSponsorship.getStatus().equals(Constant.DA_DONG)) {
+        && !financialSponsorship.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2,
           ExceptionUtils.messages.get(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2));
@@ -70,7 +70,7 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     // check TH ngày hiện tại sau ngày đóng nhưng trạng thái <> "Đã đóng"
     LocalDate today = LocalDate.now();
     if (today.isAfter(financialSponsorship.getEndDate())
-        && !financialSponsorship.getStatus().equals(Constant.DA_DONG)) {
+        && !financialSponsorship.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2,
           ExceptionUtils.messages.get(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2));
@@ -107,21 +107,24 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
   }
 
   /**
-   * Báo cáo tiền tài trợ theo năm
+   * Báo cáo tiền tài trợ từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
   @Override
-  public FinancialSponsorshipReport report(Integer year) throws FamilyTreeException {
+  public FinancialSponsorshipReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
+      throws FamilyTreeException {
+    // Tìm kiếm danh sách các khoản tài trợ từ ngày đến ngày
     FinancialSponsorshipReport financialSponsorshipReport = new FinancialSponsorshipReport();
-    var financialSponsorships = financialSponsorshipRepository.findAllByYear(year);
-    financialSponsorshipReport.setFinancialSponsorships(financialSponsorships);
+    var sponsorsipDetails =
+        sponsorsipDetailRepository.findAllByStartDateAndEndDate(
+            effectiveStartDate, effectiveEndDate);
+    financialSponsorshipReport.setSponsorsipDetails(sponsorsipDetails);
     Long totalMoney = 0L;
-    for (FinancialSponsorship financialSponsorship: financialSponsorships) {
-      // Lấy tổng tiền từ danh sách giao dịch
-      var sponsorshipDetailDTO = sponsorshipDetailService.getAll(financialSponsorship.getId());
-      totalMoney += sponsorshipDetailDTO.getTotalMoney();
+    for (SponsorsipDetail sponsorsipDetail : sponsorsipDetails) {
+      // Tính tổng tiền
+      totalMoney += sponsorsipDetail.getSponsorshipMoney();
     }
     financialSponsorshipReport.setTotalMoney(totalMoney);
     return financialSponsorshipReport;

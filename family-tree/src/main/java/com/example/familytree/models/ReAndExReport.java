@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * DTO báo cáo thu chi
+ * DTO báo cáo thu chi từ ngày đến ngày
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,15 +17,17 @@ import lombok.Setter;
 @Getter
 @Builder
 public class ReAndExReport {
-  @Schema(description = "Năm báo cáo thu-chi")
-  private Integer year;
+  @Schema(description = "Số dư kỳ trước")
+  private Long previousBalance;
 
-  @Schema(description = "Tổng tiền thu")
+  @Schema(description = "Tổng tiền thu theo định mức")
   private Long totalRevenue;
+  @Schema(description = "Tổng tiền tài trợ")
+  private Long totalSposorship;
 
   @Schema(description = "Tổng tiền chi")
   private Long totalExpense;
 
-  @Schema(description = "Số dư còn lại")
+  @Schema(description = "Số tiền còn lại")
   private Long remainingBalance;
 }

@@ -3,7 +3,10 @@ package com.example.familytree.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -25,7 +28,13 @@ import lombok.Setter;
 public class RevenueDetail {
   @Id
   @Schema(name = "id của giao dịch thu = id của thành viên")
+  @SequenceGenerator(name = "revenue_detail_seq", sequenceName = "revenue_detail_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "revenue_detail_seq")
   private Long id;
+
+  @Schema(description = "id của thành viên")
+  @Column(name = "id_member")
+  private Long idMember;
 
   @Schema(description = "Năm quản lý thu")
   @Column(name = "year")

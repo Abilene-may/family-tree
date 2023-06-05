@@ -46,7 +46,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
           .forEach(
               member -> {
                 RevenueDetail revenueDetail = new RevenueDetail();
-                revenueDetail.setId(member.getId());
+                revenueDetail.setIdMember(member.getId());
                 // set người đóng tiền
                 revenueDetail.setPayer(member.getFullName());
                 // thiết lập số tiền cần đóng của mỗi thành viên

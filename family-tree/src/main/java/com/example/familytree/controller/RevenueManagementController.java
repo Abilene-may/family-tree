@@ -8,6 +8,7 @@ import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.RevenueManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.criteria.CriteriaBuilder.In;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -120,16 +121,17 @@ public class RevenueManagementController {
     }
   }
   /**
-   * API Báo cáo khoản thu
+   * API Báo cáo khoản thu từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
-  @Schema(name = "Báo cáo khoản thu")
+  @Schema(name = "Báo cáo khoản thu từ ngày đến ngày")
   @GetMapping("/report")
-  public ResponseEntity<Object> report(@RequestParam Integer year) {
+  public ResponseEntity<Object> report(@RequestParam LocalDate effectiveStartDate,
+      @RequestParam LocalDate effectiveEndDate) {
     try {
-      var revenueReport = revenueManagementService.report(year);
+      var revenueReport = revenueManagementService.report(effectiveStartDate, effectiveEndDate);
       return new ResponseEntity<>(revenueReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

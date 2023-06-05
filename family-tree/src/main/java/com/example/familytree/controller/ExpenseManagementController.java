@@ -6,6 +6,7 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.ExpenseManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -118,16 +119,17 @@ public class ExpenseManagementController {
     }
   }
   /**
-   * API Báo cáo quản lý chi
+   * API Báo cáo quản lý chi từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
-  @Schema(name = "Báo cáo khoản thu")
+  @Schema(name = "Báo cáo khoản thu từ ngày đến ngày")
   @GetMapping("/report")
-  public ResponseEntity<Object> report(@RequestParam Integer year) {
+  public ResponseEntity<Object> report(@RequestParam LocalDate effectiveStartDate,
+      @RequestParam LocalDate effectiveEndDate) {
     try {
-      var revenueReport = expenseManagementService.report(year);
+      var revenueReport = expenseManagementService.report(effectiveStartDate, effectiveEndDate);
       return new ResponseEntity<>(revenueReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
@@ -141,17 +143,19 @@ public class ExpenseManagementController {
   }
 
   /**
-   * API Báo cáo Thu - chi
+   * API Báo cáo Thu - chi từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
-  @Schema(name = "Báo cáo thu-chi")
+  @Schema(name = "Báo cáo thu-chi từ ngày đến ngày")
   @GetMapping("/financial-statement")
-  public ResponseEntity<Object> financialStatement() {
+  public ResponseEntity<Object> financialStatement(@RequestParam LocalDate effectiveStartDate,
+      @RequestParam LocalDate effectiveEndDate) {
     try {
-      var reAndExReports = expenseManagementService.revenueAndExpenseReport();
-      return new ResponseEntity<>(reAndExReports, HttpStatus.OK);
+      var reAndExReport =
+          expenseManagementService.revenueAndExpenseReport(effectiveStartDate, effectiveEndDate);
+      return new ResponseEntity<>(reAndExReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);

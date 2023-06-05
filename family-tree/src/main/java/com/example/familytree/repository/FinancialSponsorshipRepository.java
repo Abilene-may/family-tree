@@ -9,5 +9,5 @@ public interface FinancialSponsorshipRepository
     extends JpaRepository<FinancialSponsorship, Long>,
         JpaSpecificationExecutor<FinancialSponsorship> {
 
-  List<FinancialSponsorship> findAllByYear(Integer year);
+
 }

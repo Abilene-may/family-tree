@@ -6,6 +6,7 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.FinancialSponsorshipService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -118,16 +119,18 @@ public class FinancialSponorshipController {
     }
   }
   /**
-   * API Báo cáo khoản tài trợ theo năm
+   * API Báo cáo khoản tài trợ ừ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
-  @Schema(name = "Báo cáo khoản tài trợ theo năm")
+  @Schema(name = "Báo cáo khoản tài trợ từ ngày đến ngày")
   @GetMapping("/report")
-  public ResponseEntity<Object> report(@RequestParam Integer year) {
+  public ResponseEntity<Object> report(
+      @RequestParam LocalDate effectiveStartDate, @RequestParam LocalDate effectiveEndDate) {
     try {
-      var financialSponsorshipReport = financialSponsorshipService.report(year);
+      var financialSponsorshipReport =
+          financialSponsorshipService.report(effectiveStartDate, effectiveEndDate);
       return new ResponseEntity<>(financialSponsorshipReport, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

@@ -1,10 +1,12 @@
 package com.example.familytree.service.impl;
 
+import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.domain.ExpenseManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.ExpenseReport;
 import com.example.familytree.models.ReAndExReport;
+import com.example.familytree.repository.ExpenseDetailRepository;
 import com.example.familytree.repository.ExpenseManagementRepository;
 import com.example.familytree.service.ExpenseDetailService;
 import com.example.familytree.service.ExpenseManagementService;
@@ -27,17 +29,20 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
   private final ExpenseDetailService expenseDetailService;
   private final RevenueManagementService revenueManagementService;
   private final FinancialSponsorshipService financialSponsorshipService;
+  private final ExpenseDetailRepository expenseDetailRepository;
 
   public ExpenseManagementServiceImpl(
       @Lazy ExpenseManagementRepository expenseManagementRepository,
       @Lazy ExpenseDetailService expenseDetailService,
       @Lazy RevenueManagementService revenueManagementService,
-      @Lazy FinancialSponsorshipService financialSponsorshipService) {
+      @Lazy FinancialSponsorshipService financialSponsorshipService,
+      @Lazy ExpenseDetailRepository expenseDetailRepository) {
     super();
     this.expenseManagementRepository = expenseManagementRepository;
     this.expenseDetailService = expenseDetailService;
     this.revenueManagementService = revenueManagementService;
     this.financialSponsorshipService = financialSponsorshipService;
+    this.expenseDetailRepository = expenseDetailRepository;
   }
   /**
    * Tạo một khoản chi theo năm
@@ -89,57 +94,79 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
     return expenseManagement.get();
   }
   /**
-   * Báo cáo quản lý chi
+   * Báo cáo quản lý chi từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
   @Override
-  public ExpenseReport report(Integer year) throws FamilyTreeException {
+  public ExpenseReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
+      throws FamilyTreeException {
     ExpenseReport expenseReport = new ExpenseReport();
-    var revenueManagements = expenseManagementRepository.findAllByYear(year);
-    expenseReport.setExpenseManagements(revenueManagements);
+    // Lấy danh sách các khoản chi từ ngày đến ngày
+    var expenseDetails  =
+        expenseDetailRepository.findAllByStartDateAndEndDate(
+            effectiveStartDate, effectiveEndDate);
+    expenseReport.setExpenseDetails(expenseDetails);
     Long totalMoney = 0L;
-    for (ExpenseManagement expenseManagement : revenueManagements) {
-      // Lấy tổng tiền từ danh sách giao dịch
-      var expenseDetailDTO = expenseDetailService.getAll(expenseManagement.getId());
-      totalMoney += (expenseDetailDTO.getTotalMoney());
+    for (ExpenseDetail expenseDetail : expenseDetails) {
+      // Tính tổng tiền từ danh sách giao dịch
+      totalMoney += expenseDetail.getExpenseMoney();
     }
     expenseReport.setTotalExpense(totalMoney);
     return expenseReport;
   }
   /**
-   * Báo cáo quản lý chi
+   * Báo cáo quản lý thu - chi từ ngày đến ngày
    *
    * @author nga
    * @since 30/05/2023
    */
   @Override
-  public List<ReAndExReport> revenueAndExpenseReport() throws FamilyTreeException {
-    List<ReAndExReport> reAndExReports = new ArrayList<>();
-    // Báo cáo thu chi trong 10 năm đổ về
-    LocalDate today = LocalDate.now();
-    Integer year = today.getYear();
-    for(int i=0; i < 9; i++){
-      var revenueReport = revenueManagementService.report(year-i);
-      var expenseReport = this.report(year-i);
-      var sponsorshipReport = financialSponsorshipService.report(year-i);
-      Long totalRevenue = revenueReport.getTotalRevenue();
-      Long totalExpense = expenseReport.getTotalExpense();
-      Long totalSponsorship = sponsorshipReport.getTotalMoney();
-      if(totalRevenue != 0L || totalExpense != 0L){
-        ReAndExReport reAndExReport = new ReAndExReport();
-        // thiết lập tiền thu chi trong năm
-        Long total = totalRevenue + totalSponsorship;
-        reAndExReport.setYear(year-i);
-        reAndExReport.setTotalRevenue(total);
-        reAndExReport.setTotalExpense(totalExpense);
-        // Tính số tiền còn lại
-        reAndExReport.setRemainingBalance(total - totalExpense);
-        reAndExReports.add(reAndExReport);
-      }
-    }
+  public ReAndExReport revenueAndExpenseReport(
+      LocalDate effectiveStartDate, LocalDate effectiveEndDate) throws FamilyTreeException {
+    ReAndExReport reAndExReports = new ReAndExReport();
+    // Lùi lại 1 ngày và tính số dư kỳ trước
+    var previousBalance = this.getPreviousBalance(effectiveStartDate.minusDays(1));
+    // tổng tiền thu
+    var revenueReport = revenueManagementService.report(effectiveStartDate, effectiveEndDate);
+    var totalRevenue = revenueReport.getTotalRevenue();
+//    tổng tiền tài trợ
+    var sponsorshipReport = financialSponsorshipService.report(effectiveStartDate, effectiveEndDate);
+    var totalSposorship = sponsorshipReport.getTotalMoney();
+    // tổng tiền chi
+    var expenseReport = this.report(effectiveStartDate, effectiveEndDate);
+    var totalExpense = expenseReport.getTotalExpense();
+    // tính số dư còn lại
+    Long remainingBalance = (previousBalance + totalRevenue + totalSposorship) - totalExpense;
+    reAndExReports.setTotalRevenue(totalRevenue);
+    reAndExReports.setTotalSposorship(totalSposorship);
+    reAndExReports.setTotalExpense(totalExpense);
+    reAndExReports.setRemainingBalance(remainingBalance);
+    reAndExReports.setPreviousBalance(previousBalance);
     return reAndExReports;
   }
 
+  /**
+   * Tính số tiền dư kỳ trước
+   *
+   * @param effectiveEndDate
+   * @author ngant
+   * @since 05/06/2023
+   */
+  public Long getPreviousBalance(LocalDate effectiveEndDate) throws FamilyTreeException{
+    LocalDate effectiveStartDate = LocalDate.of(1800, 01, 01);
+    // tổng tiền thu
+    var revenueReport = revenueManagementService.report(effectiveStartDate, effectiveEndDate);
+    var totalRevenue = revenueReport.getTotalRevenue();
+//    tổng tiền tài trợ
+    var sponsorshipReport = financialSponsorshipService.report(effectiveStartDate, effectiveEndDate);
+    var totalSposorship = sponsorshipReport.getTotalMoney();
+    // tổng tiền chi
+    var expenseReport = this.report(effectiveStartDate, effectiveEndDate);
+    var totalExpense = expenseReport.getTotalExpense();
+    // tính số dư còn lại
+    Long remainingBalance = (totalRevenue + totalSposorship) - totalExpense;
+    return remainingBalance;
+  }
 }

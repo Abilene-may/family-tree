@@ -1,6 +1,6 @@
 package com.example.familytree.models;
 
-import com.example.familytree.domain.RevenueManagement;
+import com.example.familytree.domain.RevenueDetail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,8 @@ import lombok.Setter;
 @Getter
 @Builder
 public class RevenueReport {
-  @Schema(description = "Tổng thu của năm")
+  @Schema(description = "Tổng số tiền đã thu")
   private Long totalRevenue;
-  @Schema(description = "danh sách các khoản thu theo năm")
-  private List<RevenueManagement> revenueManagements;
+  @Schema(description = "danh sách các khoản thu từ ngày đến ngày")
+  private List<RevenueDetail> revenueDetails;
 }
