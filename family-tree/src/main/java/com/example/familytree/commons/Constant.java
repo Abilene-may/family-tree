@@ -17,7 +17,12 @@ public class Constant {
   public static final String NAM = "Nam";
   public static final String NU = "Nữ";
 
-
   public static final String DA_MAT = "Đã mất";
+  public static final String QUY_HO = "Quỹ họ";
+  public static final Long REVENUE_PER_PERSON = 500000L;
+  public static final String SAP_MO = "Sắp mở";
+  public static final String DANG_MO = "Đang mở";
+  public static final String DA_DONG = "Đã đóng";
+
 
 }

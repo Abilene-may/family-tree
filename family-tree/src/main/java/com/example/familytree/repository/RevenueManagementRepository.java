@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface RevenueManagementRepository extends JpaRepository<RevenueManagement, Long>,
     JpaSpecificationExecutor<RevenueManagement> {
 
+  List<RevenueManagement> findAllByYear(int year);
 }

@@ -47,7 +47,11 @@ public class RevenueManagement {
 
   @Schema(description = "Trạng thái thu")
   @Column(name = "status")
-  private Boolean status;
+  private String status;
+
+  @Schema(description = "Ngày bắt đầu thu")
+  @Column(name = "start_date")
+  private LocalDate startDate;
 
   @Schema(description = "Ngày hết hạn thu")
   @Column(name = "due_date")

@@ -8,6 +8,7 @@ import com.example.familytree.repository.RevenueDetailRepository;
 import com.example.familytree.service.MemberService;
 import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +34,16 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
 
   /**
    * Lấy tất cả revenue detail qua id của revenueMangement
+   *
    * @author nga
    */
   @Override
-  public List<RevenueDetail> getAllByIdRevenueManagement(Long idRevenueManagemnet) throws FamilyTreeException {
-    var revenueDetailList = revenueDetailRepository.findAllByIdRevenueManagement(idRevenueManagemnet);
-    if(revenueDetailList.isEmpty()){
+  public List<RevenueDetail> getAllByIdRevenueManagement(
+      Long idRevenueManagemnet, LocalDate startDate) throws FamilyTreeException {
+    var revenueDetailList =
+        revenueDetailRepository.findAllByIdRevenueManagement(idRevenueManagemnet);
+    LocalDate today = LocalDate.now();
+    if (revenueDetailList.isEmpty() && today.isBefore(startDate)) {
       List<RevenueDetail> revenueDetails = new ArrayList<>();
       // lấy tất cả thành viên tuổi từ 18->60
       var memberList = memberService.findAllAgeInTheRange();

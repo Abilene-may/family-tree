@@ -4,6 +4,7 @@ import com.example.familytree.domain.Member;
 import com.example.familytree.domain.RevenueManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
+import com.example.familytree.models.RevenueManagementDIS;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.RevenueManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,10 +39,10 @@ public class RevenueManagementController {
    * @since 25/05/2023
    */
   @Schema(name = "create an annual revenue")
-  @PostMapping("/create")
-  public ResponseEntity<Object> create(@RequestBody RevenueManagement revenueManagement) {
+  @GetMapping("/create")
+  public ResponseEntity<Object> create() {
     try {
-      RevenueManagement management = revenueManagementService.create(revenueManagement);
+      var management = revenueManagementService.create();
       return new ResponseEntity<>(management, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
@@ -107,9 +108,9 @@ public class RevenueManagementController {
    */
   @Schema(name = "update imformation revenue")
   @PutMapping("/update")
-  public ResponseEntity<Object> update(@RequestBody RevenueManagement revenueManagement) {
+  public ResponseEntity<Object> update(@RequestBody RevenueManagementDIS revenueManagementDIS) {
     try {
-      revenueManagementService.update(revenueManagement);
+      revenueManagementService.update(revenueManagementDIS);
       return new ResponseEntity<>(HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

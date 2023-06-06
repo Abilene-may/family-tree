@@ -18,6 +18,8 @@ public class ExceptionUtils {
   public static final String E_FINANCIAL_SPONSORSHIP_1 = "E_FINANCIAL_SPONSORSHIP_1";
   public static final String E_FINANCIAL_SPONSORSHIP_2 = "E_FINANCIAL_SPONSORSHIP_2";
   public static final String E_SPONSORSHIP_DETAIL_1 = "E_SPONSORSHIP_DETAIL_1";
+  public static final String REVENUE_ALREADY_EXISTS = "REVENUE_ALREADY_EXISTS";
+
 
   public static Map<String, String> messages;
 
@@ -39,6 +41,7 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_1, "Ngày mở không được sau ngày đóng.");
     messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2, "Đã quá hạn mở vui lòng chọn lại trạng thái.");
     messages.put(ExceptionUtils.E_SPONSORSHIP_DETAIL_1, "Đợt tài trợ này đã đóng, không thể thêm giao dịch.");
+    messages.put(ExceptionUtils.REVENUE_ALREADY_EXISTS, "Khoản thu hằng năm của năm nay đã được thiết lập.");
 
   }
   public static String buildMessage(String messKey, Object... arg) {

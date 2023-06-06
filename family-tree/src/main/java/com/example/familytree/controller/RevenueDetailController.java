@@ -8,6 +8,7 @@ import com.example.familytree.models.RevenueDetailDTO;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.RevenueDetailService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,11 @@ public class RevenueDetailController {
    */
   @Schema(name = "Lấy list thành viên cần đóng khoản thu hàng năm")
   @GetMapping("/get-all")
-  public ResponseEntity<Object> getAll(@RequestParam Long idRevenueManagement) {
+  public ResponseEntity<Object> getAll(
+      @RequestParam Long idRevenueManagement, @RequestParam LocalDate startDate) {
     try {
-      var revenueDetailList = revenueDetailService.getAllByIdRevenueManagement(idRevenueManagement);
+      var revenueDetailList =
+          revenueDetailService.getAllByIdRevenueManagement(idRevenueManagement, startDate);
       return new ResponseEntity<>(revenueDetailList, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
