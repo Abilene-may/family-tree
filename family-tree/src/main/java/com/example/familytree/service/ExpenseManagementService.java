@@ -18,4 +18,5 @@ public interface ExpenseManagementService {
 
   ReAndExReport revenueAndExpenseReport(
       LocalDate effectiveStartDate, LocalDate effectiveEndDate) throws FamilyTreeException;
+ void delete(Long id) throws FamilyTreeException;
 }

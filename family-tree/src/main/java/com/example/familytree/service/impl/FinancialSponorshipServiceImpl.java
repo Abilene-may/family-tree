@@ -43,7 +43,7 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     // check TH ngày hiện tại sau ngày đóng nhưng trạng thái <> "Đã đóng" true
     LocalDate today = LocalDate.now();
     if (today.isAfter(financialSponsorship.getEndDate())
-        && !financialSponsorship.getStatus().equals(true)) {
+        && !financialSponsorship.getStatus().equals(false)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2,
           ExceptionUtils.messages.get(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2));
@@ -70,7 +70,7 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     // check TH ngày hiện tại sau ngày đóng nhưng trạng thái <> "Đã đóng"
     LocalDate today = LocalDate.now();
     if (today.isAfter(financialSponsorship.getEndDate())
-        && !financialSponsorship.getStatus().equals(true)) {
+        && !financialSponsorship.getStatus().equals(false)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2,
           ExceptionUtils.messages.get(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2));
@@ -128,6 +128,17 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     }
     financialSponsorshipReport.setTotalMoney(totalMoney);
     return financialSponsorshipReport;
+  }
+  /**
+   * Xóa một quản lý tiền tài trợ
+   *
+   * @author nga
+   * @since 06/06/2023
+   */
+  @Override
+  public void delete(Long id) throws FamilyTreeException {
+    var financialSponsorship = this.getById(id);
+    financialSponsorshipRepository.delete(financialSponsorship);
   }
 
   public FinancialSponorshipServiceImpl(

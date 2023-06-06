@@ -54,7 +54,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra đầu vào có tồn tại id không
     var management = this.getById(revenueManagement.getId());
     // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
-    if (management.getStatus().equals(true)) {
+    if (management.getStatus().equals(false)) {
       throw new FamilyTreeException(
           ExceptionUtils.CLOSED_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
@@ -62,7 +62,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // Kiểm tra hạn thu đã qua thì status = đã đóng
     LocalDate localDate = LocalDate.now();
     if (localDate.isAfter(revenueManagement.getDueDate())
-        && revenueManagement.getStatus().equals(false)) {
+        && revenueManagement.getStatus().equals(true)) {
       throw new FamilyTreeException(
           ExceptionUtils.WRONG_STATUS_REVENUE,
           ExceptionUtils.messages.get(ExceptionUtils.WRONG_STATUS_REVENUE));
@@ -114,6 +114,18 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     }
     revenueReport.setTotalRevenue(totalMoney);
     return revenueReport;
+  }
+
+  /**
+   * Xóa một quản lý thu
+   *
+   * @author nga
+   * @since 06/06/2023
+   */
+  @Override
+  public void delete(Long id) throws FamilyTreeException {
+    var revenueManagement = this.getById(id);
+    revenueManagementRepository.delete(revenueManagement);
   }
 
   public RevenueManagementServiceImpl(

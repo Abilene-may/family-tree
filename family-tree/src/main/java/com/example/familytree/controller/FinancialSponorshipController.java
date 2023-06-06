@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -108,6 +109,28 @@ public class FinancialSponorshipController {
     try {
       financialSponsorshipService.update(financialSponsorship);
       return new ResponseEntity<>(HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Xóa một quản lý tài trợ
+   *
+   * @author nga
+   * @since 06/06/2023
+   */
+  @Schema(name = "Xóa một quản lý tài trợ")
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<Object> delete(@PathVariable Long id) {
+    try {
+      financialSponsorshipService.delete(id);
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);

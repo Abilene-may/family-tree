@@ -12,4 +12,5 @@ public interface RevenueManagementService {
   List<RevenueManagement> getAllRevenue() throws FamilyTreeException;
   RevenueManagement getById(Long id) throws FamilyTreeException;
   RevenueReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate) throws FamilyTreeException;
+  void delete(Long id) throws FamilyTreeException;
 }

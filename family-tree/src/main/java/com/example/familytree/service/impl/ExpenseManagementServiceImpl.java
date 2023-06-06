@@ -146,6 +146,17 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
     reAndExReports.setPreviousBalance(previousBalance);
     return reAndExReports;
   }
+  /**
+   * Xóa một quản lý chi
+   *
+   * @author nga
+   * @since 06/06/2023
+   */
+  @Override
+  public void delete(Long id) throws FamilyTreeException {
+    var expenseManagement = this.getById(id);
+    expenseManagementRepository.delete(expenseManagement);
+  }
 
   /**
    * Tính số tiền dư kỳ trước

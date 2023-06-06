@@ -14,4 +14,5 @@ public interface FinancialSponsorshipService {
 
   FinancialSponsorshipReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
       throws FamilyTreeException;
+  void delete(Long id) throws FamilyTreeException;
 }
