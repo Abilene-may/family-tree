@@ -167,6 +167,7 @@ public class MemberController {
       var statisticsDTO = memberService.genealogicalStatisticsDTO();
       return new ResponseEntity<>(statisticsDTO, HttpStatus.OK);
     } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
     } catch (Exception ex) {

@@ -260,6 +260,9 @@ public class MemberServiceImpl implements MemberService {
     // Tìm số thành viên đã mất với giới tính gender
     List<Member> numberOfFemale = memberRepository.findAllByDateOfDeathAndGender(gender);
     int totalAge = 0;
+    if(numberOfFemale.isEmpty()){
+      return totalAge;
+    }
     int memberCount = numberOfFemale.size();
     // Tính tuổi thọ TB
     for (int i = 0; i < memberCount; i++) {
@@ -277,6 +280,9 @@ public class MemberServiceImpl implements MemberService {
    */
   public int numberOfGeneration(List<Member> members, int genderation) {
     int count = 0;
+    if(members.isEmpty()){
+      return count;
+    }
     for (Member member : members) {
       if (member.getGeneration() == genderation) {
         count++;
