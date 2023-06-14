@@ -46,7 +46,7 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
               .revenuePerPerson(Constant.REVENUE_PER_PERSON)
               .startDate(today)
               .dueDate(dueDate)
-              .status(Constant.SAP_MO)
+              .status(Constant.SAP_DIEN_RA)
               .build();
       revenueManagements.add(management);
       return revenueManagementRepository.saveAll(revenueManagements);
@@ -69,8 +69,8 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
     if (revenueManagement.getStatus().equals(Constant.DA_DONG)) {
       throw new FamilyTreeException(
-          ExceptionUtils.CLOSED_REVENUE,
-          ExceptionUtils.messages.get(ExceptionUtils.CLOSED_REVENUE));
+          ExceptionUtils.STATUS_IS_INCORRECT,
+          ExceptionUtils.messages.get(ExceptionUtils.STATUS_IS_INCORRECT));
     }
     revenueManagement.setRevenuePerPerson(revenueManagementDIS.getRevenuePerPerson());
     // Kiểm tra hạn thu đã qua thì status = đã đóng
@@ -78,10 +78,10 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     if (localDate.isAfter(revenueManagement.getDueDate())) {
       revenueManagement.setStatus(Constant.DA_DONG);
     }
-    // ngày bđ thu <= today <= hạn thu thì status = đang mở
+    // ngày bđ thu <= today <= hạn thu thì status = đang diễn ra
     if (localDate.isAfter(revenueManagement.getStartDate())
         && localDate.isBefore(revenueManagement.getDueDate())) {
-      revenueManagement.setStatus(Constant.DANG_MO);
+      revenueManagement.setStatus(Constant.DANG_DIEN_RA);
     }
     revenueManagementRepository.save(revenueManagement);
   }

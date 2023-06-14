@@ -20,8 +20,8 @@ public class Constant {
   public static final String DA_MAT = "Đã mất";
   public static final String QUY_HO = "Quỹ họ";
   public static final Long REVENUE_PER_PERSON = 500000L;
-  public static final String SAP_MO = "Sắp mở";
-  public static final String DANG_MO = "Đang mở";
+  public static final String SAP_DIEN_RA = "Sắp diễn ra";
+  public static final String DANG_DIEN_RA = "Đang diễn ra";
   public static final String DA_DONG = "Đã đóng";
 
 
