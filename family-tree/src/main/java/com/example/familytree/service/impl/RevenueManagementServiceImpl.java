@@ -142,6 +142,9 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
   public void delete(Long id) throws FamilyTreeException {
     var revenueManagement = this.getById(id);
     revenueManagementRepository.delete(revenueManagement);
+    // xóa 1 list các chi tiết khoản thu
+    List<RevenueDetail> revenueDetailList = revenueDetailRepository.findAllByIdRevenueManagement(id);
+    revenueDetailRepository.deleteAll(revenueDetailList);
   }
 
   public RevenueManagementServiceImpl(

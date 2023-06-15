@@ -139,6 +139,9 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
   public void delete(Long id) throws FamilyTreeException {
     var financialSponsorship = this.getById(id);
     financialSponsorshipRepository.delete(financialSponsorship);
+    // Xóa chi tiết các giao dịch của đợt tài trợ
+    var sponsorsipDetails = sponsorsipDetailRepository.findAllByFinancialSponsorshipId(id);
+    sponsorsipDetailRepository.deleteAll(sponsorsipDetails);
   }
 
   public FinancialSponorshipServiceImpl(

@@ -2,6 +2,7 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.domain.ExpenseManagement;
+import com.example.familytree.domain.RevenueDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.ExpenseReport;
@@ -156,6 +157,9 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
   public void delete(Long id) throws FamilyTreeException {
     var expenseManagement = this.getById(id);
     expenseManagementRepository.delete(expenseManagement);
+    // xóa 1 list các chi tiết khoản chi
+    List<ExpenseDetail> expenseDetails = expenseDetailRepository.findAllByExpenseManagementId(id);
+    expenseDetailRepository.deleteAll(expenseDetails);
   }
 
   /**
