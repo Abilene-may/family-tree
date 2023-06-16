@@ -58,7 +58,7 @@ public class GuestManagementController {
    * @since 16/06/2023
    */
   @Schema(name = "Xem danh sách các khách mời theo id sự kiện")
-  @GetMapping("/get-all-an-event")
+  @GetMapping("/get-all-an-event/{id}")
   public ResponseEntity<Object> getAllByEventManagementId(@PathVariable Long eventManagementId) {
     try {
       var guestManagements = guestManagementService.findAllByEventManagementId(eventManagementId);

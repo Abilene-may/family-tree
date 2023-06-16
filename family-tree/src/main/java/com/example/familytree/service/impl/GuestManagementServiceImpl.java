@@ -4,7 +4,6 @@ import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.GuestManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.guestmanagement.GuestManagementDTO;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
 import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.repository.MemberRepository;
@@ -35,36 +34,35 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    * @since 16/06/2023
    */
   @Override
-  public List<GuestManagementDTO> setUpListGuest(GuestManagementReqDTO reqDTO)
+  public List<GuestManagement> setUpListGuest(GuestManagementReqDTO reqDTO)
       throws FamilyTreeException {
-    List<GuestManagementDTO> response = new ArrayList<>();
-    if(reqDTO.getChooseAll()){
+    var listCheck = this.findAllByEventManagementId(reqDTO.getEventManagamentId()) ;
+    List<GuestManagement> response = new ArrayList<>();
+    if(reqDTO.getChooseAll() && listCheck.isEmpty()){
       var memberList = memberRepository.findAllByStatus(Constant.DA_MAT);
       List<GuestManagement> guestManagements = new ArrayList<>();
       // ánh xạ từ entity sang DTO
-      List<GuestManagementDTO> guestManagementDTOS =
+      List<GuestManagement> guestManagementList =
           memberList.stream()
               .map(
                   x -> {
-                    GuestManagementDTO guestManagementDTO = new GuestManagementDTO();
                     GuestManagement guestManagement = new GuestManagement();
-                    guestManagementDTO.setMemberId(x.getId());
                     guestManagement.setMemberId(x.getId());
-                    guestManagementDTO.setFullName(x.getFullName());
-                    guestManagementDTO.setGender(x.getGender());
-                    guestManagementDTO.setDateOfBirth(x.getDateOfBirth());
-                    guestManagementDTO.setMobilePhoneNumber(x.getMobilePhoneNumber());
-                    guestManagementDTO.setCareer(x.getCareer());
-                    guestManagementDTO.setEventManagementId(reqDTO.getEventManagamentId());
+                    guestManagement.setFullName(x.getFullName());
+                    guestManagement.setGender(x.getGender());
+                    guestManagement.setDateOfBirth(x.getDateOfBirth());
+                    guestManagement.setMobilePhoneNumber(x.getMobilePhoneNumber());
+                    guestManagement.setCareer(x.getCareer());
                     guestManagement.setEventManagementId(reqDTO.getEventManagamentId());
                     guestManagements.add(guestManagement);
-                    return guestManagementDTO;
+                    return guestManagement;
                   })
               .collect(Collectors.toList());
       guestManagementRepository.saveAll(guestManagements);
-      response.addAll(guestManagementDTOS);
+      response.addAll(guestManagementList);
+      return response;
     }
-    return response;
+    return listCheck;
   }
 
   /**
@@ -96,7 +94,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    */
   @Override
   public void deleteAll(Long eventManagementId) throws FamilyTreeException {
-    var guestManagements = this.findAllByEventManagementId(eventManagementId);
+    var guestManagements  = guestManagementRepository.findAllByEventManagementId(eventManagementId);
     guestManagementRepository.deleteAll(guestManagements);
   }
 
