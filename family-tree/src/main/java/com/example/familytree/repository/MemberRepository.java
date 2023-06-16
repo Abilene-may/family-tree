@@ -64,4 +64,13 @@ public interface MemberRepository
       value = "select distinct generation from members order by generation ASC",
       nativeQuery = true)
   List<Integer> findAllByGenderation();
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM members\n"
+              + "WHERE status is distinct from :status "
+              + "order by id ASC",
+      nativeQuery = true)
+  List<Member> findAllByStatus(String status);
 }
