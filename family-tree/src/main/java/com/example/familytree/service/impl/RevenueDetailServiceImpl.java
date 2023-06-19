@@ -33,16 +33,21 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
   }
 
   /**
-   * Lấy tất cả revenue detail qua id của revenueMangement
+   * Thiết lập DS những người cần đóng cho 1 khoản thu hằng năm
    *
    * @author nga
    */
   @Override
   public List<RevenueDetail> getAllByIdRevenueManagement(
       Long idRevenueManagemnet, LocalDate startDate) throws FamilyTreeException {
+    // Kiểm tra xem đã thiết lập DS các thành viên cần đóng tiền chưa
+    // Lấy list các giao dịch thu của một khoản thu theo idRevenueManagemnet truyền vào
     var revenueDetailList =
         revenueDetailRepository.findAllByIdRevenueManagement(idRevenueManagemnet);
+    // Lấy thông tin ngày hiện tại
     LocalDate today = LocalDate.now();
+    // Nếu chưa thiết lập các giao dịch thu và ngày bắt đầu thu (của khoản thu hằng năm) < ngày hiện tại
+    // TH ngày bắt đầu thu > ngày hiện tại => không cho phép thiết lập DS các thành viên cần đóng tiền
     if (revenueDetailList.isEmpty() && today.isBefore(startDate)) {
       List<RevenueDetail> revenueDetails = new ArrayList<>();
       // lấy tất cả thành viên tuổi từ 18->60
@@ -52,7 +57,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
               member -> {
                 RevenueDetail revenueDetail = new RevenueDetail();
                 revenueDetail.setIdMember(member.getId());
-                // set người đóng tiền
+                // thiết lập tên người đóng tiền
                 revenueDetail.setPayer(member.getFullName());
                 // thiết lập số tiền cần đóng của mỗi thành viên
                 try {
@@ -62,7 +67,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
                 } catch (FamilyTreeException e) {
                   throw new RuntimeException(e);
                 }
-                // set trạng thái
+                // set trạng thái mặc định ban đầu là chưa thu
                 revenueDetail.setStatus(false);
                 revenueDetail.setIdRevenueManagement(idRevenueManagemnet);
                 revenueDetails.add(revenueDetail);
@@ -70,19 +75,22 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
               });
       return revenueDetails;
     } else {
+      // TH đã có DS các thành viên đóng tiền trong database
+      // Trả về DS các thành viên cần đóng đã được thiết lập trước đó
       return revenueDetailList;
     }
   }
 
   /**
-   * Sửa trạng thái và ngày đóng
+   * Sửa trạng thái thành đã đóng
    *
    * @author nga
    */
   @Override
   public void update(RevenueDetailDTO revenueDetailDTO) throws FamilyTreeException {
-    // Tìm bản ghi cần sửa
+    // Tìm bản ghi cần sửa trong database
     var optionalRevenueDetail = revenueDetailRepository.findById(revenueDetailDTO.getId());
+    // Trả ra lỗi nếu không tìm thấy bản ghi trong database
     if (optionalRevenueDetail.isEmpty()
         && optionalRevenueDetail.get().getIdRevenueManagement()
             == revenueDetailDTO.getIdRevenueManagemnet()) {
@@ -90,9 +98,14 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
           ExceptionUtils.ID_IS_NOT_EXIST,
           ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
     }
+    LocalDate today = LocalDate.now();
     var revenueDetail = optionalRevenueDetail.get();
-    revenueDetail.setDate(revenueDetailDTO.getDate());
+    // TH ko nhập ngày Lưu thông tin ngày đóng là ngày hiện tại - ngày sửa
+    if(revenueDetailDTO.getDate() == null){
+      revenueDetail.setDate(today);
+    }
     revenueDetail.setStatus(revenueDetailDTO.getStatus());
+    // Lưu lại thông tin đã đóng vào database
     revenueDetailRepository.save(revenueDetail);
   }
 }
