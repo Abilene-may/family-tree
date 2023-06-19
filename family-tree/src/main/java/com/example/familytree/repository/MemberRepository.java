@@ -73,4 +73,33 @@ public interface MemberRepository
               + "order by id ASC",
       nativeQuery = true)
   List<Member> findAllByStatus(String status);
+
+  @Query(
+      value =
+          "select min(date_of_birth) \n"
+              + "from members \n"
+              + "where status is distinct from :status ",
+      nativeQuery = true)
+  LocalDate findByDateOfBirth(String status);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM members \n"
+              + "WHERE LOWER(gender) LIKE LOWER(CONCAT('%', :gender, '%'))"
+              + " and status is distinct from :status "
+              + " order by date_of_birth ",
+      nativeQuery = true)
+  List<Member> findAllGuestByGender(String gender, String status);
+
+  @Query(
+      value =
+          "select *\n"
+              + "from members\n"
+              + "where (date_of_birth >= :startDate and date_of_birth <= :endDate)\n"
+              + "  and gender like :gender \n"
+              + "  and status is distinct from :status",
+      nativeQuery = true)
+  List<Member> findAllByDateOfBirthAndGender(
+      LocalDate startDate, LocalDate endDate, String gender, String status);
 }

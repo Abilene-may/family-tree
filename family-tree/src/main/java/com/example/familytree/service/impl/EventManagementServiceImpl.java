@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *Service xử lý logic quản lý sự kiện
@@ -41,6 +42,7 @@ public class EventManagementServiceImpl implements EventManagementService {
    * @since 14/06/2023
    */
   @Override
+  @Transactional
   public EventManagement create(EventManagement eventManagement) throws FamilyTreeException {
     if(eventManagement.getEventDate() != null){
       Integer year = eventManagement.getEventDate().getYear();

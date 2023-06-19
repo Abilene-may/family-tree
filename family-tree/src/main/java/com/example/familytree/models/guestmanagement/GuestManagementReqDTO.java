@@ -30,6 +30,6 @@ public class GuestManagementReqDTO {
   private Integer endAge;
 
   @Schema(description = "id sự kiện")
-  private Long eventManagamentId;
+  private Long eventManagementId;
 
 }

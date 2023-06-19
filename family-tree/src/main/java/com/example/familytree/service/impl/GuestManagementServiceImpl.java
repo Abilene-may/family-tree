@@ -1,7 +1,9 @@
 package com.example.familytree.service.impl;
 
+import com.amazonaws.util.StringUtils;
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.GuestManagement;
+import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
@@ -9,6 +11,8 @@ import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.GuestManagementService;
 import com.example.familytree.service.MemberService;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,33 +40,108 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   @Override
   public List<GuestManagement> setUpListGuest(GuestManagementReqDTO reqDTO)
       throws FamilyTreeException {
-    var listCheck = this.findAllByEventManagementId(reqDTO.getEventManagamentId()) ;
-    List<GuestManagement> response = new ArrayList<>();
-    if(reqDTO.getChooseAll() && listCheck.isEmpty()){
-      var memberList = memberRepository.findAllByStatus(Constant.DA_MAT);
-      List<GuestManagement> guestManagements = new ArrayList<>();
-      // ánh xạ từ entity sang DTO
-      List<GuestManagement> guestManagementList =
-          memberList.stream()
-              .map(
-                  x -> {
-                    GuestManagement guestManagement = new GuestManagement();
-                    guestManagement.setMemberId(x.getId());
-                    guestManagement.setFullName(x.getFullName());
-                    guestManagement.setGender(x.getGender());
-                    guestManagement.setDateOfBirth(x.getDateOfBirth());
-                    guestManagement.setMobilePhoneNumber(x.getMobilePhoneNumber());
-                    guestManagement.setCareer(x.getCareer());
-                    guestManagement.setEventManagementId(reqDTO.getEventManagamentId());
-                    guestManagements.add(guestManagement);
-                    return guestManagement;
-                  })
-              .collect(Collectors.toList());
-      guestManagementRepository.saveAll(guestManagements);
+    var listCheck = guestManagementRepository.findAllByEventManagementId(reqDTO.getEventManagementId()) ;
+    if (listCheck.isEmpty()) {
+      List<GuestManagement> guestManagementList = new ArrayList<>();
+      List<GuestManagement> response = new ArrayList<>();
+      LocalDate today = LocalDate.now();
+      if (reqDTO.getChooseAll()) {
+        var memberList = memberRepository.findAllByStatus(Constant.DA_MAT);
+        // ánh xạ từ entity sang DTO
+        guestManagementList = this.guestManagementList(reqDTO, memberList);
+        response.addAll(guestManagementList);
+        guestManagementRepository.saveAll(guestManagementList);
+        return response;
+      }
+      List<Member> memberList = new ArrayList<>();
+      // TH ko tìm theo giới tính
+      if (StringUtils.isNullOrEmpty(reqDTO.getGender())) {
+        // TH ko truyền vào tuổi bắt đầu
+        if (reqDTO.getStartAge() == null) {
+          memberList = this.memberListByAge(0, reqDTO.getEndAge());
+        }
+        // TH ko truyền vào tuổi kết thúc
+        if (reqDTO.getEndAge() == null) {
+          LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
+          Period period = Period.between(dateOfBirthMax, today);
+          Integer ageMax = period.getYears();
+          memberList = this.memberListByAge(reqDTO.getStartAge(), ageMax);
+        }
+        // TH truyền cả từ tuổi -> tuổi
+        if (reqDTO.getStartAge() != null && reqDTO.getEndAge() != null) {
+          memberList = this.memberListByAge(reqDTO.getStartAge(), reqDTO.getEndAge());
+        }
+        guestManagementList = this.guestManagementList(reqDTO, memberList);
+        response.addAll(guestManagementList);
+        guestManagementRepository.saveAll(guestManagementList);
+        return response;
+      }
+      // TH không tìm theo độ tuổi
+      if (reqDTO.getStartAge() == null && reqDTO.getEndAge() == null) {
+        memberList = memberRepository.findAllGuestByGender(reqDTO.getGender(), Constant.DA_MAT);
+      }
+      // TH tìm theo cả hai nhưng startAge == null
+      if (reqDTO.getStartAge() == null) {
+        var endDate = today.minusYears(0);
+        var startDate = today.minusYears(reqDTO.getEndAge());
+        memberList =
+            memberRepository.findAllByDateOfBirthAndGender(
+                startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
+      }
+      //TH tìm theo cả hai nhưng endAge == null
+      if(reqDTO.getEndAge() == null){
+        LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
+        Period period = Period.between(dateOfBirthMax, today);
+        Integer ageMax = period.getYears();
+        var endDate = today.minusYears(reqDTO.getStartAge());
+        var startDate = today.minusYears(ageMax);
+        memberList =
+            memberRepository.findAllByDateOfBirthAndGender(
+                startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
+      }
+      guestManagementList = this.guestManagementList(reqDTO, memberList);
       response.addAll(guestManagementList);
+      guestManagementRepository.saveAll(guestManagementList);
       return response;
     }
     return listCheck;
+  }
+
+  public List<GuestManagement> guestManagementList(GuestManagementReqDTO reqDTO, List<Member> members){
+    // ánh xạ từ entity sang DTO
+    List<GuestManagement> guestManagementList =
+        members.stream()
+            .map(
+                x -> {
+                  GuestManagement guestManagement = new GuestManagement();
+                  guestManagement.setMemberId(x.getId());
+                  guestManagement.setFullName(x.getFullName());
+                  guestManagement.setGender(x.getGender());
+                  guestManagement.setDateOfBirth(x.getDateOfBirth());
+                  guestManagement.setMobilePhoneNumber(x.getMobilePhoneNumber());
+                  guestManagement.setCareer(x.getCareer());
+                  guestManagement.setEventManagementId(reqDTO.getEventManagementId());
+                  return guestManagement;
+                })
+            .collect(Collectors.toList());
+    return guestManagementList;
+  }
+
+  /**
+   * Tách hàm tìm kiếm theo tuổi của thành viên
+   *
+   * @param startAge
+   * @param endAge
+   * @return
+   * @author nga
+   */
+  public List<Member> memberListByAge(Integer startAge, Integer endAge){
+    LocalDate today = LocalDate.now();
+    var endDate = today.minusYears(startAge);
+    var startDate = today.minusYears(endAge);
+    List<Member> membersByAge =
+        memberRepository.findAllAgeInTheRange(endDate, startDate, Constant.DA_MAT);
+    return membersByAge;
   }
 
   /**
