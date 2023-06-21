@@ -26,6 +26,7 @@ public class ExceptionUtils {
   public static final String E_SPONSORSHIP_DETAIL_1 = "E_SPONSORSHIP_DETAIL_1";
   public static final String REVENUE_ALREADY_EXISTS = "REVENUE_ALREADY_EXISTS";
   public static final String EVENT_DATE_IS_NOT_NULL = "EVENT_STATUS_IS_INCORRECT_1";
+  public static final String GUEST_MANAGEMENT_IS_EMPTY = "GUEST_MANAGEMENT_IS_EMPTY";
 
 
   public static Map<String, String> messages;
@@ -50,6 +51,8 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.E_SPONSORSHIP_DETAIL_1, "Đợt tài trợ này đã đóng, không thể thêm giao dịch.");
     messages.put(ExceptionUtils.REVENUE_ALREADY_EXISTS, "Khoản thu hằng năm của năm nay đã được thiết lập.");
     messages.put(ExceptionUtils.EVENT_DATE_IS_NOT_NULL, "Ngày tổ chức sự kiện không được để trống.");
+    messages.put(ExceptionUtils.GUEST_MANAGEMENT_IS_EMPTY, "Danh sách khách mời đang rỗng, vui lòng thiết lập khách mời.");
+
 
   }
   public static String buildMessage(String messKey, Object... arg) {

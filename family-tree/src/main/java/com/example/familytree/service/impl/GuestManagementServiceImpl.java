@@ -1,5 +1,6 @@
 package com.example.familytree.service.impl;
 
+import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.util.StringUtils;
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.GuestManagement;
@@ -9,24 +10,36 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
 import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.repository.MemberRepository;
+import com.example.familytree.service.EventManagementService;
 import com.example.familytree.service.GuestManagementService;
-import com.example.familytree.service.MemberService;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+
+/** Service xử lý logic quản lý khách mời */
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class GuestManagementServiceImpl implements GuestManagementService {
   public final GuestManagementRepository guestManagementRepository;
-  public final MemberService memberService;
+  public final EventManagementService eventManagementService;
   public final MemberRepository memberRepository;
+
+  public GuestManagementServiceImpl(
+      @Lazy GuestManagementRepository guestManagementRepository,
+      @Lazy EventManagementService eventManagementService,
+      @Lazy MemberRepository memberRepository) {
+    super();
+    this.guestManagementRepository = guestManagementRepository;
+    this.eventManagementService = eventManagementService;
+    this.memberRepository = memberRepository;
+  }
 
   /**
    * Thiết lập danh sách khách mời lọc theo dữ liệu đầu vào
@@ -40,7 +53,8 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   @Override
   public List<GuestManagement> setUpListGuest(GuestManagementReqDTO reqDTO)
       throws FamilyTreeException {
-    var listCheck = guestManagementRepository.findAllByEventManagementId(reqDTO.getEventManagementId()) ;
+    var listCheck =
+        guestManagementRepository.findAllByEventManagementId(reqDTO.getEventManagementId());
     if (listCheck.isEmpty()) {
       List<GuestManagement> guestManagementList = new ArrayList<>();
       List<GuestManagement> response = new ArrayList<>();
@@ -76,29 +90,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
         guestManagementRepository.saveAll(guestManagementList);
         return response;
       }
-      // TH không tìm theo độ tuổi
-      if (reqDTO.getStartAge() == null && reqDTO.getEndAge() == null) {
-        memberList = memberRepository.findAllGuestByGender(reqDTO.getGender(), Constant.DA_MAT);
-      }
-      // TH tìm theo cả hai nhưng startAge == null
-      if (reqDTO.getStartAge() == null) {
-        var endDate = today.minusYears(0);
-        var startDate = today.minusYears(reqDTO.getEndAge());
-        memberList =
-            memberRepository.findAllByDateOfBirthAndGender(
-                startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
-      }
-      //TH tìm theo cả hai nhưng endAge == null
-      if(reqDTO.getEndAge() == null){
-        LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
-        Period period = Period.between(dateOfBirthMax, today);
-        Integer ageMax = period.getYears();
-        var endDate = today.minusYears(reqDTO.getStartAge());
-        var startDate = today.minusYears(ageMax);
-        memberList =
-            memberRepository.findAllByDateOfBirthAndGender(
-                startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
-      }
+      memberList = searchMembers(reqDTO, today, memberList);
       guestManagementList = this.guestManagementList(reqDTO, memberList);
       response.addAll(guestManagementList);
       guestManagementRepository.saveAll(guestManagementList);
@@ -107,7 +99,44 @@ public class GuestManagementServiceImpl implements GuestManagementService {
     return listCheck;
   }
 
-  public List<GuestManagement> guestManagementList(GuestManagementReqDTO reqDTO, List<Member> members){
+  /**
+   * Hàm tách method thiết lập khách mời
+   *
+   * @param reqDTO
+   * @param today
+   * @param memberList
+   * @author nga
+   */
+  private List<Member> searchMembers(
+      GuestManagementReqDTO reqDTO, LocalDate today, List<Member> memberList) {
+    // TH không tìm theo độ tuổi
+    if (reqDTO.getStartAge() == null && reqDTO.getEndAge() == null) {
+      memberList = memberRepository.findAllGuestByGender(reqDTO.getGender(), Constant.DA_MAT);
+    }
+    // TH tìm theo cả hai nhưng startAge == null
+    if (reqDTO.getStartAge() == null) {
+      var endDate = today.minusYears(0);
+      var startDate = today.minusYears(reqDTO.getEndAge());
+      memberList =
+          memberRepository.findAllByDateOfBirthAndGender(
+              startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
+    }
+    // TH tìm theo cả hai nhưng endAge == null
+    if (reqDTO.getEndAge() == null) {
+      LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
+      Period period = Period.between(dateOfBirthMax, today);
+      Integer ageMax = period.getYears();
+      var endDate = today.minusYears(reqDTO.getStartAge());
+      var startDate = today.minusYears(ageMax);
+      memberList =
+          memberRepository.findAllByDateOfBirthAndGender(
+              startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
+    }
+    return memberList;
+  }
+
+  public List<GuestManagement> guestManagementList(
+      GuestManagementReqDTO reqDTO, List<Member> members) {
     // ánh xạ từ entity sang DTO
     List<GuestManagement> guestManagementList =
         members.stream()
@@ -135,7 +164,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    * @return
    * @author nga
    */
-  public List<Member> memberListByAge(Integer startAge, Integer endAge){
+  public List<Member> memberListByAge(Integer startAge, Integer endAge) {
     LocalDate today = LocalDate.now();
     var endDate = today.minusYears(startAge);
     var startDate = today.minusYears(endAge);
@@ -173,7 +202,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    */
   @Override
   public void deleteAll(Long eventManagementId) throws FamilyTreeException {
-    var guestManagements  = guestManagementRepository.findAllByEventManagementId(eventManagementId);
+    var guestManagements = guestManagementRepository.findAllByEventManagementId(eventManagementId);
     guestManagementRepository.deleteAll(guestManagements);
   }
 
@@ -187,7 +216,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    */
   @Override
   public List<GuestManagement> getAll() throws FamilyTreeException {
-    var guestManagements  = guestManagementRepository.findAll();
+    var guestManagements = guestManagementRepository.findAll();
     return guestManagements;
   }
 
@@ -201,28 +230,17 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    * @since 16/06/2023
    */
   @Override
-  public List<GuestManagement> findAllByEventManagementId(Long eventManagementId) throws FamilyTreeException {
-    var guestManagements = guestManagementRepository.findAllByEventManagementId(eventManagementId);
-    if (guestManagements.isEmpty()) {
-      throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
-    }
-    return guestManagements;
-  }
-
-  /**
-   * Thiết lập khách theo đầu vào cách 2
-   *
-   * @param guestManagementReqDTO
-   * @return
-   * @throws FamilyTreeException
-   * @author nga
-   */
-  @Override
-  public List<GuestManagement> findAllListGuest(GuestManagementReqDTO guestManagementReqDTO)
+  public List<GuestManagement> findAllByEventManagementId(Long eventManagementId)
       throws FamilyTreeException {
-
-    return null;
+    // check thông tin sự kiện theo đầu vào
+    var eventManagement = eventManagementService.getById(eventManagementId);
+    var guestManagementList = guestManagementRepository.findAllByEventManagementId(eventManagementId);
+    if (guestManagementList.size() ==0) {
+      throw new FamilyTreeException(
+          ExceptionUtils.GUEST_MANAGEMENT_IS_EMPTY,
+          ExceptionUtils.messages.get(ExceptionUtils.GUEST_MANAGEMENT_IS_EMPTY));
+    }
+    return guestManagementList;
   }
+
 }

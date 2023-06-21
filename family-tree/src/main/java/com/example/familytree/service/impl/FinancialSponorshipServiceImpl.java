@@ -1,6 +1,5 @@
 package com.example.familytree.service.impl;
 
-import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.FinancialSponsorship;
 import com.example.familytree.domain.SponsorsipDetail;
 import com.example.familytree.exceptions.ExceptionUtils;

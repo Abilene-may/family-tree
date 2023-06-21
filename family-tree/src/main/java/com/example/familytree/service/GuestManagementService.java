@@ -15,7 +15,4 @@ public interface GuestManagementService {
 
   List<GuestManagement> getAll() throws FamilyTreeException;
   List<GuestManagement> findAllByEventManagementId(Long eventManagementId) throws FamilyTreeException;
-  // Thiết lập khách theo thông tin đầu vào cách khác
-  List<GuestManagement> findAllListGuest(GuestManagementReqDTO guestManagementReqDTO)
-      throws FamilyTreeException;
 }
