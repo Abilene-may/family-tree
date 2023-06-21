@@ -1,5 +1,11 @@
 package com.example.familytree.exceptions;
 
+/**
+ * Class khai báo exception
+ *
+ * @author nga
+ */
+
 import java.util.HashMap;import java.util.Map;
 public class ExceptionUtils {
   public static final String E_INTERNAL_SERVER = "E_INTERNAL_SERVER";

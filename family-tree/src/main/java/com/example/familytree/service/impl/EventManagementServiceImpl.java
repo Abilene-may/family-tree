@@ -6,7 +6,9 @@ import com.example.familytree.domain.EventManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.repository.EventManagementRepository;
+import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.service.EventManagementService;
+import com.example.familytree.service.GuestManagementService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +26,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class EventManagementServiceImpl implements EventManagementService {
+
+  private final GuestManagementService guestManagementService;
   private final EventManagementRepository eventManagementRepository;
 
   public EventManagementServiceImpl(
-      @Lazy EventManagementRepository eventManagementRepository ){
+      @Lazy EventManagementRepository eventManagementRepository,
+      GuestManagementService guestManagementService){
     super();
     this.eventManagementRepository = eventManagementRepository;
+    this.guestManagementService = guestManagementService;
   }
 
   /**
@@ -106,7 +112,10 @@ public class EventManagementServiceImpl implements EventManagementService {
    */
   @Override
   public void delete(Long id) throws FamilyTreeException {
-
+    var eventManagement = this.getById(id);
+    eventManagementRepository.delete(eventManagement);
+    // Xóa DS khách mời của sự kiện
+    guestManagementService.deleteAll(id);
   }
 
   /**

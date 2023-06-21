@@ -210,4 +210,19 @@ public class GuestManagementServiceImpl implements GuestManagementService {
     }
     return guestManagements;
   }
+
+  /**
+   * Thiết lập khách theo đầu vào cách 2
+   *
+   * @param guestManagementReqDTO
+   * @return
+   * @throws FamilyTreeException
+   * @author nga
+   */
+  @Override
+  public List<GuestManagement> findAllListGuest(GuestManagementReqDTO guestManagementReqDTO)
+      throws FamilyTreeException {
+
+    return null;
+  }
 }
