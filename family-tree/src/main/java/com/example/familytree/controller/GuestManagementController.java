@@ -78,7 +78,7 @@ public class GuestManagementController {
 
   /**
    * API Xóa một khách mời
-   *
+   * id của khách mời
    * @author nga
    * @since 16/06/2023
    */

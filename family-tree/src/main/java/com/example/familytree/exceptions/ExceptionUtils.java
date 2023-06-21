@@ -27,6 +27,7 @@ public class ExceptionUtils {
   public static final String REVENUE_ALREADY_EXISTS = "REVENUE_ALREADY_EXISTS";
   public static final String EVENT_DATE_IS_NOT_NULL = "EVENT_STATUS_IS_INCORRECT_1";
   public static final String GUEST_MANAGEMENT_IS_EMPTY = "GUEST_MANAGEMENT_IS_EMPTY";
+  public static final String PERMISSION_MANAGEMENT_IS_NOT_BLANK = "PERMISSION_MANAGEMENT_IS_NOT_BLANK";
 
 
   public static Map<String, String> messages;
@@ -52,6 +53,7 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.REVENUE_ALREADY_EXISTS, "Khoản thu hằng năm của năm nay đã được thiết lập.");
     messages.put(ExceptionUtils.EVENT_DATE_IS_NOT_NULL, "Ngày tổ chức sự kiện không được để trống.");
     messages.put(ExceptionUtils.GUEST_MANAGEMENT_IS_EMPTY, "Danh sách khách mời đang rỗng, vui lòng thiết lập khách mời.");
+    messages.put(ExceptionUtils.PERMISSION_MANAGEMENT_IS_NOT_BLANK, "Tên nhóm quyền không thể được trống.");
 
 
   }
