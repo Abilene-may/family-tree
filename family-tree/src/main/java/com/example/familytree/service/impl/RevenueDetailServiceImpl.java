@@ -48,7 +48,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     LocalDate today = LocalDate.now();
     // Nếu chưa thiết lập các giao dịch thu và ngày bắt đầu thu (của khoản thu hằng năm) < ngày hiện tại
     // TH ngày bắt đầu thu > ngày hiện tại => không cho phép thiết lập DS các thành viên cần đóng tiền
-    if (revenueDetailList.isEmpty() && today.isBefore(startDate)) {
+    if (revenueDetailList.size() == 0  && today.isAfter(startDate)) {
       List<RevenueDetail> revenueDetails = new ArrayList<>();
       // lấy tất cả thành viên tuổi từ 18->60
       var memberList = memberService.findAllAgeInTheRange();

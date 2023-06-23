@@ -55,10 +55,10 @@ public interface MemberRepository
   @Query(
       value =
           "select * from members\n"
-              + "where date_of_death is distinct from null "
+              + "where (date_of_death is distinct from null or status like :status) "
               + "and LOWER(gender) LIKE LOWER(CONCAT('%', :gender, '%'))",
       nativeQuery = true)
-  List<Member> findAllByDateOfDeathAndGender(String gender);
+  List<Member> findAllByDateOfDeathOrStatusAndGender(String status, String gender);
 
   @Query(
       value = "select distinct generation from members order by generation ASC",

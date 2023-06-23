@@ -38,9 +38,17 @@ public class ExpenseManagement {
   @Column(name = "year")
   private Integer year;
 
-  @Schema(description = "Tên khoản chi")
+  @Schema(description = "id của sự kiện nếu lấy thông tin từ quản lý sự kiện")
+  @Column(name = "event_management_id")
+  private Long eventManagementId;
+
+  @Schema(description = "Tên khoản chi hoặc lấy từ sự kiện sang")
   @Column(name = "expense_name")
   private String expenseName;
+
+  @Schema(description = "True nếu là thông tin lấy từ sự kiện sang")
+  @Column(name = "type_of_expense")
+  private Boolean typeOfExpense;
 
   @Schema(description = "Người quản lý khoản chi")
   @Column(name = "expense_manager")

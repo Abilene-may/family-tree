@@ -258,7 +258,8 @@ public class MemberServiceImpl implements MemberService {
    */
   public int averageLifespan(String gender) {
     // Tìm số thành viên đã mất với giới tính gender
-    List<Member> numberOfFemale = memberRepository.findAllByDateOfDeathAndGender(gender);
+    List<Member> numberOfFemale =
+        memberRepository.findAllByDateOfDeathOrStatusAndGender(Constant.DA_MAT, gender);
     int totalAge = 0;
     if(numberOfFemale.isEmpty()){
       return totalAge;
