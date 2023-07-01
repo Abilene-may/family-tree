@@ -8,14 +8,10 @@ import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.models.GenerationDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -138,8 +134,8 @@ public class MemberServiceImpl implements MemberService {
     var member = memberRepository.findById(id);
     if (member.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.MEMBER_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.MEMBER_ID_IS_NOT_EXIST));
     }
     return member.get();
   }

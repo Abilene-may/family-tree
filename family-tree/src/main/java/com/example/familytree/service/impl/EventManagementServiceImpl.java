@@ -6,7 +6,6 @@ import com.example.familytree.domain.EventManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.repository.EventManagementRepository;
-import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.service.EventManagementService;
 import com.example.familytree.service.GuestManagementService;
 import java.time.LocalDate;
@@ -142,8 +141,8 @@ public class EventManagementServiceImpl implements EventManagementService {
     var eventManagementOptional = eventManagementRepository.findById(id);
     if (eventManagementOptional.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.EVENT_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.EVENT_ID_IS_NOT_EXIST));
     }
     return eventManagementOptional.get();
   }

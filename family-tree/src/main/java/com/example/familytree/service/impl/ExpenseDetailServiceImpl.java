@@ -92,8 +92,8 @@ public class ExpenseDetailServiceImpl implements ExpenseDetailService {
     var expenseDetail = expenseDetailRepository.findById(id);
     if (expenseDetail.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.EXPENSE_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.EXPENSE_ID_IS_NOT_EXIST));
     }
     return expenseDetail.get();
   }

@@ -2,7 +2,6 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.domain.ExpenseManagement;
-import com.example.familytree.domain.RevenueDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.ExpenseReport;
@@ -14,7 +13,6 @@ import com.example.familytree.service.ExpenseManagementService;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -89,8 +87,8 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
     var expenseManagement = expenseManagementRepository.findById(id);
     if (expenseManagement.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.EXPENSE_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.EXPENSE_ID_IS_NOT_EXIST));
     }
     return expenseManagement.get();
   }

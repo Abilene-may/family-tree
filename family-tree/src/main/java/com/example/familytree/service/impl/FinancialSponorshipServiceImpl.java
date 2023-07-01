@@ -99,8 +99,8 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
     var financialSponsorship = financialSponsorshipRepository.findById(id);
     if (financialSponsorship.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.SPONSORSHIP_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.SPONSORSHIP_ID_IS_NOT_EXIST));
     }
     return financialSponsorship.get();
   }

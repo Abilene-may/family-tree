@@ -74,8 +74,8 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
     var optional = permissionManagementRepository.findById(id);
     if (optional.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST));
     }
     return optional.get();
   }

@@ -1,6 +1,5 @@
 package com.example.familytree.service.impl;
 
-import com.amazonaws.util.CollectionUtils;
 import com.amazonaws.util.StringUtils;
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.GuestManagement;
@@ -16,7 +15,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -186,8 +184,8 @@ public class GuestManagementServiceImpl implements GuestManagementService {
     var guestManagement = guestManagementRepository.findById(id);
     if (guestManagement.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.GUEST_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.GUEST_ID_IS_NOT_EXIST));
     }
     guestManagementRepository.delete(guestManagement.get());
   }

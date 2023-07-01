@@ -9,7 +9,7 @@ package com.example.familytree.exceptions;
 import java.util.HashMap;import java.util.Map;
 public class ExceptionUtils {
   public static final String E_INTERNAL_SERVER = "E_INTERNAL_SERVER";
-  public static final String ID_IS_NOT_EXIST = "ID_IS_NOT_EXIST";
+  public static final String REVENUE_ID_IS_NOT_EXIST = "REVENUE_ID_IS_NOT_EXIST";
   public static final String USER_SUCESSFUL = "USER_SUCESSFUL";
   public static final String USER_LOGIN_1 = "USER_LOGIN_1";
   public static final String USER_LOGIN_2 = "USER_LOGIN_2";
@@ -28,6 +28,14 @@ public class ExceptionUtils {
   public static final String EVENT_DATE_IS_NOT_NULL = "EVENT_STATUS_IS_INCORRECT_1";
   public static final String GUEST_MANAGEMENT_IS_EMPTY = "GUEST_MANAGEMENT_IS_EMPTY";
   public static final String PERMISSION_MANAGEMENT_IS_NOT_BLANK = "PERMISSION_MANAGEMENT_IS_NOT_BLANK";
+  public static final String MEMBER_ID_IS_NOT_EXIST = "MEMBER_ID_IS_NOT_EXIST";
+  public static final String EXPENSE_ID_IS_NOT_EXIST = "EXPENSE_ID_IS_NOT_EXIST";
+  public static final String SPONSORSHIP_ID_IS_NOT_EXIST = "SPONSORSHIP_ID_IS_NOT_EXIST";
+  public static final String SPONSOR_ID_IS_NOT_EXIST = "SPONSOR_ID_IS_NOT_EXIST";
+  public static final String EVENT_ID_IS_NOT_EXIST = "EVENT_ID_IS_NOT_EXIST";
+  public static final String GUEST_ID_IS_NOT_EXIST = "GUEST_ID_IS_NOT_EXIST";
+  public static final String PERMISSION_ID_IS_NOT_EXIST = "PERMISSION_ID_IS_NOT_EXIST";
+
 
 
   public static Map<String, String> messages;
@@ -35,7 +43,9 @@ public class ExceptionUtils {
   static {
     messages = new HashMap<>();
     messages.put(ExceptionUtils.E_INTERNAL_SERVER, "Server không phản hồi.");
-    messages.put(ExceptionUtils.ID_IS_NOT_EXIST, "Không tìm thấy thông tin hoặc thông tin không tồn tại.");
+    messages.put(
+        ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
+        "Không tìm thấy thông tin khoản thu hằng năm hoặc thông tin không tồn tại.");
     messages.put(ExceptionUtils.USER_SUCESSFUL, "Đăng nhập thành công.");
     messages.put(ExceptionUtils.USER_LOGIN_1, "Bạn chưa nhập thông tin username/password.");
     messages.put(ExceptionUtils.USER_LOGIN_2, "Username không đúng hoặc không tồn tại.");
@@ -53,10 +63,26 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.REVENUE_ALREADY_EXISTS, "Khoản thu hằng năm của năm nay đã được thiết lập.");
     messages.put(ExceptionUtils.EVENT_DATE_IS_NOT_NULL, "Ngày tổ chức sự kiện không được để trống.");
     messages.put(ExceptionUtils.GUEST_MANAGEMENT_IS_EMPTY, "Danh sách khách mời đang rỗng, vui lòng thiết lập khách mời.");
-    messages.put(ExceptionUtils.PERMISSION_MANAGEMENT_IS_NOT_BLANK, "Tên nhóm quyền không thể được trống.");
-
-
+    messages.put(ExceptionUtils.PERMISSION_MANAGEMENT_IS_NOT_BLANK, "Tên nhóm quyền không được bỏ trống.");
+    messages.put(
+        ExceptionUtils.MEMBER_ID_IS_NOT_EXIST,
+        "Không tìm thấy thông tin của thành viên hoặc thành viên không có trong gia phả.");
+    messages.put(
+        ExceptionUtils.EXPENSE_ID_IS_NOT_EXIST,
+        "Không tìm thấy thông tin của quản lý chi hoặc quản lý chi không tồn tại.");
+    messages.put(
+        ExceptionUtils.SPONSORSHIP_ID_IS_NOT_EXIST,
+        "Không tìm thấy thông tin của quản lý tiền tài trợ hoặc quản lý tiền tài trợ không tồn tại.");
+    messages.put(
+        ExceptionUtils.SPONSOR_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của người tài trợ.");
+    messages.put(
+        ExceptionUtils.EVENT_ID_IS_NOT_EXIST,
+        "Không tìm thấy thông tin của sự kiện hoặc sự kiện không tồn tại.");
+    messages.put(ExceptionUtils.GUEST_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của khách mời.");
+    messages.put(
+        ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của nhóm quyền.");
   }
+
   public static String buildMessage(String messKey, Object... arg) {
     return String.format(ExceptionUtils.messages.get(messKey), arg);
   }

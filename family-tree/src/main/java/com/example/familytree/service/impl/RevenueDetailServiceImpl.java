@@ -40,15 +40,23 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
   @Override
   public List<RevenueDetail> getAllByIdRevenueManagement(
       Long idRevenueManagemnet, LocalDate startDate) throws FamilyTreeException {
+    // Lấy thông tin khoản thu
+    var revenueManagement = revenueManagementService.getById(idRevenueManagemnet);
     // Kiểm tra xem đã thiết lập DS các thành viên cần đóng tiền chưa
     // Lấy list các giao dịch thu của một khoản thu theo idRevenueManagemnet truyền vào
     var revenueDetailList =
         revenueDetailRepository.findAllByIdRevenueManagement(idRevenueManagemnet);
+
+
     // Lấy thông tin ngày hiện tại
     LocalDate today = LocalDate.now();
     // Nếu chưa thiết lập các giao dịch thu và ngày bắt đầu thu (của khoản thu hằng năm) < ngày hiện tại
-    // TH ngày bắt đầu thu > ngày hiện tại => không cho phép thiết lập DS các thành viên cần đóng tiền
-    if (revenueDetailList.size() == 0  && today.isAfter(startDate)) {
+    // TH ngày bắt đầu thu > ngày hiện tại và số tiền đã thay đổi
+    // => không cho phép thiết lập DS các thành viên cần đóng tiền
+    if (revenueDetailList.size() == 0
+        || (revenueDetailList.size() != 0
+            && revenueManagement.getRevenuePerPerson() != revenueDetailList.get(0).getMoney()
+            && today.isAfter(startDate))) {
       List<RevenueDetail> revenueDetails = new ArrayList<>();
       // lấy tất cả thành viên tuổi từ 18->60
       var memberList = memberService.findAllAgeInTheRange();
@@ -60,13 +68,8 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
                 // thiết lập tên người đóng tiền
                 revenueDetail.setPayer(member.getFullName());
                 // thiết lập số tiền cần đóng của mỗi thành viên
-                try {
-                  var revenueManagement = revenueManagementService.getById(idRevenueManagemnet);
-                  revenueDetail.setMoney(revenueManagement.getRevenuePerPerson());
-                  revenueDetail.setYear(revenueManagement.getYear());
-                } catch (FamilyTreeException e) {
-                  throw new RuntimeException(e);
-                }
+                revenueDetail.setMoney(revenueManagement.getRevenuePerPerson());
+                revenueDetail.setYear(revenueManagement.getYear());
                 // set trạng thái mặc định ban đầu là chưa thu
                 revenueDetail.setStatus(false);
                 revenueDetail.setIdRevenueManagement(idRevenueManagemnet);
@@ -95,8 +98,8 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
         && optionalRevenueDetail.get().getIdRevenueManagement()
             == revenueDetailDTO.getIdRevenueManagemnet()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_ID_IS_NOT_EXIST));
     }
     LocalDate today = LocalDate.now();
     var revenueDetail = optionalRevenueDetail.get();

@@ -1,6 +1,5 @@
 package com.example.familytree.service.impl;
 
-import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.SponsorsipDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
@@ -106,8 +105,8 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
     var sponsorsipDetail = sponsorsipDetailRepository.findById(id);
     if (sponsorsipDetail.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.SPONSOR_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.SPONSOR_ID_IS_NOT_EXIST));
     }
     return sponsorsipDetail.get();
   }

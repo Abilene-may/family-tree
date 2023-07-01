@@ -37,14 +37,14 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     List<RevenueManagement> revenueManagements =
         revenueManagementRepository.findAllByYear(today.getYear());
     if (revenueManagements.isEmpty()) {
-      today.plusDays(3);
-      var dueDate = today.plusMonths(2);
+      var startDate = today.plusDays(3);
+      var dueDate = startDate.plusMonths(2);
       RevenueManagement management =
           RevenueManagement.builder()
-              .year(today.getYear())
+              .year(startDate.getYear())
               .revenueName(Constant.QUY_HO)
               .revenuePerPerson(Constant.REVENUE_PER_PERSON)
-              .startDate(today)
+              .startDate(startDate)
               .dueDate(dueDate)
               .status(Constant.SAP_DIEN_RA)
               .build();
@@ -103,8 +103,8 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     var revenueManagement = revenueManagementRepository.findById(id);
     if (revenueManagement.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.ID_IS_NOT_EXIST));
+          ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_ID_IS_NOT_EXIST));
     }
     return revenueManagement.get();
   }
