@@ -10,8 +10,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDTO {
-  @Schema(description = "tên đăng nhập")
+  @Schema(description = "id của thành viên")
+  private Long memberId;
+
+  @Schema(description = "Họ và tên của thành viên")
+  private String fullName;
+
+  @Schema(description = "username của người dùng")
   private String userName;
-  @Schema(description = "Mật khẩu")
+
+  @Schema(description = "password của người dùng")
   private String password;
+
+  @Schema(description = "vai trò của thành viên trong gia phả")
+  private String role;
 }

@@ -177,4 +177,29 @@ public class MemberController {
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  /**
+   * API DS các tài khoản đã đăng ký
+   *
+   * @return
+   * @since 01/07/2023
+   * @author nga
+   */
+  @Operation(summary = "DS các thành viên đã đăng ký tài khoản login")
+  @GetMapping(value = "/get-all-accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> getAllAccounts(){
+    try {
+      var allAccounts = memberService.findAllAccounts();
+      return new ResponseEntity<>(allAccounts, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

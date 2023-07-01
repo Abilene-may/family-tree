@@ -6,12 +6,14 @@ import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.models.GenerationDTO;
+import com.example.familytree.models.UserDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.MemberService;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -240,6 +242,30 @@ public class MemberServiceImpl implements MemberService {
     List<Member> membersByAge =
         memberRepository.findAllAgeInTheRange(endDate, startDate, Constant.DA_MAT);
     return membersByAge;
+  }
+
+  /**
+   * Tìm tất cả những thành viên có tài khoản đăng nhập vào phần mềm
+   *
+   * @return
+   * @throws FamilyTreeException
+   * @since 01/07/2023
+   */
+  @Override
+  public List<UserDTO> findAllAccounts() throws FamilyTreeException {
+    List<Member> memberList = memberRepository.findAllByUserName();
+    List<UserDTO> userDTOList =
+        memberList.stream()
+            .map(
+                member ->
+                    new UserDTO(
+                        member.getId(),
+                        member.getFullName(),
+                        member.getUserName(),
+                        member.getPassword(),
+                        member.getRole()))
+            .collect(Collectors.toList());
+    return userDTOList;
   }
 
   /* Tính tổng số nam hoặc nữ */

@@ -102,4 +102,9 @@ public interface MemberRepository
       nativeQuery = true)
   List<Member> findAllByDateOfBirthAndGender(
       LocalDate startDate, LocalDate endDate, String gender, String status);
+
+  @Query(
+      value = "select * from members where username is not null",
+      nativeQuery = true)
+  List<Member> findAllByUserName();
 }
