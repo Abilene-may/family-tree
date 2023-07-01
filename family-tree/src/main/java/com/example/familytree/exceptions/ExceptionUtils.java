@@ -19,7 +19,7 @@ public class ExceptionUtils {
   public static final String TRUONG_HO_ALREADY_EXISTS = "TRUONG_HO_ALREADY_EXISTS";
   public static final String ONG_TO_ALREADY_EXISTS = "ONG_TO_ALREADY_EXISTS";
   public static final String WRONG_STATUS_REVENUE = "WRONG_STATUS_REVENUE";
-  public static final String STATUS_IS_INCORRECT = "STATUS_IS_INCORRECT";
+  public static final String STATUS_IS_CLOSED = "STATUS_IS_CLOSED";
   public static final String CLOSED_EXPENSE = "CLOSED_EXPENSE";
   public static final String E_FINANCIAL_SPONSORSHIP_1 = "E_FINANCIAL_SPONSORSHIP_1";
   public static final String E_FINANCIAL_SPONSORSHIP_2 = "E_FINANCIAL_SPONSORSHIP_2";
@@ -56,7 +56,7 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,"Trưởng họ đã tồn tại vui lòng chọn vai trò khác.");
     messages.put(ExceptionUtils.ONG_TO_ALREADY_EXISTS,"Ông tổ đã tồn tại vui lòng chọn vai trò khác.");
     messages.put(ExceptionUtils.WRONG_STATUS_REVENUE, "Đã quá hạn thu vui lòng chọn lại trạng thái.");
-    messages.put(ExceptionUtils.STATUS_IS_INCORRECT, "Trạng thái là đã đóng không thể sửa.");
+    messages.put(ExceptionUtils.STATUS_IS_CLOSED, "Trạng thái là đã đóng không thể sửa.");
     messages.put(ExceptionUtils.CLOSED_EXPENSE, "Năm không phải năm hiện tại vui lòng chọn lại trạng thái.");
     messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_1, "Ngày mở không được sau ngày đóng.");
     messages.put(ExceptionUtils.E_FINANCIAL_SPONSORSHIP_2, "Đã quá hạn mở vui lòng chọn lại trạng thái.");
