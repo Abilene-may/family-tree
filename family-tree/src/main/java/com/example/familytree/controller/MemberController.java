@@ -5,6 +5,7 @@ import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.UserDTO;
 import com.example.familytree.models.common.ErrorDTO;
+import com.example.familytree.models.membermanagement.SignUpReqDTO;
 import com.example.familytree.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -191,6 +192,30 @@ public class MemberController {
     try {
       var allAccounts = memberService.findAllAccounts();
       return new ResponseEntity<>(allAccounts, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Đăng ký tài khoản
+   *
+   * @return
+   * @since 01/07/2023
+   * @author nga
+   */
+  @Operation(summary = "Đăng ký tài khoản cho thành viên")
+  @PostMapping(value = "/sign-up", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> signUp(@RequestBody SignUpReqDTO reqDTO){
+    try {
+      memberService.signUp(reqDTO);
+      return new ResponseEntity<>( HttpStatus.OK);
     } catch (FamilyTreeException e) {
       log.error(e.getMessage(), e);
       return new ResponseEntity<>(

@@ -2,16 +2,17 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Member;
-import com.example.familytree.domain.PermissionManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.models.GenerationDTO;
 import com.example.familytree.models.UserDTO;
 import com.example.familytree.models.membermanagement.LoginDTO;
+import com.example.familytree.models.membermanagement.SignUpReqDTO;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.repository.PermissionManagementRepository;
 import com.example.familytree.service.MemberService;
+import io.micrometer.common.util.StringUtils;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -83,6 +84,37 @@ public class MemberServiceImpl implements MemberService {
             .build();
     return loginDTO;
   }
+
+  /**
+   * Đăng ký tài khoản
+   *
+   * @param reqDTO
+   * @throws FamilyTreeException
+   * @since 01/07/2023
+   */
+  @Override
+  @Transactional
+  public void signUp(SignUpReqDTO reqDTO) throws FamilyTreeException {
+    var member = this.getMemberById(reqDTO.getMemberId());
+    // check thành viên đã đăng ký tài khoản hay chưa
+    // TH thành viên chưa đăng ký
+    if(StringUtils.isBlank(member.getUserName())){
+      // check username đã tồn tại
+      var userName = memberRepository.findByUserName(reqDTO.getUserName());
+      if(userName.isPresent()){
+        throw new FamilyTreeException(
+            ExceptionUtils.USER_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.USER_ALREADY_EXISTS));
+      }
+      // TH chưa đăng ký
+      member.setUserName(reqDTO.getUserName());
+      member.setPassword(reqDTO.getPassword());
+    } else {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
+    }
+  }
+
   /**
    * Lấy ra danh sách các thành viên trong gia phả
    *
