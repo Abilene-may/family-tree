@@ -69,8 +69,8 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
     // kiểm tra trạng thái nếu status = đã đóng thì không được sửa
     if (revenueManagement.getStatus().equals(Constant.DA_DONG)) {
       throw new FamilyTreeException(
-          ExceptionUtils.STATUS_IS_INCORRECT,
-          ExceptionUtils.messages.get(ExceptionUtils.STATUS_IS_INCORRECT));
+          ExceptionUtils.STATUS_IS_CLOSED,
+          ExceptionUtils.messages.get(ExceptionUtils.STATUS_IS_CLOSED));
     }
     revenueManagement.setRevenuePerPerson(revenueManagementDIS.getRevenuePerPerson());
     // Kiểm tra hạn thu đã qua thì status = đã đóng
