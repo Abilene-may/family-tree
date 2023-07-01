@@ -38,7 +38,7 @@ public class MemberController {
   @Operation(summary = "Đăng nhập")
   public ResponseEntity<Object> logIn(@RequestBody UserDTO userDTO) {
     try {
-      Member member = memberService.logIn(userDTO.getUserName(), userDTO.getPassword());
+      var member = memberService.logIn(userDTO.getUserName(), userDTO.getPassword());
       return new ResponseEntity<>(member, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

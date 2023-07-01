@@ -4,10 +4,11 @@ import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.models.UserDTO;
+import com.example.familytree.models.membermanagement.LoginDTO;
 import java.util.List;
 
 public interface MemberService {
-  Member logIn(String userName, String password) throws FamilyTreeException;
+  LoginDTO logIn(String userName, String password) throws FamilyTreeException;
   List<Member> getAllMember();
   void createMember(Member member)throws FamilyTreeException;
   Member getMemberById(Long id) throws FamilyTreeException;

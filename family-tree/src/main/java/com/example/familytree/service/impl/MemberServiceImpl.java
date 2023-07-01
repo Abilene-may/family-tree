@@ -2,12 +2,15 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Member;
+import com.example.familytree.domain.PermissionManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.GenealogicalStatisticsDTO;
 import com.example.familytree.models.GenerationDTO;
 import com.example.familytree.models.UserDTO;
+import com.example.familytree.models.membermanagement.LoginDTO;
 import com.example.familytree.repository.MemberRepository;
+import com.example.familytree.repository.PermissionManagementRepository;
 import com.example.familytree.service.MemberService;
 import java.time.LocalDate;
 import java.time.Period;
@@ -24,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class MemberServiceImpl implements MemberService {
   private final MemberRepository memberRepository;
+  private final PermissionManagementRepository permissionManagementRepository;
 
   /**
    * đăng nhập vào tài khoản
@@ -33,24 +37,51 @@ public class MemberServiceImpl implements MemberService {
    */
   @Override
   @Transactional
-  public Member logIn(String userName, String password) throws FamilyTreeException {
+  public LoginDTO logIn(String userName, String password) throws FamilyTreeException {
+    // check đầu vào not null
     if (userName == null || password == null) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_LOGIN_1, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_1));
-    } else {
-      var memberOptional = memberRepository.findByUserName(userName);
-      if (memberOptional.isEmpty()) {
-        throw new FamilyTreeException(
-            ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
-      }
-      var member = memberOptional.get();
-      if (!password.equals(member.getPassword())) {
-        throw new FamilyTreeException(
-            ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
-      }
-      return member;
     }
-
+    var memberOptional = memberRepository.findByUserName(userName);
+    if (memberOptional.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
+    }
+    var member = memberOptional.get();
+    if (!password.equals(member.getPassword())) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_LOGIN_3, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_3));
+    }
+    // lấy thông tin nhóm quyền theo role người đăng nhập
+    var permissionManagement =
+        permissionManagementRepository.findByPermissionGroupName(member.getRole());
+    if (permissionManagement.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST));
+    }
+    var permission = permissionManagement.get();
+    LoginDTO loginDTO =
+        LoginDTO.builder()
+            .memberId(member.getId())
+            .fullName(member.getFullName())
+            .userName(member.getUserName())
+            .password(member.getPassword())
+            .role(member.getRole())
+            .viewMembers(permission.getViewMebers())
+            .updateMembers(permission.getUpdateMembers())
+            .createMembers(permission.getCreateMembers())
+            .viewFinancial(permission.getViewFinancial())
+            .createFinancial(permission.getCreateFinancial())
+            .updateFinancial(permission.getUpdateFinancial())
+            .deleteFinancial(permission.getDeleteFinancial())
+            .viewEvent(permission.getViewEvent())
+            .createEvent(permission.getCreateEvent())
+            .updateEvent(permission.getUpdateEvent())
+            .deleteEvent(permission.getDeleteEvent())
+            .build();
+    return loginDTO;
   }
   /**
    * Lấy ra danh sách các thành viên trong gia phả
