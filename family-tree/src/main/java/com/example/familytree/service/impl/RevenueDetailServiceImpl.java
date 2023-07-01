@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -55,7 +56,7 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     // => không cho phép thiết lập DS các thành viên cần đóng tiền
     if (revenueDetailList.size() == 0
         || (revenueDetailList.size() != 0
-            && revenueManagement.getRevenuePerPerson() != revenueDetailList.get(0).getMoney()
+            && !revenueManagement.getRevenuePerPerson().equals(revenueDetailList.get(0).getMoney())
             && today.isAfter(startDate))) {
       List<RevenueDetail> revenueDetails = new ArrayList<>();
       // lấy tất cả thành viên tuổi từ 18->60
@@ -90,19 +91,17 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
    * @author nga
    */
   @Override
+  @Transactional
   public void update(RevenueDetailDTO revenueDetailDTO) throws FamilyTreeException {
     // Tìm bản ghi cần sửa trong database
-    var optionalRevenueDetail = revenueDetailRepository.findById(revenueDetailDTO.getId());
+    var revenueDetail = this.getById(revenueDetailDTO.getId());
     // Trả ra lỗi nếu không tìm thấy bản ghi trong database
-    if (optionalRevenueDetail.isEmpty()
-        && optionalRevenueDetail.get().getIdRevenueManagement()
-            == revenueDetailDTO.getIdRevenueManagemnet()) {
+    if (revenueDetail.getIdRevenueManagement().equals(revenueDetailDTO.getIdRevenueManagemnet())) {
       throw new FamilyTreeException(
           ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
           ExceptionUtils.messages.get(ExceptionUtils.REVENUE_ID_IS_NOT_EXIST));
     }
     LocalDate today = LocalDate.now();
-    var revenueDetail = optionalRevenueDetail.get();
     // TH ko nhập ngày Lưu thông tin ngày đóng là ngày hiện tại - ngày sửa
     if(revenueDetailDTO.getDate() == null){
       revenueDetail.setDate(today);
@@ -111,4 +110,23 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     // Lưu lại thông tin đã đóng vào database
     revenueDetailRepository.save(revenueDetail);
   }
+
+  /**
+   * Lấy thông tin một khoản thu theo id
+   * @param id
+   * @return
+   * @throws FamilyTreeException
+   */
+  @Override
+  public RevenueDetail getById(Long id) throws FamilyTreeException {
+    var optionalRevenueDetail = revenueDetailRepository.findById(id);
+    if (optionalRevenueDetail.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.REVENUE_DETAIL_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_DETAIL_ID_IS_NOT_EXIST));
+    }
+    return optionalRevenueDetail.get();
+  }
+
+
 }

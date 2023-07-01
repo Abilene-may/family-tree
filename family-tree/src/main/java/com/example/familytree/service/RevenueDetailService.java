@@ -11,4 +11,5 @@ public interface RevenueDetailService {
       throws FamilyTreeException;
 
   void update(RevenueDetailDTO revenueDetailDTO) throws FamilyTreeException;
+  RevenueDetail getById(Long id) throws FamilyTreeException;
 }

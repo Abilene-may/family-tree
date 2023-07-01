@@ -35,6 +35,7 @@ public class ExceptionUtils {
   public static final String EVENT_ID_IS_NOT_EXIST = "EVENT_ID_IS_NOT_EXIST";
   public static final String GUEST_ID_IS_NOT_EXIST = "GUEST_ID_IS_NOT_EXIST";
   public static final String PERMISSION_ID_IS_NOT_EXIST = "PERMISSION_ID_IS_NOT_EXIST";
+  public static final String REVENUE_DETAIL_ID_IS_NOT_EXIST = "REVENUE_DETAIL_ID_IS_NOT_EXIST";
 
 
 
@@ -81,6 +82,8 @@ public class ExceptionUtils {
     messages.put(ExceptionUtils.GUEST_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của khách mời.");
     messages.put(
         ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của nhóm quyền.");
+    messages.put(
+        ExceptionUtils.REVENUE_DETAIL_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của người thu.");
   }
 
   public static String buildMessage(String messKey, Object... arg) {
