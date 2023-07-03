@@ -23,4 +23,22 @@ public interface SponsorsipDetailRepository extends JpaRepository<SponsorsipDeta
       nativeQuery = true)
   List<SponsorsipDetail> findAllByStartDateAndEndDate(
       LocalDate effectiveStartDate, LocalDate effectiveEndDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM sponsorship_detail\n"
+              + "WHERE (date >= :effectiveStartDate)\n"
+              + "order by date ASC",
+      nativeQuery = true)
+  List<SponsorsipDetail> findAllByStartDate(LocalDate effectiveStartDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM sponsorship_detail\n"
+              + "WHERE (date <= :effectiveEndDate)\n"
+              + "order by date ASC",
+      nativeQuery = true)
+  List<SponsorsipDetail> findAllByEndDate(LocalDate effectiveEndDate);
 }

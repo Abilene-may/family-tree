@@ -129,22 +129,20 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
           revenueDetailRepository.findAllByStartDateAndEndDate(
               effectiveStartDate, effectiveEndDate);
 
+    } else if(effectiveStartDate != null){
+      // Tìm từ ngày
+      revenueDatels =
+          revenueDetailRepository.findAllByStartDate(effectiveStartDate);
+    }
+    else if (effectiveEndDate != null){
+      // TH startDate == null
+      revenueDatels =
+          revenueDetailRepository.findAllByEndDate(effectiveEndDate);
     } else {
-      if(effectiveStartDate != null){
-        // Tìm từ ngày
-        revenueDatels =
-            revenueDetailRepository.findAllByStartDate(effectiveStartDate);
-      }
-      if (effectiveEndDate != null){
-        // TH startDate == null
-        revenueDatels =
-            revenueDetailRepository.findAllByEndDate(effectiveEndDate);
-      }
       // TH startDate == null và endDate == null
       revenueDatels =
           revenueDetailRepository.findAllByStatus();
     }
-
     revenueReport.setRevenueDetails(revenueDatels);
     for (RevenueDetail revenueDetail: revenueDatels) {
       totalMoney +=  revenueDetail.getMoney();

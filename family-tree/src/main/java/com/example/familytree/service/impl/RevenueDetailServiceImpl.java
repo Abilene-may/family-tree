@@ -93,14 +93,8 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
   @Override
   @Transactional
   public void update(RevenueDetailDTO revenueDetailDTO) throws FamilyTreeException {
-    // Tìm bản ghi cần sửa trong database
+    // check thông tin của khoản thu hằng năm
     var revenueDetail = this.getById(revenueDetailDTO.getId());
-    // Trả ra lỗi nếu không tìm thấy bản ghi trong database
-    if (revenueDetail.getIdRevenueManagement().equals(revenueDetailDTO.getIdRevenueManagemnet())) {
-      throw new FamilyTreeException(
-          ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_ID_IS_NOT_EXIST));
-    }
     LocalDate today = LocalDate.now();
     // TH ko nhập ngày Lưu thông tin ngày đóng là ngày hiện tại - ngày sửa
     if(revenueDetailDTO.getDate() == null){
@@ -122,8 +116,8 @@ public class RevenueDetailServiceImpl implements RevenueDetailService {
     var optionalRevenueDetail = revenueDetailRepository.findById(id);
     if (optionalRevenueDetail.isEmpty()) {
       throw new FamilyTreeException(
-          ExceptionUtils.REVENUE_DETAIL_ID_IS_NOT_EXIST,
-          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_DETAIL_ID_IS_NOT_EXIST));
+          ExceptionUtils.REVENUE_ID_IS_NOT_EXIST,
+          ExceptionUtils.messages.get(ExceptionUtils.REVENUE_ID_IS_NOT_EXIST));
     }
     return optionalRevenueDetail.get();
   }

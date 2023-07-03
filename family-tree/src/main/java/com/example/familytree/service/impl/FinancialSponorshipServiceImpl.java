@@ -10,6 +10,7 @@ import com.example.familytree.repository.SponsorsipDetailRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.SponsorshipDetailService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -116,9 +117,23 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
       throws FamilyTreeException {
     // Tìm kiếm danh sách các khoản tài trợ từ ngày đến ngày
     FinancialSponsorshipReport financialSponsorshipReport = new FinancialSponsorshipReport();
-    var sponsorsipDetails =
-        sponsorsipDetailRepository.findAllByStartDateAndEndDate(
-            effectiveStartDate, effectiveEndDate);
+    List<SponsorsipDetail> sponsorsipDetails = new ArrayList<>();
+    if(effectiveStartDate != null && effectiveEndDate != null){
+      sponsorsipDetails =
+          sponsorsipDetailRepository.findAllByStartDateAndEndDate(
+              effectiveStartDate, effectiveEndDate);
+    } else if (effectiveStartDate != null){
+      sponsorsipDetails =
+          sponsorsipDetailRepository.findAllByStartDate(
+              effectiveStartDate);
+    } else if (effectiveEndDate != null){
+      sponsorsipDetails =
+          sponsorsipDetailRepository.findAllByEndDate(
+              effectiveEndDate);
+    } else {
+      sponsorsipDetails = sponsorsipDetailRepository.findAll();
+    }
+
     financialSponsorshipReport.setSponsorsipDetails(sponsorsipDetails);
     Long totalMoney = 0L;
     for (SponsorsipDetail sponsorsipDetail : sponsorsipDetails) {

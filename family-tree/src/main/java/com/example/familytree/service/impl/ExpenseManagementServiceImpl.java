@@ -103,28 +103,25 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
   public ExpenseReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
       throws FamilyTreeException {
     ExpenseReport expenseReport = new ExpenseReport();
-    List<ExpenseDetail> expenseDetails = new ArrayList<>();
+    List<ExpenseDetail> expenseDetails;
     if(effectiveStartDate != null && effectiveEndDate != null){
       // Lấy danh sách các khoản chi từ ngày đến ngày
       expenseDetails  =
           expenseDetailRepository.findAllByStartDateAndEndDate(
               effectiveStartDate, effectiveEndDate);
-      expenseReport.setExpenseDetails(expenseDetails);
+    }
+    else if(effectiveStartDate != null){
+      expenseDetails  =
+          expenseDetailRepository.findAllByStartDate(effectiveStartDate);
+    }
+    else if(effectiveEndDate != null){
+      expenseDetails  =
+          expenseDetailRepository.findAllByEndDate(effectiveEndDate);
     } else {
-      if(effectiveStartDate != null){
-        expenseDetails  =
-            expenseDetailRepository.findAllByStartDate(effectiveStartDate);
-        expenseReport.setExpenseDetails(expenseDetails);
-      }
-      if(effectiveEndDate != null){
-        expenseDetails  =
-            expenseDetailRepository.findAllByEndDate(effectiveEndDate);
-        expenseReport.setExpenseDetails(expenseDetails);
-      }
       expenseDetails  =
           expenseDetailRepository.findAll();
-      expenseReport.setExpenseDetails(expenseDetails);
     }
+    expenseReport.setExpenseDetails(expenseDetails);
     Long totalMoney = 0L;
     for (ExpenseDetail expenseDetail : expenseDetails) {
       // Tính tổng tiền từ danh sách giao dịch
