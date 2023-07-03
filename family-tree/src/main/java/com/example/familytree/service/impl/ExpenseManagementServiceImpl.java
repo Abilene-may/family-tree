@@ -13,6 +13,7 @@ import com.example.familytree.service.ExpenseManagementService;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -102,11 +103,28 @@ public class ExpenseManagementServiceImpl implements ExpenseManagementService {
   public ExpenseReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
       throws FamilyTreeException {
     ExpenseReport expenseReport = new ExpenseReport();
-    // Lấy danh sách các khoản chi từ ngày đến ngày
-    var expenseDetails  =
-        expenseDetailRepository.findAllByStartDateAndEndDate(
-            effectiveStartDate, effectiveEndDate);
-    expenseReport.setExpenseDetails(expenseDetails);
+    List<ExpenseDetail> expenseDetails = new ArrayList<>();
+    if(effectiveStartDate != null && effectiveEndDate != null){
+      // Lấy danh sách các khoản chi từ ngày đến ngày
+      expenseDetails  =
+          expenseDetailRepository.findAllByStartDateAndEndDate(
+              effectiveStartDate, effectiveEndDate);
+      expenseReport.setExpenseDetails(expenseDetails);
+    } else {
+      if(effectiveStartDate != null){
+        expenseDetails  =
+            expenseDetailRepository.findAllByStartDate(effectiveStartDate);
+        expenseReport.setExpenseDetails(expenseDetails);
+      }
+      if(effectiveEndDate != null){
+        expenseDetails  =
+            expenseDetailRepository.findAllByEndDate(effectiveEndDate);
+        expenseReport.setExpenseDetails(expenseDetails);
+      }
+      expenseDetails  =
+          expenseDetailRepository.findAll();
+      expenseReport.setExpenseDetails(expenseDetails);
+    }
     Long totalMoney = 0L;
     for (ExpenseDetail expenseDetail : expenseDetails) {
       // Tính tổng tiền từ danh sách giao dịch

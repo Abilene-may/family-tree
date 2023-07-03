@@ -24,4 +24,22 @@ public interface ExpenseDetailRepository extends JpaRepository<ExpenseDetail, Lo
       nativeQuery = true)
   List<ExpenseDetail> findAllByStartDateAndEndDate(
       LocalDate effectiveStartDate, LocalDate effectiveEndDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM expense_detail\n"
+              + "WHERE (date_of_pay >= :effectiveStartDate)\n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllByStartDate(LocalDate effectiveStartDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM expense_detail\n"
+              + "WHERE (date_of_pay <= :effectiveEndDate)\n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllByEndDate(LocalDate effectiveEndDate);
 }
