@@ -152,8 +152,8 @@ public class RevenueManagementController {
    */
   @Schema(name = "Báo cáo khoản thu từ ngày đến ngày")
   @GetMapping("/report")
-  public ResponseEntity<Object> report(@RequestParam LocalDate effectiveStartDate,
-      @RequestParam LocalDate effectiveEndDate) {
+  public ResponseEntity<Object> report(@RequestParam(required = false) LocalDate effectiveStartDate,
+      @RequestParam(required = false) LocalDate effectiveEndDate) {
     try {
       var revenueReport = revenueManagementService.report(effectiveStartDate, effectiveEndDate);
       return new ResponseEntity<>(revenueReport, HttpStatus.OK);

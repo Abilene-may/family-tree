@@ -26,4 +26,32 @@ public interface RevenueDetailRepository extends JpaRepository<RevenueDetail, Lo
       nativeQuery = true)
   List<RevenueDetail> findAllByStartDateAndEndDate(
       LocalDate effectiveStartDate, LocalDate effectiveEndDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM revenue_detail\n"
+              + "WHERE date >= :effectiveStartDate AND status is true\n"
+              + "order by date ASC",
+      nativeQuery = true)
+  List<RevenueDetail> findAllByStartDate(LocalDate effectiveStartDate);
+
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM revenue_detail\n"
+              + "WHERE (date <= :effectiveEndDate) AND status is true\n"
+              + "order by date ASC",
+      nativeQuery = true)
+  List<RevenueDetail> findAllByEndDate(LocalDate effectiveEndDate);
+
+  // Tìm tất cả các khoản đã thu
+  @Query(
+      value =
+          "SELECT *\n"
+              + "FROM revenue_detail\n"
+              + "WHERE status is true\n"
+              + "order by date ASC",
+      nativeQuery = true)
+  List<RevenueDetail> findAllByStatus();
 }

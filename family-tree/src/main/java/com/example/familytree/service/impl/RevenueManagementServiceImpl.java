@@ -12,6 +12,7 @@ import com.example.familytree.repository.RevenueManagementRepository;
 import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -119,12 +120,32 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
   public RevenueReport report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
       throws FamilyTreeException {
     RevenueReport revenueReport = new RevenueReport();
-    // tìm những khoản thu từ ngày đến ngày
-    var revenueDatels =
-        revenueDetailRepository.findAllByStartDateAndEndDate(
-            effectiveStartDate, effectiveEndDate);
-    revenueReport.setRevenueDetails(revenueDatels);
     Long totalMoney = 0L;
+    List<RevenueDetail> revenueDatels = new ArrayList<>();
+    // check điều kiện đầu vào
+    if(effectiveStartDate != null && effectiveEndDate != null){
+      // tìm những khoản thu từ ngày đến ngày
+      revenueDatels =
+          revenueDetailRepository.findAllByStartDateAndEndDate(
+              effectiveStartDate, effectiveEndDate);
+
+    } else {
+      if(effectiveStartDate != null){
+        // Tìm từ ngày
+        revenueDatels =
+            revenueDetailRepository.findAllByStartDate(effectiveStartDate);
+      }
+      if (effectiveEndDate != null){
+        // TH startDate == null
+        revenueDatels =
+            revenueDetailRepository.findAllByEndDate(effectiveEndDate);
+      }
+      // TH startDate == null và endDate == null
+      revenueDatels =
+          revenueDetailRepository.findAllByStatus();
+    }
+
+    revenueReport.setRevenueDetails(revenueDatels);
     for (RevenueDetail revenueDetail: revenueDatels) {
       totalMoney +=  revenueDetail.getMoney();
     }
