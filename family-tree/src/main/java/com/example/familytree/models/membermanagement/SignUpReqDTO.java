@@ -26,4 +26,7 @@ public class SignUpReqDTO {
 
   @Schema(description = "password của người dùng")
   private String password;
+
+  @Schema(description = "role của người dùng")
+  private String role;
 }

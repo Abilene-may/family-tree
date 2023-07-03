@@ -104,6 +104,7 @@ public class MemberServiceImpl implements MemberService {
       // TH chưa đăng ký
       member.setUserName(reqDTO.getUserName());
       member.setPassword(reqDTO.getPassword());
+      member.setRole(reqDTO.getRole());
     } else {
       throw new FamilyTreeException(
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
@@ -131,6 +132,7 @@ public class MemberServiceImpl implements MemberService {
     this.findByUserName(reqDTO.getUserName());
     member.setUserName(reqDTO.getUserName());
     member.setPassword(reqDTO.getPassword());
+    member.setRole(reqDTO.getRole());
   }
 
   /**
