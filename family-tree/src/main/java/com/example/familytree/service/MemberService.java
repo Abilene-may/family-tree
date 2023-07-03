@@ -12,6 +12,7 @@ public interface MemberService {
   LoginDTO logIn(String userName, String password) throws FamilyTreeException;
   void signUp(SignUpReqDTO reqDTO) throws FamilyTreeException;
   void updateAccount(SignUpReqDTO reqDTO) throws FamilyTreeException;
+  void deleteAccount(String userName) throws FamilyTreeException;
   List<Member> getAllMember();
   void createMember(Member member)throws FamilyTreeException;
   Member getMemberById(Long id) throws FamilyTreeException;

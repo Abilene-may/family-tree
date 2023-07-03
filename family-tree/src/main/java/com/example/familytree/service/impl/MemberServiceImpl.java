@@ -100,12 +100,7 @@ public class MemberServiceImpl implements MemberService {
     // TH thành viên chưa đăng ký
     if(StringUtils.isBlank(member.getUserName())){
       // check username đã tồn tại
-      var userName = memberRepository.findByUserName(reqDTO.getUserName());
-      if(userName.isPresent()){
-        throw new FamilyTreeException(
-            ExceptionUtils.USER_ALREADY_EXISTS,
-            ExceptionUtils.messages.get(ExceptionUtils.USER_ALREADY_EXISTS));
-      }
+      this.findByUserName(reqDTO.getUserName());
       // TH chưa đăng ký
       member.setUserName(reqDTO.getUserName());
       member.setPassword(reqDTO.getPassword());
@@ -133,15 +128,45 @@ public class MemberServiceImpl implements MemberService {
           ExceptionUtils.ACCOUNT_DOES_NOT_HAVE,
           ExceptionUtils.messages.get(ExceptionUtils.ACCOUNT_DOES_NOT_HAVE));
     }
-    var userName = memberRepository.findByUserName(reqDTO.getUserName());
+    this.findByUserName(reqDTO.getUserName());
+    member.setUserName(reqDTO.getUserName());
+    member.setPassword(reqDTO.getPassword());
+  }
+
+  /**
+   * Validate check userName đã tồn tại
+   *
+   * @param userName
+   * @throws FamilyTreeException
+   */
+  private void findByUserName(String userName) throws FamilyTreeException {
+    var member = memberRepository.findByUserName(userName);
     // TH username đã tồn tại
-    if (userName.isPresent()) {
+    if (member.isPresent()) {
       throw new FamilyTreeException(
           ExceptionUtils.USER_ALREADY_EXISTS,
           ExceptionUtils.messages.get(ExceptionUtils.USER_ALREADY_EXISTS));
     }
-    member.setUserName(reqDTO.getUserName());
-    member.setPassword(reqDTO.getPassword());
+  }
+
+  /**
+   * Xóa 1 tài khoản đã đăng ký theo id của thành viên
+   *
+   * @param userName
+   * @throws FamilyTreeException
+   * @since 03/07/2023
+   */
+  @Override
+  @Transactional
+  public void deleteAccount(String userName) throws FamilyTreeException {
+    var memberOptional = memberRepository.findByUserName(userName);
+    if (memberOptional.isEmpty()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_LOGIN_2, ExceptionUtils.messages.get(ExceptionUtils.USER_LOGIN_2));
+    }
+    var member = memberOptional.get();
+    member.setUserName(null);
+    member.setPassword(null);
   }
 
   /**

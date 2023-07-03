@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -240,6 +241,30 @@ public class MemberController {
     try {
       memberService.updateAccount(reqDTO);
       return new ResponseEntity<>( HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Xóa một tài khoản đã đăng ký
+   *
+   * @return
+   * @since 03/07/2023
+   * @author nga
+   */
+  @Operation(summary = "Xóa một tài khoản đã đăng ký")
+  @DeleteMapping(value = "/delete-account", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> deleteAccount(@RequestParam String userName){
+    try {
+      memberService.deleteAccount(userName);
+      return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     } catch (FamilyTreeException e) {
       log.error(e.getMessage(), e);
       return new ResponseEntity<>(
