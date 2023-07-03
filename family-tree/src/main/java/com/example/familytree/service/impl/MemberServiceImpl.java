@@ -116,6 +116,35 @@ public class MemberServiceImpl implements MemberService {
   }
 
   /**
+   * Sửa thông tin tài khoản đã đăng ký
+   *
+   * @param reqDTO
+   * @throws FamilyTreeException
+   * @since 03/07/2023
+   */
+  @Override
+  @Transactional
+  public void updateAccount(SignUpReqDTO reqDTO) throws FamilyTreeException {
+    var member = this.getMemberById(reqDTO.getMemberId());
+    // check thành viên đã đăng ký tài khoản hay chưa
+    // TH thành viên chưa đăng ký => y/c đăng ký tài khoản trước
+    if (StringUtils.isBlank(member.getUserName())) {
+      throw new FamilyTreeException(
+          ExceptionUtils.ACCOUNT_DOES_NOT_HAVE,
+          ExceptionUtils.messages.get(ExceptionUtils.ACCOUNT_DOES_NOT_HAVE));
+    }
+    var userName = memberRepository.findByUserName(reqDTO.getUserName());
+    // TH username đã tồn tại
+    if (userName.isPresent()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.USER_ALREADY_EXISTS,
+          ExceptionUtils.messages.get(ExceptionUtils.USER_ALREADY_EXISTS));
+    }
+    member.setUserName(reqDTO.getUserName());
+    member.setPassword(reqDTO.getPassword());
+  }
+
+  /**
    * Lấy ra danh sách các thành viên trong gia phả
    *
    * @author nga
