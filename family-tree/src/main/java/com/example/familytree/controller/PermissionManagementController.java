@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -120,16 +121,16 @@ public class PermissionManagementController {
     }
   }
   /**
-   * API Xóa một nhóm quyền
+   * API Xóa một nhóm quyền và thay thế bằng một nhóm quyền khác
    *
    * @author nga
    * @since 21/06/2023
    */
   @Schema(name = "Xóa một nhóm quyền")
-  @DeleteMapping("/delete/{id}")
-  public ResponseEntity<Object> delete(@PathVariable Long id) {
+  @DeleteMapping("/delete")
+  public ResponseEntity<Object> delete(@RequestParam Long id, @RequestParam Long idPermissionReplace) {
     try {
-      permissionManagementService.delete(id);
+      permissionManagementService.delete(id, idPermissionReplace);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

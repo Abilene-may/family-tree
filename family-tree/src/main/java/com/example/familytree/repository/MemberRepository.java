@@ -107,4 +107,11 @@ public interface MemberRepository
       value = "select * from members where username is not null",
       nativeQuery = true)
   List<Member> findAllByUserName();
+
+  @Query(
+      value =
+          "select * from members\n"
+              + "where LOWER(role) LIKE LOWER(CONCAT('%', :role, '%'))",
+      nativeQuery = true)
+  List<Member> findAllByRole(String role);
 }

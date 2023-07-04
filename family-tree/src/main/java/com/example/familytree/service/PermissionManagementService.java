@@ -10,5 +10,5 @@ public interface PermissionManagementService {
   void update(PermissionManagement permissionManagement) throws FamilyTreeException;
   List<PermissionManagement> getAll() throws FamilyTreeException;
   PermissionManagement getById(Long id) throws FamilyTreeException;
-  void delete(Long id) throws FamilyTreeException;
+  void delete(Long id, Long idPermissionReplace) throws FamilyTreeException;
 }
