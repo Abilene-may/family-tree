@@ -59,7 +59,15 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
    * @since 21/06/2023
    */
   @Override
+  @Transactional
   public void update(PermissionManagement permissionManagement) throws FamilyTreeException {
+    var checkPermission = this.getById(permissionManagement.getId());
+    var role = permissionManagement.getPermissionGroupName();
+    // Tìm DS các thành viên thuộc nhóm quyền cũ
+    var memberList = memberRepository.findAllByRole(checkPermission.getPermissionGroupName());
+    for (Member m : memberList) {
+        m.setRole(role);
+    }
     permissionManagementRepository.save(permissionManagement);
   }
 
