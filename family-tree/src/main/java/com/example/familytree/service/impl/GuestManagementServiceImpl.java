@@ -67,7 +67,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       }
       List<Member> memberList = new ArrayList<>();
       // TH ko tìm theo giới tính
-      if (StringUtils.isNullOrEmpty(reqDTO.getGender())) {
+      if (StringUtils.isNullOrEmpty(reqDTO.getGender()) || reqDTO.getGender().equals(Constant.TAT_CA)) {
         // TH ko truyền vào tuổi bắt đầu
         if (reqDTO.getStartAge() == null) {
           memberList = this.memberListByAge(0, reqDTO.getEndAge());
@@ -112,7 +112,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       memberList = memberRepository.findAllGuestByGender(reqDTO.getGender(), Constant.DA_MAT);
     }
     // TH tìm theo cả hai nhưng startAge == null
-    if (reqDTO.getStartAge() == null) {
+    else if (reqDTO.getStartAge() == null) {
       var endDate = today.minusYears(0);
       var startDate = today.minusYears(reqDTO.getEndAge());
       memberList =
@@ -120,7 +120,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
               startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
     }
     // TH tìm theo cả hai nhưng endAge == null
-    if (reqDTO.getEndAge() == null) {
+    else if (reqDTO.getEndAge() == null) {
       LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
       Period period = Period.between(dateOfBirthMax, today);
       Integer ageMax = period.getYears();
@@ -129,6 +129,13 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       memberList =
           memberRepository.findAllByDateOfBirthAndGender(
               startDate, endDate, reqDTO.getGender(), Constant.DA_MAT);
+    } else {
+      var endDate = today.minusYears(reqDTO.getStartAge());
+      var startDate = today.minusYears(reqDTO.getEndAge());
+      // TH tìm theo tất cả điều kiện đầu vào
+      memberList =
+          memberRepository.findAllByDateOfBirthAndGender(
+              startDate , endDate, reqDTO.getGender(), Constant.DA_MAT);
     }
     return memberList;
   }

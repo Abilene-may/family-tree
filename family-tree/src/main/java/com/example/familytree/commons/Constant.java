@@ -23,6 +23,7 @@ public class Constant {
   public static final String SAP_DIEN_RA = "Sắp diễn ra";
   public static final String DANG_DIEN_RA = "Đang diễn ra";
   public static final String DA_DONG = "Đã đóng";
+  public static final String TAT_CA = "Tất cả";
 
 
 }
