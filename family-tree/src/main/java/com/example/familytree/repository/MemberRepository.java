@@ -16,17 +16,6 @@ public interface MemberRepository
   Optional<Member> checkExistRole(String role);
   @Query(value = "select * from members where username = :userName", nativeQuery = true)
   Optional<Member> findByUserName(String userName);
-
-  @Query(
-      value =
-          "update members "
-              + "set marital_status = :maritalStatus, id = :id "
-              + "where id = :id",
-      nativeQuery = true)
-  @Transactional
-  @Modifying
-  void updateMaritalStatus(String maritalStatus, Long id);
-
   @Query(
       value =
           "SELECT *\n"
@@ -114,4 +103,6 @@ public interface MemberRepository
               + "where LOWER(role) LIKE LOWER(CONCAT('%', :role, '%'))",
       nativeQuery = true)
   List<Member> findAllByRole(String role);
+  @Query(value = "SELECT MAX(last_value) FROM member_seq", nativeQuery = true)
+  Long findMaxSeq();
 }

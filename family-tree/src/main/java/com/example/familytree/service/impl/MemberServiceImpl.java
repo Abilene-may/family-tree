@@ -197,25 +197,19 @@ public class MemberServiceImpl implements MemberService {
     if (memberList.size() == 0) {
       member.setGeneration(1);
     } else {
-      if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
-        var generationOfPartner = memberRepository.findById(member.getPartnerId());
-        if(generationOfPartner.isPresent()){
-          var generation = generationOfPartner.get().getGeneration();
-          member.setGeneration(generation);
-          // update partner sang kết hôn
-          memberRepository.updateMaritalStatus(
-              Constant.DA_KET_HON, generationOfPartner.get().getId());
-        }
-      } else {
-        this.setGenerationByDadIdOrMomId(member);
-      }
       this.checkRoleIsExist(member);
     }
-    // kiểm tra username đã tồn tại hay chưa (username không được trùng)
-    var userCheck = memberRepository.findByUserName(member.getUserName());
-    if (userCheck.isPresent()) {
-      throw new FamilyTreeException(
-          ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
+    Member partner = new Member();
+    if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
+      partner = this.getMemberById(member.getPartnerId());
+      var generation = partner.getGeneration();
+      member.setGeneration(generation);
+      // update partner sang đã kết hôn
+      var partnerId = memberRepository.findMaxSeq();
+      partner.setStatus(Constant.DA_KET_HON);
+      partner.setPartnerId(partnerId);
+    } else {
+      this.setGenerationByDadIdOrMomId(member);
     }
     memberRepository.save(member);
   }
@@ -297,6 +291,12 @@ public class MemberServiceImpl implements MemberService {
     if(member.getMaritalStatus().equals(Constant.DOC_THAN)){
       member.setMaritalStatus(Constant.DOC_THAN);
       member.setPartnerId(null);
+    }
+    // check TH chuyển trạng thái từ độc thân sang đã kết hôn
+    if(member.getMaritalStatus().equals(Constant.DA_KET_HON)){
+      var partner = this.getMemberById(member.getPartnerId());
+      partner.setMaritalStatus(Constant.DA_KET_HON);
+      partner.setPartnerId(member.getId());
     }
     //lưu lại thông tin sau khi đã sửa
     memberRepository.save(member);
