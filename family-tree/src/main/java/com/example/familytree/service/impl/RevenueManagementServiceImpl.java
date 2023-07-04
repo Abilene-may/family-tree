@@ -24,7 +24,6 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
 
   private final RevenueManagementRepository revenueManagementRepository;
   private final RevenueDetailRepository revenueDetailRepository;
-  private final RevenueDetailService revenueDetailService;
 
   /**
    * thiết lập một khoản thu hằng năm
@@ -168,11 +167,9 @@ public class RevenueManagementServiceImpl implements RevenueManagementService {
 
   public RevenueManagementServiceImpl(
       @Lazy RevenueManagementRepository revenueManagementRepository,
-      @Lazy RevenueDetailService revenueDetailService,
       @Lazy RevenueDetailRepository revenueDetailRepository) {
     super();
     this.revenueDetailRepository = revenueDetailRepository;
     this.revenueManagementRepository = revenueManagementRepository;
-    this.revenueDetailService = revenueDetailService;
   }
 }

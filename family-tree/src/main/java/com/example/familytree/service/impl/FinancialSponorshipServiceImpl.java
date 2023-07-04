@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class FinancialSponorshipServiceImpl implements FinancialSponsorshipService {
   private final FinancialSponsorshipRepository financialSponsorshipRepository;
-  private final SponsorshipDetailService sponsorshipDetailService;
   private final SponsorsipDetailRepository sponsorsipDetailRepository;
 
   /**
@@ -159,11 +158,9 @@ public class FinancialSponorshipServiceImpl implements FinancialSponsorshipServi
   }
 
   public FinancialSponorshipServiceImpl(
-      @Lazy SponsorshipDetailService sponsorshipDetailService,
       @Lazy FinancialSponsorshipRepository financialSponsorshipRepository,
       @Lazy SponsorsipDetailRepository sponsorsipDetailRepository) {
     super();
-    this.sponsorshipDetailService = sponsorshipDetailService;
     this.financialSponsorshipRepository = financialSponsorshipRepository;
     this.sponsorsipDetailRepository = sponsorsipDetailRepository;
   }

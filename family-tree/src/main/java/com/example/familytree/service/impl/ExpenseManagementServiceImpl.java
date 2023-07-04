@@ -26,20 +26,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ExpenseManagementServiceImpl implements ExpenseManagementService {
   private final ExpenseManagementRepository expenseManagementRepository;
-  private final ExpenseDetailService expenseDetailService;
   private final RevenueManagementService revenueManagementService;
   private final FinancialSponsorshipService financialSponsorshipService;
   private final ExpenseDetailRepository expenseDetailRepository;
 
   public ExpenseManagementServiceImpl(
       @Lazy ExpenseManagementRepository expenseManagementRepository,
-      @Lazy ExpenseDetailService expenseDetailService,
       @Lazy RevenueManagementService revenueManagementService,
       @Lazy FinancialSponsorshipService financialSponsorshipService,
       @Lazy ExpenseDetailRepository expenseDetailRepository) {
     super();
     this.expenseManagementRepository = expenseManagementRepository;
-    this.expenseDetailService = expenseDetailService;
     this.revenueManagementService = revenueManagementService;
     this.financialSponsorshipService = financialSponsorshipService;
     this.expenseDetailRepository = expenseDetailRepository;

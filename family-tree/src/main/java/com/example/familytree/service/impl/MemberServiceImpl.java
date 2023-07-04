@@ -207,34 +207,9 @@ public class MemberServiceImpl implements MemberService {
               Constant.DA_KET_HON, generationOfPartner.get().getId());
         }
       } else {
-        if (member.getDadId() != null) {
-          var generationOfDad = memberRepository.findById(member.getDadId());
-          generationOfDad.ifPresent(value->member.setGeneration(value.getGeneration() + 1));
-        } else if (member.getMomId() != null) {
-          var generationOfMom = memberRepository.findById(member.getMomId());
-          generationOfMom.ifPresent(value->member.setGeneration(value.getGeneration() + 1));
-        } else {
-          throw new FamilyTreeException(
-              ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL,
-              ExceptionUtils.messages.get(ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL));
-        }
+        this.setGenerationByDadIdOrMomId(member);
       }
-      // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-      if(member.getRole().equals(Constant.TRUONG_HO)){
-        var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
-        if (checkExistRole.isPresent()) {
-          throw new FamilyTreeException(
-              ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
-              ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
-        }
-      } else if(member.getRole().equals(Constant.ONG_TO)){
-        var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
-        if (checkExistRole.isPresent()) {
-          throw new FamilyTreeException(
-              ExceptionUtils.ONG_TO_ALREADY_EXISTS,
-              ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
-        }
-      }
+      this.checkRoleIsExist(member);
     }
     // kiểm tra username đã tồn tại hay chưa (username không được trùng)
     var userCheck = memberRepository.findByUserName(member.getUserName());
@@ -243,6 +218,51 @@ public class MemberServiceImpl implements MemberService {
           ExceptionUtils.USER_SIGNUP_1, ExceptionUtils.messages.get(ExceptionUtils.USER_SIGNUP_1));
     }
     memberRepository.save(member);
+  }
+
+  /**
+   * Hàm check điều kiện role chỉ có 1 trưởng họ và 1 ông tổ
+   *
+   * @param member
+   * @throws FamilyTreeException
+   */
+  private void checkRoleIsExist(Member member) throws FamilyTreeException {
+    // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
+    if(member.getRole().equals(Constant.TRUONG_HO)){
+      var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
+      }
+    } else if(member.getRole().equals(Constant.ONG_TO)){
+      var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.ONG_TO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
+      }
+    }
+  }
+
+  /**
+   * validate tách hàm thiết lập đời khi thêm thành viên
+   * 
+   * @param member
+   * @throws FamilyTreeException
+   */
+  private void setGenerationByDadIdOrMomId(Member member) throws FamilyTreeException {
+    if (member.getDadId() != null) {
+      var generationOfDad = memberRepository.findById(member.getDadId());
+      generationOfDad.ifPresent(value-> member.setGeneration(value.getGeneration() + 1));
+    } else if (member.getMomId() != null) {
+      var generationOfMom = memberRepository.findById(member.getMomId());
+      generationOfMom.ifPresent(value-> member.setGeneration(value.getGeneration() + 1));
+    } else {
+      throw new FamilyTreeException(
+          ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL,
+          ExceptionUtils.messages.get(ExceptionUtils.MOM_OR_DAD_IS_NOT_NULL));
+    }
   }
 
   /**
@@ -272,21 +292,7 @@ public class MemberServiceImpl implements MemberService {
     var memberById = this.getMemberById(member.getId());
     //check TH chuyển role
     // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-    if(member.getRole().equals(Constant.TRUONG_HO)){
-      var checkExistRole = memberRepository.checkExistRole(Constant.TRUONG_HO);
-      if (checkExistRole.isPresent()) {
-        throw new FamilyTreeException(
-            ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
-            ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
-      }
-    } else if(member.getRole().equals(Constant.ONG_TO)){
-      var checkExistRole = memberRepository.checkExistRole(Constant.ONG_TO);
-      if (checkExistRole.isPresent()) {
-        throw new FamilyTreeException(
-            ExceptionUtils.ONG_TO_ALREADY_EXISTS,
-            ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
-      }
-    }
+    checkRoleIsExist(member);
     //check TH chuyển trạng thái tình trạng hôn nhân sang Độc thân
     if(member.getMaritalStatus().equals(Constant.DOC_THAN)){
       member.setMaritalStatus(Constant.DOC_THAN);
@@ -383,7 +389,7 @@ public class MemberServiceImpl implements MemberService {
                         member.getUserName(),
                         member.getPassword(),
                         member.getRole()))
-            .collect(Collectors.toList());
+            .toList();
     return userDTOList;
   }
 

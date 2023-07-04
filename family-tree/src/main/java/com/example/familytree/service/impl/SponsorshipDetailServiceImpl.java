@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
   private final SponsorsipDetailRepository sponsorsipDetailRepository;
   private final FinancialSponsorshipService financialSponsorshipService;
-  private final FinancialSponsorshipRepository financialSponsorshipRepository;
 
   /**
    * Thêm một khoản tài trợ trong chi tiết các giao dịch
@@ -113,11 +112,9 @@ public class SponsorshipDetailServiceImpl implements SponsorshipDetailService {
 
   public SponsorshipDetailServiceImpl(
       @Lazy FinancialSponsorshipService financialSponsorshipService,
-      @Lazy SponsorsipDetailRepository sponsorsipDetailRepository,
-      @Lazy FinancialSponsorshipRepository financialSponsorshipRepository) {
+      @Lazy SponsorsipDetailRepository sponsorsipDetailRepository) {
     super();
     this.financialSponsorshipService = financialSponsorshipService;
     this.sponsorsipDetailRepository = sponsorsipDetailRepository;
-    this.financialSponsorshipRepository = financialSponsorshipRepository;
   }
 }

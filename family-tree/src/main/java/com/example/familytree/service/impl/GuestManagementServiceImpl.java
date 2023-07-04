@@ -68,21 +68,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       List<Member> memberList = new ArrayList<>();
       // TH ko tìm theo giới tính
       if (StringUtils.isNullOrEmpty(reqDTO.getGender()) || reqDTO.getGender().equals(Constant.TAT_CA)) {
-        // TH ko truyền vào tuổi bắt đầu
-        if (reqDTO.getStartAge() == null) {
-          memberList = this.memberListByAge(0, reqDTO.getEndAge());
-        }
-        // TH ko truyền vào tuổi kết thúc
-        if (reqDTO.getEndAge() == null) {
-          LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
-          Period period = Period.between(dateOfBirthMax, today);
-          Integer ageMax = period.getYears();
-          memberList = this.memberListByAge(reqDTO.getStartAge(), ageMax);
-        }
-        // TH truyền cả từ tuổi -> tuổi
-        if (reqDTO.getStartAge() != null && reqDTO.getEndAge() != null) {
-          memberList = this.memberListByAge(reqDTO.getStartAge(), reqDTO.getEndAge());
-        }
+        memberList = getMemberList(reqDTO, today, memberList);
         guestManagementList = this.guestManagementList(reqDTO, memberList);
         response.addAll(guestManagementList);
         guestManagementRepository.saveAll(guestManagementList);
@@ -95,6 +81,33 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       return response;
     }
     return listCheck;
+  }
+
+  /**
+   * validate tách hàm thiết lập khách mời
+   *
+   * @param reqDTO
+   * @param today
+   * @param memberList
+   */
+  private List<Member> getMemberList(GuestManagementReqDTO reqDTO, LocalDate today,
+      List<Member> memberList) {
+    // TH ko truyền vào tuổi bắt đầu
+    if (reqDTO.getStartAge() == null) {
+      memberList = this.memberListByAge(0, reqDTO.getEndAge());
+    }
+    // TH ko truyền vào tuổi kết thúc
+    if (reqDTO.getEndAge() == null) {
+      LocalDate dateOfBirthMax = memberRepository.findByDateOfBirth(Constant.DA_MAT);
+      Period period = Period.between(dateOfBirthMax, today);
+      Integer ageMax = period.getYears();
+      memberList = this.memberListByAge(reqDTO.getStartAge(), ageMax);
+    }
+    // TH truyền cả từ tuổi -> tuổi
+    if (reqDTO.getStartAge() != null && reqDTO.getEndAge() != null) {
+      memberList = this.memberListByAge(reqDTO.getStartAge(), reqDTO.getEndAge());
+    }
+    return memberList;
   }
 
   /**
@@ -157,7 +170,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
                   guestManagement.setEventManagementId(reqDTO.getEventManagementId());
                   return guestManagement;
                 })
-            .collect(Collectors.toList());
+            .toList();
     return guestManagementList;
   }
 
