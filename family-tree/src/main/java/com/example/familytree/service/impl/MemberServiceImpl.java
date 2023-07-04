@@ -206,7 +206,7 @@ public class MemberServiceImpl implements MemberService {
       member.setGeneration(generation);
       // update partner sang đã kết hôn
       var partnerId = memberRepository.findMaxSeq();
-      partner.setStatus(Constant.DA_KET_HON);
+      partner.setMaritalStatus(Constant.DA_KET_HON);
       partner.setPartnerId(partnerId);
     } else {
       this.setGenerationByDadIdOrMomId(member);
