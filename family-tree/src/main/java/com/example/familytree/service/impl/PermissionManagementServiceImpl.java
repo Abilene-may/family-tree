@@ -1,5 +1,6 @@
 package com.example.familytree.service.impl;
 
+import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Member;
 import com.example.familytree.domain.PermissionManagement;
 import com.example.familytree.exceptions.ExceptionUtils;
@@ -65,6 +66,44 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
   @Override
   public List<PermissionManagement> getAll() throws FamilyTreeException {
     var permissionManagements = permissionManagementRepository.findAll();
+    // thiết lập những nhóm quyền sẵn trong gia phả
+    if(permissionManagements.isEmpty()){
+      PermissionManagement adminPermission =
+          PermissionManagement.builder()
+              .permissionGroupName(Constant.TRUONG_HO)
+              .permissionsDescription(Constant.TRUONG_HO_DESCRIPTION)
+              .viewMebers(true)
+              .updateMembers(true)
+              .createMembers(true)
+              .viewFinancial(true)
+              .createFinancial(true)
+              .updateFinancial(true)
+              .deleteFinancial(true)
+              .viewEvent(true)
+              .createEvent(true)
+              .updateEvent(true)
+              .deleteEvent(true)
+              .build();
+      PermissionManagement memberPermission =
+          PermissionManagement.builder()
+              .permissionGroupName(Constant.THANH_VIEN)
+              .permissionsDescription(Constant.THANH_VIEN_DESCRIPTION)
+              .viewMebers(true)
+              .updateMembers(false)
+              .createMembers(false)
+              .viewFinancial(true)
+              .createFinancial(false)
+              .updateFinancial(false)
+              .deleteFinancial(false)
+              .viewEvent(true)
+              .createEvent(false)
+              .updateEvent(false)
+              .deleteEvent(false)
+              .build();
+      permissionManagements.add(adminPermission);
+      permissionManagements.add(memberPermission);
+      permissionManagementRepository.saveAll(permissionManagements);
+    }
     return permissionManagements;
   }
 

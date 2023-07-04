@@ -24,6 +24,8 @@ public class Constant {
   public static final String DANG_DIEN_RA = "Đang diễn ra";
   public static final String DA_DONG = "Đã đóng";
   public static final String TAT_CA = "Tất cả";
-
-
+  public static final String TRUONG_HO_DESCRIPTION = "Thành viên có quyền lực nhất trong gia phả";
+  public static final String THANH_VIEN_DESCRIPTION =
+      "Bao gồm các thành viên gia đình được cấp quyền truy cập vào hệ thống quản lý gia phả để xem, "
+          + "cập nhật và chia sẻ thông tin về cây gia phả.";
 }
