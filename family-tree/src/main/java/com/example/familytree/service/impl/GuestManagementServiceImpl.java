@@ -42,8 +42,6 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    * Thiết lập danh sách khách mời lọc theo dữ liệu đầu vào
    *
    * @param reqDTO
-   * @return
-   * @throws FamilyTreeException
    * @author nga
    * @since 16/06/2023
    */
@@ -206,7 +204,6 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    *
    * @param startAge
    * @param endAge
-   * @return
    * @author nga
    */
   public List<Member> memberListByAge(Integer startAge, Integer endAge) {
