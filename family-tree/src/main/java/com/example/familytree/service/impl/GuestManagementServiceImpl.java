@@ -74,13 +74,13 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       List<Member> memberList = new ArrayList<>();
       // TH ko tìm theo giới tính
       if (StringUtils.isNullOrEmpty(reqDTO.getGender()) || reqDTO.getGender().equals(Constant.TAT_CA)) {
-        memberList = getMemberList(reqDTO, today, memberList);
+        memberList = getMemberList(reqDTO, today);
         guestManagementList = this.guestManagementList(reqDTO, memberList);
         response.addAll(guestManagementList);
         guestManagementRepository.saveAll(guestManagementList);
         return response;
       }
-      memberList = searchMembers(reqDTO, today, memberList);
+      memberList = searchMembers(reqDTO, today);
       guestManagementList = this.guestManagementList(reqDTO, memberList);
       response.addAll(guestManagementList);
       guestManagementRepository.saveAll(guestManagementList);
@@ -96,13 +96,14 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    * @return
    * @throws FamilyTreeException
    * @since 05/07/2023
+   * @author nga
    */
   @Override
   public GuestManagement createGuest(GuestManagement guestManagement) throws FamilyTreeException {
     LocalDate today = LocalDate.now();
     // Lấy thông tin của sự kiện
     var eventManagement = eventManagementService.getById(guestManagement.getEventManagementId());
-    if (eventManagement.getStatus().equals(Constant.DA_DONG)) {
+    if (eventManagement.getEventDate().isAfter(today)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_EVENT_IS_CLOSED,
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
@@ -115,10 +116,9 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    *
    * @param reqDTO
    * @param today
-   * @param memberList
    */
-  private List<Member> getMemberList(GuestManagementReqDTO reqDTO, LocalDate today,
-      List<Member> memberList) {
+  private List<Member> getMemberList(GuestManagementReqDTO reqDTO, LocalDate today) {
+    List<Member> memberList = new ArrayList<>();
     // TH ko truyền vào tuổi bắt đầu
     if (reqDTO.getStartAge() == null) {
       memberList = this.memberListByAge(0, reqDTO.getEndAge());
@@ -142,11 +142,11 @@ public class GuestManagementServiceImpl implements GuestManagementService {
    *
    * @param reqDTO
    * @param today
-   * @param memberList
    * @author nga
    */
   private List<Member> searchMembers(
-      GuestManagementReqDTO reqDTO, LocalDate today, List<Member> memberList) {
+      GuestManagementReqDTO reqDTO, LocalDate today) {
+    List<Member> memberList;
     // TH không tìm theo độ tuổi
     if (reqDTO.getStartAge() == null && reqDTO.getEndAge() == null) {
       memberList = memberRepository.findAllGuestByGender(reqDTO.getGender(), Constant.DA_MAT);
