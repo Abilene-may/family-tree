@@ -9,7 +9,6 @@ import com.example.familytree.models.RevenueManagementDIS;
 import com.example.familytree.models.RevenueReport;
 import com.example.familytree.repository.RevenueDetailRepository;
 import com.example.familytree.repository.RevenueManagementRepository;
-import com.example.familytree.service.RevenueDetailService;
 import com.example.familytree.service.RevenueManagementService;
 import java.time.LocalDate;
 import java.util.ArrayList;

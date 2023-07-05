@@ -5,9 +5,7 @@ import java.time.LocalDate;
 import java.util.List;import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface MemberRepository
     extends JpaRepository<Member, Long>,
@@ -103,6 +101,6 @@ public interface MemberRepository
               + "where LOWER(role) LIKE LOWER(CONCAT('%', :role, '%'))",
       nativeQuery = true)
   List<Member> findAllByRole(String role);
-  @Query(value = "SELECT MAX(last_value) FROM member_seq", nativeQuery = true)
+  @Query(value = "SELECT MAX(last_value + 1) FROM member_seq", nativeQuery = true)
   Long findMaxSeq();
 }

@@ -38,6 +38,7 @@ public class ExceptionUtils {
   public static final String GUEST_ID_IS_NOT_EXIST = "GUEST_ID_IS_NOT_EXIST";
   public static final String PERMISSION_ID_IS_NOT_EXIST = "PERMISSION_ID_IS_NOT_EXIST";
   public static final String R_ID_MEMBER_IS_NOT_EXIST = "R_ID_MEMBER_IS_NOT_EXIST";
+  public static final String E_EVENT_IS_CLOSED = "E_EVENT_IS_CLOSED";
 
 
 
@@ -90,6 +91,8 @@ public class ExceptionUtils {
         ExceptionUtils.PERMISSION_ID_IS_NOT_EXIST, "Không tìm thấy thông tin của nhóm quyền.");
     messages.put(
         ExceptionUtils.R_ID_MEMBER_IS_NOT_EXIST, "Không tìm thấy thông tin của người đóng.");
+    messages.put(
+        ExceptionUtils.E_EVENT_IS_CLOSED, "Sự kiện đã đóng, không thể thiết lập khách mời.");
   }
 
   public static String buildMessage(String messKey, Object... arg) {

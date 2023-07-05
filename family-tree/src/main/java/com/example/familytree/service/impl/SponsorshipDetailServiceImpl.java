@@ -4,7 +4,6 @@ import com.example.familytree.domain.SponsorsipDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.SponsorshipDetailDTO;
-import com.example.familytree.repository.FinancialSponsorshipRepository;
 import com.example.familytree.repository.SponsorsipDetailRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
 import com.example.familytree.service.SponsorshipDetailService;

@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -53,6 +52,12 @@ public class GuestManagementServiceImpl implements GuestManagementService {
       throws FamilyTreeException {
     var listCheck =
         guestManagementRepository.findAllByEventManagementId(reqDTO.getEventManagementId());
+    var eventManagement = eventManagementService.getById(reqDTO.getEventManagementId());
+    if (eventManagement.getStatus().equals(Constant.DA_DONG)) {
+      throw new FamilyTreeException(
+          ExceptionUtils.E_EVENT_IS_CLOSED,
+          ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
+    }
     if (listCheck.isEmpty()) {
       List<GuestManagement> guestManagementList = new ArrayList<>();
       List<GuestManagement> response = new ArrayList<>();

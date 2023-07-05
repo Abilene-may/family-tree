@@ -8,7 +8,6 @@ import com.example.familytree.models.FinancialSponsorshipReport;
 import com.example.familytree.repository.FinancialSponsorshipRepository;
 import com.example.familytree.repository.SponsorsipDetailRepository;
 import com.example.familytree.service.FinancialSponsorshipService;
-import com.example.familytree.service.SponsorshipDetailService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
