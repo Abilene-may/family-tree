@@ -58,10 +58,11 @@ public class GuestManagementServiceImpl implements GuestManagementService {
           ExceptionUtils.E_EVENT_IS_CLOSED,
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
     }
-    if (listCheck.isEmpty()) {
+    LocalDate today = LocalDate.now();
+    if (listCheck.isEmpty() || today.isBefore(eventManagement.getEventDate())) {
+      this.deleteAll(eventManagement.getId());
       List<GuestManagement> guestManagementList = new ArrayList<>();
       List<GuestManagement> response = new ArrayList<>();
-      LocalDate today = LocalDate.now();
       if (reqDTO.getChooseAll()) {
         var memberList = memberRepository.findAllByStatus(Constant.DA_MAT);
         // ánh xạ từ entity sang DTO
