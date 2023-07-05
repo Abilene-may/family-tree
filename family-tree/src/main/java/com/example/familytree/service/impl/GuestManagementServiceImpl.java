@@ -90,6 +90,27 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   }
 
   /**
+   *  Thêm mới một khách mời
+   *
+   * @param guestManagement
+   * @return
+   * @throws FamilyTreeException
+   * @since 05/07/2023
+   */
+  @Override
+  public GuestManagement createGuest(GuestManagement guestManagement) throws FamilyTreeException {
+    LocalDate today = LocalDate.now();
+    // Lấy thông tin của sự kiện
+    var eventManagement = eventManagementService.getById(guestManagement.getEventManagementId());
+    if (eventManagement.getStatus().equals(Constant.DA_DONG)) {
+      throw new FamilyTreeException(
+          ExceptionUtils.E_EVENT_IS_CLOSED,
+          ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
+    }
+    return guestManagementRepository.save(guestManagement);
+  }
+
+  /**
    * validate tách hàm thiết lập khách mời
    *
    * @param reqDTO

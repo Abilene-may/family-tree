@@ -10,6 +10,7 @@ public interface GuestManagementService {
   List<GuestManagement> setUpListGuest(GuestManagementReqDTO guestManagementReqDTO)
       throws FamilyTreeException;
 
+  GuestManagement createGuest(GuestManagement guestManagement) throws FamilyTreeException;
   void delete(Long id) throws FamilyTreeException;
   void deleteAll(Long eventManagementId) throws FamilyTreeException;
 

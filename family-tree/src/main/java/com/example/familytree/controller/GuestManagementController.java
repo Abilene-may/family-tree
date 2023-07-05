@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.familytree.domain.GuestManagement;
+
 
 @CrossOrigin("*")
 @RequiredArgsConstructor
@@ -88,6 +90,28 @@ public class GuestManagementController {
     try {
       guestManagementService.delete(id);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Thêm mới một khách mời
+   * id của khách mời
+   * @author nga
+   * @since 05/07/2023
+   */
+  @Schema(name = "Thêm mới một khách mời")
+  @PostMapping("/create")
+  public ResponseEntity<Object> createGuest(@RequestBody GuestManagement guestManagement) {
+    try {
+      var guest = guestManagementService.createGuest(guestManagement);
+      return new ResponseEntity<>(guest, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
