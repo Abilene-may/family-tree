@@ -198,9 +198,14 @@ public class MemberServiceImpl implements MemberService {
     } else {
       this.checkRoleIsExist(member);
     }
-    Member partner = new Member();
+
     if (member.getMaritalStatus().equals(Constant.DA_KET_HON)) {
-      partner = this.getMemberById(member.getPartnerId());
+      Member partner = this.getMemberById(member.getPartnerId());
+      // Check xem đối tượng đã có vợ/chồng hay chưa :v
+      if (StringUtils.isBlank(String.valueOf(partner.getPartnerId()))
+          || partner.getMaritalStatus().equals(Constant.DA_KET_HON)) {
+        throw new FamilyTreeException(ExceptionUtils.MEMBER_HAD_A_WIFE_OR_HUSBAND, ExceptionUtils.messages.get(ExceptionUtils.MEMBER_HAD_A_WIFE_OR_HUSBAND));
+      }
       var generation = partner.getGeneration();
       member.setGeneration(generation);
       // update partner sang đã kết hôn

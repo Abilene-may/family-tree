@@ -39,6 +39,7 @@ public class ExceptionUtils {
   public static final String PERMISSION_ID_IS_NOT_EXIST = "PERMISSION_ID_IS_NOT_EXIST";
   public static final String R_ID_MEMBER_IS_NOT_EXIST = "R_ID_MEMBER_IS_NOT_EXIST";
   public static final String E_EVENT_IS_CLOSED = "E_EVENT_IS_CLOSED";
+  public static final String MEMBER_HAD_A_WIFE_OR_HUSBAND = "MEMBER_HAD_A_WIFE_OR_HUSBAND";
 
 
 
@@ -93,6 +94,8 @@ public class ExceptionUtils {
         ExceptionUtils.R_ID_MEMBER_IS_NOT_EXIST, "Không tìm thấy thông tin của người đóng.");
     messages.put(
         ExceptionUtils.E_EVENT_IS_CLOSED, "Sự kiện đã đóng, không thể thiết lập khách mời.");
+    messages.put(
+        ExceptionUtils.MEMBER_HAD_A_WIFE_OR_HUSBAND, "Thành viên đã kết hôn và có vợ/chồng.");
   }
 
   public static String buildMessage(String messKey, Object... arg) {
