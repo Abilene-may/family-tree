@@ -4,6 +4,7 @@ import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
+import com.example.familytree.models.guestmanagement.GuestReqCreate;
 import com.example.familytree.service.GuestManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -108,9 +109,9 @@ public class GuestManagementController {
    */
   @Schema(name = "Thêm mới một khách mời")
   @PostMapping("/create")
-  public ResponseEntity<Object> createGuest(@RequestBody GuestManagement guestManagement) {
+  public ResponseEntity<Object> createGuest(@RequestBody GuestReqCreate req) {
     try {
-      var guest = guestManagementService.createGuest(guestManagement);
+      var guest = guestManagementService.createGuest(req);
       return new ResponseEntity<>(guest, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       return new ResponseEntity<>(

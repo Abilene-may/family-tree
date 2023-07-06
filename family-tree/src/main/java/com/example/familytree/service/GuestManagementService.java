@@ -3,6 +3,7 @@ package com.example.familytree.service;
 import com.example.familytree.domain.GuestManagement;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
+import com.example.familytree.models.guestmanagement.GuestReqCreate;
 import java.util.List;
 
 public interface GuestManagementService {
@@ -10,7 +11,7 @@ public interface GuestManagementService {
   List<GuestManagement> setUpListGuest(GuestManagementReqDTO guestManagementReqDTO)
       throws FamilyTreeException;
 
-  GuestManagement createGuest(GuestManagement guestManagement) throws FamilyTreeException;
+  GuestManagement createGuest(GuestReqCreate req) throws FamilyTreeException;
   void delete(Long id) throws FamilyTreeException;
   void deleteAll(Long eventManagementId) throws FamilyTreeException;
 

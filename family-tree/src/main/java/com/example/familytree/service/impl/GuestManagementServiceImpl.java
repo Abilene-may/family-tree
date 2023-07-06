@@ -7,10 +7,12 @@ import com.example.familytree.domain.Member;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
+import com.example.familytree.models.guestmanagement.GuestReqCreate;
 import com.example.familytree.repository.GuestManagementRepository;
 import com.example.familytree.repository.MemberRepository;
 import com.example.familytree.service.EventManagementService;
 import com.example.familytree.service.GuestManagementService;
+import com.example.familytree.service.MemberService;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -27,15 +29,19 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   public final GuestManagementRepository guestManagementRepository;
   public final EventManagementService eventManagementService;
   public final MemberRepository memberRepository;
+  public final MemberService memberService;
+
 
   public GuestManagementServiceImpl(
       @Lazy GuestManagementRepository guestManagementRepository,
       @Lazy EventManagementService eventManagementService,
-      @Lazy MemberRepository memberRepository) {
+      @Lazy MemberRepository memberRepository,
+      @Lazy MemberService memberService) {
     super();
     this.guestManagementRepository = guestManagementRepository;
     this.eventManagementService = eventManagementService;
     this.memberRepository = memberRepository;
+    this.memberService = memberService;
   }
 
   /**
@@ -90,22 +96,41 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   /**
    *  Thêm mới một khách mời
    *
-   * @param guestManagement
+   * @param req
    * @return
    * @throws FamilyTreeException
    * @since 05/07/2023
    * @author nga
    */
   @Override
-  public GuestManagement createGuest(GuestManagement guestManagement) throws FamilyTreeException {
+  public GuestManagement createGuest(GuestReqCreate req) throws FamilyTreeException {
     LocalDate today = LocalDate.now();
     // Lấy thông tin của sự kiện
-    var eventManagement = eventManagementService.getById(guestManagement.getEventManagementId());
+    var eventManagement = eventManagementService.getById(req.getEventManagementId());
     if (eventManagement.getEventDate().isAfter(today)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_EVENT_IS_CLOSED,
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
     }
+    // Kiểm tra xem thành viên đã có trong DS khách mời hay chưa
+    var optional = guestManagementRepository.findByMemberId(req.getMemberId());
+    if (optional.isPresent()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.GUEST_ALREADY_EXISTS,
+          ExceptionUtils.messages.get(ExceptionUtils.GUEST_ALREADY_EXISTS));
+    }
+    // Nếu chưa có lưu thông tin khách mời
+    var member = memberService.getMemberById(req.getMemberId());
+    GuestManagement guestManagement =
+        GuestManagement.builder()
+            .memberId(member.getId())
+            .fullName(member.getFullName())
+            .gender(member.getGender())
+            .dateOfBirth(member.getDateOfBirth())
+            .mobilePhoneNumber(member.getMobilePhoneNumber())
+            .career(member.getCareer())
+            .eventManagementId(req.getEventManagementId())
+            .build();
     return guestManagementRepository.save(guestManagement);
   }
 
