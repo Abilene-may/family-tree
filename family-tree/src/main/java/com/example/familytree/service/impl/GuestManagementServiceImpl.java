@@ -64,7 +64,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
     }
     LocalDate today = LocalDate.now();
-    if (listCheck.isEmpty() || today.isAfter(eventManagement.getEventDate())) {
+    if (listCheck.isEmpty() || today.isBefore(eventManagement.getEventDate())) {
       this.deleteAll(eventManagement.getId());
       List<GuestManagement> guestManagementList = new ArrayList<>();
       List<GuestManagement> response = new ArrayList<>();
@@ -108,7 +108,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
     LocalDate today = LocalDate.now();
     // Lấy thông tin của sự kiện
     var eventManagement = eventManagementService.getById(req.getEventManagementId());
-    if (eventManagement.getEventDate().isAfter(today)) {
+    if (eventManagement.getEventDate().isBefore(today)) {
       throw new FamilyTreeException(
           ExceptionUtils.E_EVENT_IS_CLOSED,
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
