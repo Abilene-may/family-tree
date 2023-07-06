@@ -54,6 +54,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
   @Override
   public List<GuestManagement> setUpListGuest(GuestManagementReqDTO reqDTO)
       throws FamilyTreeException {
+    // Kiểm tra DS đã được thiết lập chưa
     var listCheck =
         guestManagementRepository.findAllByEventManagementId(reqDTO.getEventManagementId());
     var eventManagement = eventManagementService.getById(reqDTO.getEventManagementId());
@@ -63,7 +64,7 @@ public class GuestManagementServiceImpl implements GuestManagementService {
           ExceptionUtils.messages.get(ExceptionUtils.E_EVENT_IS_CLOSED));
     }
     LocalDate today = LocalDate.now();
-    if (listCheck.isEmpty() || today.isBefore(eventManagement.getEventDate())) {
+    if (listCheck.isEmpty() || today.isAfter(eventManagement.getEventDate())) {
       this.deleteAll(eventManagement.getId());
       List<GuestManagement> guestManagementList = new ArrayList<>();
       List<GuestManagement> response = new ArrayList<>();
