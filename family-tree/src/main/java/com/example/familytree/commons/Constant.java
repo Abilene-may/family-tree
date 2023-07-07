@@ -28,4 +28,5 @@ public class Constant {
   public static final String THANH_VIEN_DESCRIPTION =
       "Bao gồm các thành viên gia đình được cấp quyền truy cập vào hệ thống quản lý gia phả để xem, "
           + "cập nhật và chia sẻ thông tin về cây gia phả.";
+  public static final String CHO_PHE_DUYET = "Chờ phê duyệt";
 }

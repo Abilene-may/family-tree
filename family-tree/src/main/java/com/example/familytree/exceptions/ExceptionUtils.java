@@ -42,6 +42,8 @@ public class ExceptionUtils {
   public static final String MEMBER_HAD_A_WIFE_OR_HUSBAND = "MEMBER_HAD_A_WIFE_OR_HUSBAND";
   public static final String GUEST_ALREADY_EXISTS = "GUEST_ALREADY_EXISTS";
   public static final String NAME_PERMISSION_ALREADY_EXISTS = "NAME_PERMISSION_ALREADY_EXISTS";
+  public static final String QUESTION_IS_NOT_EXITS = "QUESTION_IS_NOT_EXITS";
+  public static final String Q_OTHER_STATUS_WAITING_FOR_APPROVAL = "Q_OTHER_STATUS_WAITING_FOR_APPROVAL";
 
 
 
@@ -102,6 +104,11 @@ public class ExceptionUtils {
         ExceptionUtils.GUEST_ALREADY_EXISTS, "Thành viên này đã có trong danh sách khách mời.");
     messages.put(
         ExceptionUtils.NAME_PERMISSION_ALREADY_EXISTS, "Tên nhóm quyền đã tồn tại trong gia phả. Vui lòng chọn tên khác.");
+    messages.put(
+      ExceptionUtils.QUESTION_IS_NOT_EXITS, "Không tìm thấy yêu cầu hoặc yêu cầu không tồn tại.");
+    messages.put(
+    ExceptionUtils.Q_OTHER_STATUS_WAITING_FOR_APPROVAL, "Trạng thái khác chờ phê duyệt không thể xóa hoặc sửa.");
+
   }
 
   public static String buildMessage(String messKey, Object... arg) {
