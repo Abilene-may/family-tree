@@ -10,6 +10,7 @@ import com.example.familytree.repository.PermissionManagementRepository;
 import com.example.familytree.service.PermissionManagementService;
 import io.micrometer.common.util.StringUtils;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,16 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
           ExceptionUtils.PERMISSION_MANAGEMENT_IS_NOT_BLANK,
           ExceptionUtils.messages.get(ExceptionUtils.PERMISSION_MANAGEMENT_IS_NOT_BLANK));
     }
+    // check tên nhóm quyền đã tồn tại trong gia phả
+    var checkRoleExits =
+        permissionManagementRepository.findByPermissionGroupName(
+            permissionManagement.getPermissionGroupName());
     permissionManagementRepository.save(permissionManagement);
+    if (checkRoleExits.isPresent()) {
+      throw new FamilyTreeException(
+          ExceptionUtils.NAME_PERMISSION_ALREADY_EXISTS,
+          ExceptionUtils.messages.get(ExceptionUtils.NAME_PERMISSION_ALREADY_EXISTS));
+    }
     return permissionManagement;
   }
 
@@ -62,11 +72,11 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
   @Transactional
   public void update(PermissionManagement permissionManagement) throws FamilyTreeException {
     var checkPermission = this.getById(permissionManagement.getId());
-    var role = permissionManagement.getPermissionGroupName();
+    var roleNew = permissionManagement.getPermissionGroupName();
     // Tìm DS các thành viên thuộc nhóm quyền cũ
     var memberList = memberRepository.findAllByRole(checkPermission.getPermissionGroupName());
     for (Member m : memberList) {
-        m.setRole(role);
+        m.setRole(roleNew);
     }
     permissionManagementRepository.save(permissionManagement);
   }

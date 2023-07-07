@@ -41,6 +41,7 @@ public class ExceptionUtils {
   public static final String E_EVENT_IS_CLOSED = "E_EVENT_IS_CLOSED";
   public static final String MEMBER_HAD_A_WIFE_OR_HUSBAND = "MEMBER_HAD_A_WIFE_OR_HUSBAND";
   public static final String GUEST_ALREADY_EXISTS = "GUEST_ALREADY_EXISTS";
+  public static final String NAME_PERMISSION_ALREADY_EXISTS = "NAME_PERMISSION_ALREADY_EXISTS";
 
 
 
@@ -99,6 +100,8 @@ public class ExceptionUtils {
         ExceptionUtils.MEMBER_HAD_A_WIFE_OR_HUSBAND, "Thành viên đã kết hôn và có vợ/chồng.");
     messages.put(
         ExceptionUtils.GUEST_ALREADY_EXISTS, "Thành viên này đã có trong danh sách khách mời.");
+    messages.put(
+        ExceptionUtils.NAME_PERMISSION_ALREADY_EXISTS, "Tên nhóm quyền đã tồn tại trong gia phả. Vui lòng chọn tên khác.");
   }
 
   public static String buildMessage(String messKey, Object... arg) {

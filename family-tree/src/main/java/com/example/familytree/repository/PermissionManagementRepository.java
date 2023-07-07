@@ -16,4 +16,5 @@ public interface PermissionManagementRepository extends JpaRepository<Permission
               + "where permission_group_name like :role",
       nativeQuery = true)
   Optional<PermissionManagement> findByPermissionGroupName(String role);
+
 }
