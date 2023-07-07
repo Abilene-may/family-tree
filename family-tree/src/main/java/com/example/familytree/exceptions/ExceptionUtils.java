@@ -44,8 +44,8 @@ public class ExceptionUtils {
   public static final String NAME_PERMISSION_ALREADY_EXISTS = "NAME_PERMISSION_ALREADY_EXISTS";
   public static final String QUESTION_IS_NOT_EXITS = "QUESTION_IS_NOT_EXITS";
   public static final String Q_OTHER_STATUS_WAITING_FOR_APPROVAL = "Q_OTHER_STATUS_WAITING_FOR_APPROVAL";
-
-
+  public static final String Q_HAS_BEEN_ANSWERED = "Q_HAS_BEEN_ANSWERED";
+  public static final String ANSWER_DOES_NOT_EXITS = "ANSWER_DOES_NOT_EXITS";
 
   public static Map<String, String> messages;
 
@@ -108,6 +108,10 @@ public class ExceptionUtils {
       ExceptionUtils.QUESTION_IS_NOT_EXITS, "Không tìm thấy yêu cầu hoặc yêu cầu không tồn tại.");
     messages.put(
     ExceptionUtils.Q_OTHER_STATUS_WAITING_FOR_APPROVAL, "Trạng thái khác chờ phê duyệt không thể xóa hoặc sửa.");
+    messages.put(
+    ExceptionUtils.Q_HAS_BEEN_ANSWERED, "Yêu cầu này đã được phản hồi.");
+    messages.put(
+    ExceptionUtils.ANSWER_DOES_NOT_EXITS, "Không tìm thấy thông tin của phản hồi.");
 
   }
 

@@ -6,7 +6,6 @@ import com.example.familytree.domain.EventManagement;
 import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.ExpenseReport;
 import com.example.familytree.models.eventmanagement.EventReportDTO;
 import com.example.familytree.repository.EventManagementRepository;
 import com.example.familytree.repository.ExpenseDetailRepository;

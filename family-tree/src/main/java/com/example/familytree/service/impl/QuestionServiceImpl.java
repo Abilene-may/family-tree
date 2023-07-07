@@ -4,22 +4,16 @@ import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.Question;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
-import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.models.question.QuestionReqDTO;
 import com.example.familytree.repository.QuestionRepository;
 import com.example.familytree.service.MemberService;
 import com.example.familytree.service.QuestionService;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * The type Question service.
@@ -42,6 +36,14 @@ public class QuestionServiceImpl implements QuestionService {
     this.memberService = memberService;
   }
 
+  /**
+   * Thêm mới một yêu cầu
+   *
+   * @param reqDTO
+   * @return
+   * @throws FamilyTreeException
+   * @since 07/07/2023
+   */
   @Override
   @Transactional
   public Question create(QuestionReqDTO reqDTO) throws FamilyTreeException {

@@ -29,4 +29,5 @@ public class Constant {
       "Bao gồm các thành viên gia đình được cấp quyền truy cập vào hệ thống quản lý gia phả để xem, "
           + "cập nhật và chia sẻ thông tin về cây gia phả.";
   public static final String CHO_PHE_DUYET = "Chờ phê duyệt";
+  public static final String DA_PHAN_HOI = "Đã phản hồi";
 }
