@@ -99,4 +99,48 @@ public class QuestionController {
           HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  /**
+   * API DS tất cả các yêu cầu - màn của quản lý
+   *
+   * @author nga
+   * @since 07/07/2023
+   */
+  @Schema(name = "DS tất cả các yêu cầu - màn của quản lý")
+  @GetMapping("/get-all")
+  public ResponseEntity<Object> getAll() {
+    try {
+      var questions = questionService.getALl();
+      return new ResponseEntity<>(questions, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API DS các yêu cầu của 1 thành viên - màn của thành viên
+   *
+   * @author nga
+   * @since 07/07/2023
+   */
+  @Schema(name = "DS tất cả các yêu cầu - màn của quản lý")
+  @GetMapping("/get-all-for-a-member")
+  public ResponseEntity<Object> getAllForAMember(@PathVariable Long id) {
+    try {
+      var questions = questionService.getAllForAMember(id);
+      return new ResponseEntity<>(questions, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

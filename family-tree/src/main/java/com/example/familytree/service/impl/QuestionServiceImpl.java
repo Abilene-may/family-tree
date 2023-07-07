@@ -7,9 +7,11 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.models.question.QuestionReqDTO;
 import com.example.familytree.repository.QuestionRepository;
+import com.example.familytree.service.MemberService;
 import com.example.familytree.service.QuestionService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -26,15 +28,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Slf4j
 public class QuestionServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
+  private final MemberService memberService;
 
   /**
    * Instantiates a new Question service.
    *
    * @param questionRepository the question repository
    */
-  public QuestionServiceImpl(@Lazy QuestionRepository questionRepository) {
+  public QuestionServiceImpl(@Lazy QuestionRepository questionRepository,
+      @Lazy MemberService memberService) {
     super();
     this.questionRepository = questionRepository;
+    this.memberService = memberService;
   }
 
   @Override
@@ -107,6 +112,36 @@ public class QuestionServiceImpl implements QuestionService {
           ExceptionUtils.messages.get(ExceptionUtils.Q_OTHER_STATUS_WAITING_FOR_APPROVAL));
     }
     questionRepository.delete(question);
+  }
+
+  /**
+   * DS tất cả các yêu cầu
+   *
+   * @return
+   * @throws FamilyTreeException
+   * @author nga
+   * @since 07/07/2023
+   */
+  @Override
+  public List<Question> getALl() throws FamilyTreeException {
+    var questions = questionRepository.findAll();
+    return questions;
+  }
+
+  /**
+   * DS các yêu cầu của một thành viên
+   *
+   * @param memberId
+   * @return
+   * @throws FamilyTreeException
+   * @author nga
+   * @since 07/07/2023
+   */
+  @Override
+  public List<Question> getAllForAMember(Long memberId) throws FamilyTreeException {
+    memberService.getMemberById(memberId);
+    var questions  = questionRepository.findAllByMemberId(memberId);
+    return questions;
   }
 
 }
