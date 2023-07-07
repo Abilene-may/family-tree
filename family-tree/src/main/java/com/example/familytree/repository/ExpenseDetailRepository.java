@@ -42,4 +42,46 @@ public interface ExpenseDetailRepository extends JpaRepository<ExpenseDetail, Lo
               + "order by date_of_pay ASC",
       nativeQuery = true)
   List<ExpenseDetail> findAllByEndDate(LocalDate effectiveEndDate);
+
+  // Lấy DS các khoản chi từ ngày đến ngày cho báo cáo sự kiện
+  @Query(
+      value =
+          "select ed.*\n"
+              + "from expense_detail as ed join expense_management as em on ed.expense_management_id = em.id\n"
+              + "WHERE (date_of_pay <= :effectiveEndDate\n"
+              + "    AND date_of_pay >= :effectiveStartDate)\n"
+              + "    AND em.event_management_id is distinct from null \n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllByStartDateAndEndDateForEvent(
+      LocalDate effectiveStartDate, LocalDate effectiveEndDate);
+
+  @Query(
+      value =
+          "select ed.*\n"
+              + "from expense_detail as ed join expense_management as em on ed.expense_management_id = em.id\n"
+              + "WHERE (date_of_pay >= :effectiveStartDate)\n"
+              + "    AND em.event_management_id is distinct from null \n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllByStartDateForEvent(LocalDate effectiveStartDate);
+
+  @Query(
+      value =
+          "select ed.*\n"
+              + "from expense_detail as ed join expense_management as em on ed.expense_management_id = em.id\n"
+              + "WHERE (date_of_pay <= :effectiveEndDate)\n"
+              + "    AND em.event_management_id is distinct from null \n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllByEndDateForEvent(LocalDate effectiveEndDate);
+
+  @Query(
+      value =
+          "select ed.*\n"
+              + "from expense_detail as ed join expense_management as em on ed.expense_management_id = em.id\n"
+              + "WHERE em.event_management_id is distinct from null \n"
+              + "order by date_of_pay ASC",
+      nativeQuery = true)
+  List<ExpenseDetail> findAllForEvent();
 }

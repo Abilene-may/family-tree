@@ -3,9 +3,13 @@ package com.example.familytree.service.impl;
 
 import com.example.familytree.commons.Constant;
 import com.example.familytree.domain.EventManagement;
+import com.example.familytree.domain.ExpenseDetail;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
+import com.example.familytree.models.ExpenseReport;
+import com.example.familytree.models.eventmanagement.EventReportDTO;
 import com.example.familytree.repository.EventManagementRepository;
+import com.example.familytree.repository.ExpenseDetailRepository;
 import com.example.familytree.service.EventManagementService;
 import com.example.familytree.service.GuestManagementService;
 import java.time.LocalDate;
@@ -28,13 +32,16 @@ public class EventManagementServiceImpl implements EventManagementService {
 
   private final GuestManagementService guestManagementService;
   private final EventManagementRepository eventManagementRepository;
+  private final ExpenseDetailRepository expenseDetailRepository;
 
   public EventManagementServiceImpl(
       @Lazy EventManagementRepository eventManagementRepository,
-      GuestManagementService guestManagementService){
+      @Lazy GuestManagementService guestManagementService,
+      @Lazy ExpenseDetailRepository expenseDetailRepository){
     super();
     this.eventManagementRepository = eventManagementRepository;
     this.guestManagementService = guestManagementService;
+    this.expenseDetailRepository = expenseDetailRepository;
   }
 
   /**
@@ -145,5 +152,37 @@ public class EventManagementServiceImpl implements EventManagementService {
           ExceptionUtils.messages.get(ExceptionUtils.EVENT_ID_IS_NOT_EXIST));
     }
     return eventManagementOptional.get();
+  }
+
+  @Override
+  public EventReportDTO report(LocalDate effectiveStartDate, LocalDate effectiveEndDate)
+      throws FamilyTreeException {
+    EventReportDTO reportDTO = new EventReportDTO();
+    List<ExpenseDetail> expenseDetails;
+    if(effectiveStartDate != null && effectiveEndDate != null){
+      // Lấy danh sách các khoản chi cho tiền tài trợ từ ngày đến ngày
+      expenseDetails  =
+          expenseDetailRepository.findAllByStartDateAndEndDateForEvent(
+              effectiveStartDate, effectiveEndDate);
+    }
+    else if(effectiveStartDate != null){
+      expenseDetails  =
+          expenseDetailRepository.findAllByStartDateForEvent(effectiveStartDate);
+    }
+    else if(effectiveEndDate != null){
+      expenseDetails  =
+          expenseDetailRepository.findAllByEndDateForEvent(effectiveEndDate);
+    } else {
+      expenseDetails  =
+          expenseDetailRepository.findAllForEvent();
+    }
+    reportDTO.setExpenseDetails(expenseDetails);
+    Long totalMoney = 0L;
+    for (ExpenseDetail expenseDetail : expenseDetails) {
+      // Tính tổng tiền từ danh sách giao dịch
+      totalMoney += expenseDetail.getExpenseMoney();
+    }
+    reportDTO.setTotalEvent(totalMoney);
+    return reportDTO;
   }
 }

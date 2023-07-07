@@ -6,6 +6,7 @@ import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
 import com.example.familytree.service.EventManagementService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -131,6 +133,30 @@ public class EventManagementController {
       eventManagementService.delete(id);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } catch (FamilyTreeException e) {
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /**
+   * API Báo cáo sự kiện từ ngày đến ngày
+   *
+   * @author nga
+   * @since 07/07/2023
+   */
+  @Schema(name = "Báo cáo sự kiện")
+  @GetMapping("/report")
+  public ResponseEntity<Object> report(@RequestParam LocalDate effectiveStartDate,
+      @RequestParam LocalDate effectiveEndDate) {
+    try {
+      var report = eventManagementService.report(effectiveStartDate, effectiveEndDate);
+      return new ResponseEntity<>(report, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
       return new ResponseEntity<>(
           new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
     } catch (Exception ex) {

@@ -23,6 +23,6 @@ public class ExpenseReport {
 
   @Schema(description = "Tổng chi của năm")
   private Long totalExpense;
-  @Schema(description = "danh sách các khoản chi theo năm")
+  @Schema(description = "danh sách các khoản chi ")
   private List<ExpenseDetail> expenseDetails;
 }
