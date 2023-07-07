@@ -25,7 +25,8 @@ public interface MemberRepository
       value =
           "SELECT *\n"
               + "FROM members \n"
-              + "WHERE LOWER(gender) LIKE LOWER(CONCAT('%', :gender, '%'))",
+              + "WHERE LOWER(gender) LIKE LOWER(CONCAT('%', :gender, '%'))"
+              + " order by date_of_birth ",
       nativeQuery = true)
   List<Member> findAllByGender(String gender);
 
@@ -35,7 +36,7 @@ public interface MemberRepository
               + "FROM members\n"
               + "WHERE ((date_of_birth <= :endDate AND date_of_birth >= :startDate)"
               + "AND status is distinct from :status)"
-              + "order by id ASC",
+              + " order by date_of_birth ",
       nativeQuery = true)
   List<Member> findAllAgeInTheRange(LocalDate endDate, LocalDate startDate, String status);
 
@@ -57,7 +58,8 @@ public interface MemberRepository
           "SELECT *\n"
               + "FROM members\n"
               + "WHERE status is distinct from :status "
-              + "order by id ASC",
+              + "order by id ASC"
+              + " order by date_of_birth ",
       nativeQuery = true)
   List<Member> findAllByStatus(String status);
 
@@ -85,7 +87,8 @@ public interface MemberRepository
               + "from members\n"
               + "where (date_of_birth >= :startDate and date_of_birth <= :endDate)\n"
               + "  and gender like :gender \n"
-              + "  and status is distinct from :status",
+              + "  and status is distinct from :status"
+              + " order by date_of_birth ",
       nativeQuery = true)
   List<Member> findAllByDateOfBirthAndGender(
       LocalDate startDate, LocalDate endDate, String gender, String status);
