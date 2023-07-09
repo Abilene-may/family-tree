@@ -128,7 +128,7 @@ public class QuestionController {
    * @since 07/07/2023
    */
   @Schema(name = "DS tất cả các yêu cầu - màn của quản lý")
-  @GetMapping("/get-all-for-a-member")
+  @GetMapping("/get-all-for-a-member/{id}")
   public ResponseEntity<Object> getAllForAMember(@PathVariable Long id) {
     try {
       var questions = questionService.getAllForAMember(id);
