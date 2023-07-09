@@ -54,6 +54,30 @@ public class QuestionController {
     }
   }
 
+    /**
+   * API Sửa một yêu cầu đến quán lý
+   *
+   * @author nga
+   * @since 09/07/2023
+   */
+  @Schema(name = "Sửa một yêu cầu đến quán lý")
+  @PutMapping("/update")
+  public ResponseEntity<Object> update(
+      @RequestBody QuestionReqDTO reqDTO) {
+    try {
+      var q = questionService.update(reqDTO);
+      return new ResponseEntity<>(q, HttpStatus.OK);
+    } catch (FamilyTreeException e) {
+      log.error(e.getMessage(), e);
+      return new ResponseEntity<>(
+          new ErrorDTO(e.getMessageKey(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    } catch (Exception ex) {
+      log.error(ex.getMessage(), ex);
+      return new ResponseEntity<>(
+          ExceptionUtils.messages.get(ExceptionUtils.E_INTERNAL_SERVER),
+          HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   /**
    * API Xem thông tin một yêu cầu theo id
    *
