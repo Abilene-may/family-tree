@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,9 +64,9 @@ public class QuestionController {
   @Schema(name = "Sửa một yêu cầu đến quán lý")
   @PutMapping("/update")
   public ResponseEntity<Object> update(
-      @RequestBody QuestionReqDTO reqDTO) {
+      @RequestBody Question question) {
     try {
-      var q = questionService.update(reqDTO);
+      var q = questionService.update(question);
       return new ResponseEntity<>(q, HttpStatus.OK);
     } catch (FamilyTreeException e) {
       log.error(e.getMessage(), e);
