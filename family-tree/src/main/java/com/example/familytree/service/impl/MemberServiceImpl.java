@@ -290,7 +290,21 @@ public class MemberServiceImpl implements MemberService {
     var memberById = this.getMemberById(member.getId());
     //check TH chuyển role
     // nếu đã có ông tổ hoặc trưởng họ rồi thì báo lỗi
-    checkRoleIsExist(member);
+    if(member.getRole().equals(Constant.TRUONG_HO)){
+      var checkExistRole = memberRepository.checkExistRoleUpdate(Constant.TRUONG_HO, memberById.getId());
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.TRUONG_HO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.TRUONG_HO_ALREADY_EXISTS));
+      }
+    } else if(member.getRole().equals(Constant.ONG_TO)){
+      var checkExistRole = memberRepository.checkExistRoleUpdate(Constant.ONG_TO, memberById.getId());
+      if (checkExistRole.isPresent()) {
+        throw new FamilyTreeException(
+            ExceptionUtils.ONG_TO_ALREADY_EXISTS,
+            ExceptionUtils.messages.get(ExceptionUtils.ONG_TO_ALREADY_EXISTS));
+      }
+    }
     //check TH chuyển trạng thái tình trạng hôn nhân sang Độc thân
     if(member.getMaritalStatus().equals(Constant.DOC_THAN)){
       member.setMaritalStatus(Constant.DOC_THAN);
