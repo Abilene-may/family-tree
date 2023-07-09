@@ -108,7 +108,7 @@ public interface MemberRepository
   Long findMaxSeq();
 
   @Query(value = "select * from members where role = :role and id is distinct from :id", nativeQuery = true)
-  Optional<Member> checkExistRoleUpdate(String truongHo, Long id);
+  Optional<Member> checkExistRoleUpdate(String role, Long id);
 
   @Query(value = "select * from members where username = :userName and id is distinct from :memberId"
       , nativeQuery = true)
