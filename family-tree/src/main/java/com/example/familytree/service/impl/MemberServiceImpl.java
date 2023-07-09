@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
     // TH thành viên chưa đăng ký
     if(StringUtils.isBlank(member.getUserName())){
       // check username đã tồn tại
-      this.findByUserName(reqDTO.getUserName());
+      this.findByUserName(reqDTO.getUserName(), reqDTO.getMemberId());
       // TH chưa đăng ký
       member.setUserName(reqDTO.getUserName());
       member.setPassword(reqDTO.getPassword());
@@ -128,7 +128,7 @@ public class MemberServiceImpl implements MemberService {
           ExceptionUtils.ACCOUNT_DOES_NOT_HAVE,
           ExceptionUtils.messages.get(ExceptionUtils.ACCOUNT_DOES_NOT_HAVE));
     }
-    this.findByUserName(reqDTO.getUserName());
+    this.findByUserName(reqDTO.getUserName(), reqDTO.getMemberId());
     member.setUserName(reqDTO.getUserName());
     member.setPassword(reqDTO.getPassword());
     member.setRole(reqDTO.getRole());
@@ -140,8 +140,8 @@ public class MemberServiceImpl implements MemberService {
    * @param userName
    * @throws FamilyTreeException
    */
-  private void findByUserName(String userName) throws FamilyTreeException {
-    var member = memberRepository.findByUserName(userName);
+  private void findByUserName(String userName, Long memberId) throws FamilyTreeException {
+    var member = memberRepository.findByUserNameUpdate(userName, memberId);
     // TH username đã tồn tại
     if (member.isPresent()) {
       throw new FamilyTreeException(
