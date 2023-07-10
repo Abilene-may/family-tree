@@ -46,6 +46,7 @@ public class ExceptionUtils {
   public static final String Q_OTHER_STATUS_WAITING_FOR_APPROVAL = "Q_OTHER_STATUS_WAITING_FOR_APPROVAL";
   public static final String Q_HAS_BEEN_ANSWERED = "Q_HAS_BEEN_ANSWERED";
   public static final String ANSWER_DOES_NOT_EXITS = "ANSWER_DOES_NOT_EXITS";
+  public static final String ROLES_DO_NOT_ALLOW_DELETE = "ROLES_DO_NOT_ALLOW_DELETE";
 
   public static Map<String, String> messages;
 
@@ -112,7 +113,9 @@ public class ExceptionUtils {
     ExceptionUtils.Q_HAS_BEEN_ANSWERED, "Yêu cầu này đã được phản hồi.");
     messages.put(
     ExceptionUtils.ANSWER_DOES_NOT_EXITS, "Không tìm thấy thông tin của phản hồi.");
-
+    messages.put(
+        ExceptionUtils.ROLES_DO_NOT_ALLOW_DELETE,
+        "Role ông tổ, trưởng họ và thành viên là những role mặc định không thể xóa.");
   }
 
   public static String buildMessage(String messKey, Object... arg) {

@@ -4,7 +4,6 @@ import com.example.familytree.domain.Question;
 import com.example.familytree.exceptions.ExceptionUtils;
 import com.example.familytree.exceptions.FamilyTreeException;
 import com.example.familytree.models.common.ErrorDTO;
-import com.example.familytree.models.guestmanagement.GuestManagementReqDTO;
 import com.example.familytree.models.question.QuestionReqDTO;
 import com.example.familytree.service.QuestionService;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -118,8 +118,25 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
               .updateEvent(false)
               .deleteEvent(false)
               .build();
+      PermissionManagement ancestorPermission =
+          PermissionManagement.builder()
+              .permissionGroupName(Constant.ONG_TO)
+              .permissionsDescription(Constant.TRUONG_HO_DESCRIPTION)
+              .viewMebers(true)
+              .updateMembers(true)
+              .createMembers(true)
+              .viewFinancial(true)
+              .createFinancial(true)
+              .updateFinancial(true)
+              .deleteFinancial(true)
+              .viewEvent(true)
+              .createEvent(true)
+              .updateEvent(true)
+              .deleteEvent(true)
+              .build();
       permissionManagements.add(adminPermission);
       permissionManagements.add(memberPermission);
+      permissionManagements.add(ancestorPermission);
       permissionManagementRepository.saveAll(permissionManagements);
     }
     return permissionManagements;
@@ -154,9 +171,16 @@ public class PermissionManagementServiceImpl implements PermissionManagementServ
   @Transactional
   public void delete(Long id, Long idPermissionReplace) throws FamilyTreeException {
     var permissionManagement = this.getById(id);
+    var role = permissionManagement.getPermissionGroupName();
+    if (role.equals(Constant.ONG_TO)
+        || role.equals(Constant.TRUONG_HO)
+        || role.equals(Constant.THANH_VIEN)) {
+      throw new FamilyTreeException(
+          ExceptionUtils.ROLES_DO_NOT_ALLOW_DELETE,
+          ExceptionUtils.messages.get(ExceptionUtils.ROLES_DO_NOT_ALLOW_DELETE));
+    }
     // check thông tin của nhóm quyền chọn thay thế
     var permissionManagementReplace = this.getById(idPermissionReplace);
-    var role = permissionManagement.getPermissionGroupName();
     var roleReplace = permissionManagementReplace.getPermissionGroupName();
     // Tìm tất cả thành viên có nhóm quyền cũ cần xóa
     List<Member> memberList = memberRepository.findAllByRole(role);
