@@ -316,6 +316,8 @@ public class MemberServiceImpl implements MemberService {
       partner.setMaritalStatus(Constant.DA_KET_HON);
       partner.setPartnerId(member.getId());
     }
+    member.setUserName(memberById.getUserName());
+    member.setPassword(memberById.getPassword());
     //lưu lại thông tin sau khi đã sửa
     memberRepository.save(member);
   }
