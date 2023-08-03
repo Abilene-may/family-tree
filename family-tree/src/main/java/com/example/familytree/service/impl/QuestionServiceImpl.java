@@ -75,6 +75,8 @@ public class QuestionServiceImpl implements QuestionService {
           ExceptionUtils.Q_OTHER_STATUS_WAITING_FOR_APPROVAL,
           ExceptionUtils.messages.get(ExceptionUtils.Q_OTHER_STATUS_WAITING_FOR_APPROVAL));
     }
+    question.setSendDate(questionCheck.getSendDate());
+    question.setStatus(questionCheck.getStatus());
     questionRepository.save(question);
     return question;
   }
