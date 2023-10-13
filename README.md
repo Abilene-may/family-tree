@@ -29,12 +29,12 @@ Mỗi một chức năng đều cho phép bạn thêm, xem, sửa, xóa thông t
 
 ### Các bước để chạy chương trình
 #### Developer (BE)
-1. Tải mã nguồn từ [Github](https://github.com/Abilene-may/family-tree)
+1. Tải mã nguồn từ [Click vào đây để download](https://github.com/Abilene-may/family-tree)
 2. Mở mã nguồn trong môi trường phát triển Java Intellij IDEA.
 3. Nhập Shift + F10 để chạy trương trình hoặc nút Run ở góc trái màn hình
 
 #### Developer (FE)
-1. Tải mã nguồn từ [Github](https://github.com/Fuviathan/TreeFamily).
+1. Tải mã nguồn từ [Click vào đây để download](https://github.com/Fuviathan/TreeFamily)
 2. Mở mã nguồn trong môi trường phát triển Visual studio Code.
 3. Truy cập thư mục dự án sau khi bạn đã clone và thực hiện lệnh sau để cài đặt các dependencies:
 - cd your-project-directory
