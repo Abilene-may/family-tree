@@ -17,6 +17,8 @@ Dự án Family Tree là một ứng dụng Java cho phép bạn theo dõi và q
 
 Mỗi một chức năng đều cho phép bạn thêm, xem, sửa, xóa thông tin. Bên cạnh đó bạn còn có thể xem báo cáo đối với những chức năng Quản lý sự kiên, Quản lý tài chính (Báo cáo thu, Báo cáo chi)
 
+Link tài liệu: [Click vào đây để xem chi tiết](https://drive.google.com/file/d/1VFyKiYYH2qFp94qt6mJa_qy1NyvqYuux/view?usp=sharing)
+
 ## Cài đặt và chạy chương trình (Set up and run a program)
 Để chạy dự án này cần có:
 #### Phía Developer (BE)
