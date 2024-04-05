@@ -1,47 +1,48 @@
 # Family Tree Project
+[Link figma](https://www.figma.com/file/zbqoJAvl16Vo3bRXxqIk4G/Family-tree-web-interface-design?type=design&node-id=0-1&mode=design&t=s2R9HNbzISQNitYO-0)
+## Introduction
+The Family tree project is a Java website that allows you to track and manage information about a person's family tree. 
+The project has the following main functions:
 
-## Giới thiệu (Introduction)
-Dự án Family Tree là một ứng dụng Java cho phép bạn theo dõi và quản lý thông tin về cây gia phả của một người. Dự án có các chức năng chính sau đây:
+- **Login/Register**: Allows users to register an account and log in under the registered account.
 
-- **Đăng nhập/Đăng ký**: Cho phép người dùng đăng ký tài khoản và đăng nhập vào theo tài khoản đã đăng ký
+- **Genealogy management**: Allows you to create, view, update and delete information about family tree members.
 
-- **Quản lý gia phả**: Cho phép bạn thêm, xem, sửa đổi và xóa thông tin về các thành viên trong cây gia đình.
+- **Event management**: Allows you to create, view, update and delete important family events such as weddings, births, deaths, family meetings, etc.
 
-- **Quản lý sự kiện**: Cho phép bạn thêm, xem, sửa đổi và xóa các sự kiện quan trọng trong gia đình như cưới, sinh, mất, họp gia đình, v.v.
+- **Financial management**: Allows you to record and track family finances including income and expense reports.
 
-- **Quản lý tài chính**: Cho phép bạn ghi chép và theo dõi tài chính gia đình bao gồm báo cáo thu và báo cáo chi.
+- **Q&A**: Provides a question and answer system to resolve family tree related questions or concerns.
 
-- **Giải đáp thắc mắc**: Cung cấp một hệ thống hỏi và đáp để giải quyết các câu hỏi hoặc thắc mắc liên quan đến cây gia phả.
+- **Decentralization**: Provide access and manage users with different roles such as manager, regular user, etc.
 
-- **Phân quyền**: Cung cấp quyền truy cập và quản lý người dùng với các vai trò khác nhau như người quản lý, người dùng thường, v.v.
+Each function allows you to create, view, update and delete information. Besides, you can also view reports for event management and financial management functions (Income report, expense report)
 
-Mỗi một chức năng đều cho phép bạn thêm, xem, sửa, xóa thông tin. Bên cạnh đó bạn còn có thể xem báo cáo đối với những chức năng Quản lý sự kiên, Quản lý tài chính (Báo cáo thu, Báo cáo chi)
+Link document: [Click here](https://drive.google.com/file/d/1VFyKiYYH2qFp94qt6mJa_qy1NyvqYuux/view?usp=sharing)
 
-Link tài liệu: [Click vào đây để xem chi tiết](https://drive.google.com/file/d/1VFyKiYYH2qFp94qt6mJa_qy1NyvqYuux/view?usp=sharing)
-
-## Cài đặt và chạy chương trình (Set up and run a program)
-Để chạy dự án này cần có:
+## Set up and run a program
+To run this project it is required:
 #### Phía Developer (BE)
-- **Java Development Kit (JDK)**: phiên bản 11 trở lên.
-- **Môi trường phát triển**: IntelliJ IDEA (recommend download bản community)
-- Link download Intellij: https://www.jetbrains.com/idea/download/?section=windows
-#### Phía Developer (FE) 
-- **Môi trường phát triển**: Visual studio Code
-- Cài đặt Node.js trên máy tính của bạn. Bạn có thể tải Node.js tại đây https://nodejs.org/fr
+- **Java Development Kit (JDK)**: version 11 and above.
+- **Development environment**: IntelliJ IDEA (recommend downloading the community version)
+- Link download Intellij: [Click here](https://www.jetbrains.com/idea/download/?section=windows)
+#### For FE developer
+- **Development environment**: Visual studio Code
+- Install Node.js on your computer. You can dowload Node.js here [Click here](https://nodejs.org/en)
 
-### Các bước để chạy chương trình
+### Steps to run the program
 #### Developer (BE)
-1. Tải mã nguồn từ [Click vào đây để download](https://github.com/Abilene-may/family-tree)
-2. Mở mã nguồn trong môi trường phát triển Java Intellij IDEA.
-3. Nhập Shift + F10 để chạy trương trình hoặc nút Run ở góc trái màn hình
+1. Download source code from [Click here](https://github.com/Abilene-may/family-tree)
+2. Open source code in the Intellij IDEA Java development environment.
+3. Configure JDK in IntelliJ IDEA [Click here to watch the video tutorial](https://www.youtube.com/watch?v=4pJRLFVWFoU)
+4. Enter Shift + F10 to Run the program or button in the left corner of the screen.
 
 #### Developer (FE)
-1. Tải mã nguồn từ [Click vào đây để download](https://github.com/Fuviathan/TreeFamily)
-2. Mở mã nguồn trong môi trường phát triển Visual studio Code.
-3. Truy cập thư mục dự án sau khi bạn đã clone và thực hiện lệnh sau để cài đặt các dependencies:
+1. Download source code from [Click here](https://github.com/Fuviathan/TreeFamily)
+2. Open source code in Visual studio Code development environment.
+3. Access the project directory after you have cloned and execute the following command to install the dependencies:
 - cd your-project-directory
 - npm install
-4. Sau khi cài đặt xong dependencies, bạn có thể chạy chương trình bằng lệnh:
+4. After installing dependencies, you can run the program with the command:
 - npm start
-
 
