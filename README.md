@@ -22,7 +22,7 @@ Link document: [Click here](https://drive.google.com/file/d/1VFyKiYYH2qFp94qt6mJ
 
 ## Set up and run a program
 To run this project it is required:
-#### Phía Developer (BE)
+#### For Developer (BE)
 - **Java Development Kit (JDK)**: version 11 and above.
 - **Development environment**: IntelliJ IDEA (recommend downloading the community version)
 - Link download Intellij: [Click here](https://www.jetbrains.com/idea/download/?section=windows)
